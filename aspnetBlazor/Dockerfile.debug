@@ -5,9 +5,14 @@
 ARG IMAGE_ARCH=
 
 ##
+# vsdebugger container base version
+##
+ARG DEBUGGER_BASE_VERSION=4.2.0
+
+##
 # Base container version
 ##
-ARG BASE_VERSION=3.4-8.0.8
+ARG BASE_VERSION=4.2.0
 
 ##
 # Directory of the application inside container
@@ -25,15 +30,23 @@ ARG SSHUSERNAME=
 
 # BUILD ------------------------------------------------------------------------
 ##
+# Get vsdebugger
+##
+FROM --platform=linux/${IMAGE_ARCH} \
+    torizon/dotnet8-debug:${DEBUGGER_BASE_VERSION} AS debugger
+##
 # Deploy Step .NET
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/aspdotnet-debug:${BASE_VERSION} AS debug
+    torizon/aspdotnet8:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG APP_ROOT
 ARG DEBUG_SSH_PORT
 ARG SSHUSERNAME
+
+# Copy vsdebugger
+COPY --from=debugger /vsdbg /vsdbg
 
 # SSH for remote debug
 EXPOSE ${DEBUG_SSH_PORT}

@@ -1,5 +1,5 @@
-ARG CROSS_SDK_BASE_TAG=3.2.0
-ARG BASE_VERSION=3.5.0
+ARG CROSS_SDK_BASE_TAG=4.2.0
+ARG BASE_VERSION=4.2.0
 ##
 # Board architecture
 ##
@@ -12,7 +12,7 @@ ARG APP_ROOT=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM torizon/debian-cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
+FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
 
 ARG APP_ROOT
 ARG IMAGE_ARCH

@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.4-8.0.8
+ARG BASE_VERSION=4.2.0
 
 ##
 # Directory of the application inside container
@@ -46,7 +46,7 @@ RUN dotnet restore __change__.csproj && \
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/aspdotnet:${BASE_VERSION} AS deploy
+    torizon/aspdotnet8:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG APP_ROOT

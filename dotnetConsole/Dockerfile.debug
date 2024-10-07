@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.4-8.0.8
+ARG BASE_VERSION=4.2.0
 
 ##
 # Directory of the application inside container
@@ -29,7 +29,7 @@ ARG SSHUSERNAME=
 # Deploy Step .NET
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/dotnet-debug:${BASE_VERSION} AS debug
+    torizon/dotnet8-debug:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG APP_ROOT
