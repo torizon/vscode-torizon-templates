@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3-8.0
+ARG BASE_VERSION=4.0.0
 
 ##
 # Directory of the application inside container
@@ -54,7 +54,7 @@ RUN dotnet restore && \
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/dotnet-gtk${GPU}:${BASE_VERSION} AS deploy
+    torizon/dotnet8-gtk3${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG GPU

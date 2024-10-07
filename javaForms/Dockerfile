@@ -2,7 +2,7 @@
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1
+ARG BASE_VERSION=4.0.0
 ##
 # Directory of the application inside container
 ##
@@ -19,7 +19,7 @@ ARG IMAGE_ARCH=
 ARG GPU=
 
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/wayland-base${GPU}:${BASE_VERSION} AS build
+    torizon/wayland-base${GPU}:${BASE_VERSION} AS build
 
 ARG IMAGE_ARCH
 ARG GPU

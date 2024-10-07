@@ -4,12 +4,15 @@
 ##
 ARG IMAGE_ARCH=
 
-
+##
+# vsdebugger container base version
+##
+ARG DEBUGGER_BASE_VERSION=4.0.0
 
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3-8.0
+ARG BASE_VERSION=4.0.0
 
 ##
 # Directory of the application inside container
@@ -33,16 +36,24 @@ ARG GPU=
 
 # BUILD ------------------------------------------------------------------------
 ##
+# Get vsdebugger
+##
+FROM --platform=linux/${IMAGE_ARCH} \
+    torizon/dotnet8-debug:${DEBUGGER_BASE_VERSION} AS debugger
+##
 # Deploy Step .NET Uno
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/dotnet-gtk-debug${GPU}:${BASE_VERSION} AS debug
+    torizon/dotnet8-gtk3${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU
 ARG DEBUG_SSH_PORT
 ARG APP_ROOT
 ARG SSHUSERNAME
+
+# Copy vsdebugger
+COPY --from=debugger /vsdbg /vsdbg
 
 # SSH for remote debug
 EXPOSE ${DEBUG_SSH_PORT}

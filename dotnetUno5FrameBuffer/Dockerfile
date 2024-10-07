@@ -7,8 +7,8 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1
-ARG DOTNET_BASE_VERSION=3-8.0
+ARG BASE_VERSION=4.0.0
+ARG DOTNET_BASE_VERSION=4.0.0
 
 ##
 # Directory of the application inside container
@@ -53,11 +53,11 @@ RUN dotnet restore && \
 
 # DOTNET -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/dotnet:${DOTNET_BASE_VERSION} AS Dotnet
+    commontorizon/dotnet:${DOTNET_BASE_VERSION} AS dotnet
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/wayland-base${GPU}:${BASE_VERSION} AS deploy
+    torizon/wayland-base${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -75,7 +75,7 @@ RUN apt-get -q -y update && \
             imx-gpu-viv-wayland-dev \
         ; else \
             apt-get -q -y install \
-            libgles2 libgl1-mesa-dev \
+            libgl1 libgles2 libgl1-mesa-dev \
         ; fi \
     && \
     apt-get clean && apt-get autoremove && \

@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3-6.12.0
+ARG BASE_VERSION=4.0-6.12.0
 
 ##
 # Directory of the application inside container

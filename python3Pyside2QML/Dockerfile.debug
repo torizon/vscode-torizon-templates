@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1
+ARG BASE_VERSION=4.0.0
 
 ##
 # Debug port
@@ -31,7 +31,7 @@ ARG GPU=
 
 
 FROM --platform=linux/${IMAGE_ARCH} \
-     commontorizon/qt5-wayland${GPU}:${BASE_VERSION} AS debug
+    torizon/qt5-wayland${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU

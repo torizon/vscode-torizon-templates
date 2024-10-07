@@ -51,7 +51,7 @@ services:
         condition: service_healthy
 
   xfce:
-    image: commontorizon/xfce:3.3.1
+    image: commontorizon/xfce:4.0.0
     # Required to get udev events from host udevd via netlink
     network_mode: host
     privileged: true
