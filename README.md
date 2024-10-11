@@ -24,8 +24,8 @@ Partner templates are contributions that come from [Toradex partner network](htt
 
 | TEMPLATE | DESCRIPTION | RUNTIME | LANGUAGE | HW ARCH | FOLDER |
 | -------- | ----------- | ------- | -------- | ------- | ------ |
-| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/slint-cpp.png?raw=true) | C++ Slint Application | Slint 1.0 | C++ | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [cppSlint](./cppSlint) |
-| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/slint-rust.png?raw=true) | Rust Slint Application | Slint 1.0 | Rust | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [rustSlint](./rustSlint) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/slint-cpp.png?raw=true) | C++ Slint Application | Slint 1.0 | C++ | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) ![](assets/img/x8664.png?raw=true&id=2) | [cppSlint](./cppSlint) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/slint-rust.png?raw=true) | Rust Slint Application | Slint 1.0 | Rust | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) ![](assets/img/x8664.png?raw=true&id=2) | [rustSlint](./rustSlint) |
 
 # Contributing
 
