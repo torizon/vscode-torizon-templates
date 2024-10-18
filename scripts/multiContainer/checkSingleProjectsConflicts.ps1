@@ -104,13 +104,15 @@ foreach ($item in $objCodeWorkspaces.folders){
 
 $debugPortsSettings += $dockerComposePorts
 
-$sortedDebugPortsSettings = $debugPortsSettings | Sort-Object -Property settingValue
+if ( $debugPortsSettings.Count -gt 1) {
+    $sortedDebugPortsSettings = $debugPortsSettings | Sort-Object -Property settingValue
+    $newDebugPortsSettings, $debugPortDuplicated = FixDuplicates $sortedDebugPortsSettings
+}
 
-$sortedWaitSyncSettings = $waitSyncSettings | Sort-Object -Property settingValue
-
-$newDebugPortsSettings, $debugPortDuplicated = FixDuplicates $sortedDebugPortsSettings
-
-$newWaitSyncSettings, $waitSyncDuplicated = FixDuplicates $sortedWaitSyncSettings
+if ( $waitSyncSettings.Count -gt 1) {
+    $sortedWaitSyncSettings = $waitSyncSettings | Sort-Object -Property settingValue
+    $newWaitSyncSettings, $waitSyncDuplicated = FixDuplicates $sortedWaitSyncSettings
+}
 
 
 if ($debugPortDuplicated -or $waitSyncDuplicated) {
