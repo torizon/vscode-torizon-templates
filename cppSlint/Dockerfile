@@ -104,8 +104,7 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
 	&& apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
-# Default to the Skia backend for best performance
-ENV SLINT_BACKEND=linuxkms-skia
+
 # Default to Slint running in fullscreen
 ENV SLINT_FULLSCREEN=1
 
