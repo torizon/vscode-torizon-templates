@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+    __container__-debug:
+        build:
+            context: .
+            dockerfile: Dockerfile.debug
+        image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
+        ports:
+            - ${DEBUG_SSH_PORT}:${DEBUG_SSH_PORT}
+        devices:
+            - /dev/fb0:/dev/fb0
+
+    __container__:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: ${DOCKER_LOGIN}/__container__:${TAG}
+        devices:
+            - /dev/fb0:/dev/fb0
