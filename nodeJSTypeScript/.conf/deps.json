@@ -1,8 +1,0 @@
-{
-    "packages": [
-        "openssh-client",
-        "sshpass",
-        "nodejs",
-        "npm"
-    ]
-}
