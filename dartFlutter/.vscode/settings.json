@@ -1,0 +1,17 @@
+{
+  "torizon_psswd": "",
+  "torizon_login": "",
+  "torizon_ip": "",
+  "torizon_ssh_port": "",
+  "host_ip": "",
+  "torizon_workspace": "${workspaceFolder}",
+  "torizon_debug_port": "",
+  "wait_sync": "1",
+  "torizon_gpu": "",
+  "torizon_arch": "",
+  "torizon_run_as": "torizon",
+  "torizon_app_root": "/home/torizon/app",
+  "tcb.version": "3.8.1",
+  "torizon.gpuPrefixRC": false,
+  "terminal.integrated.defaultProfile.linux": "bash"
+}

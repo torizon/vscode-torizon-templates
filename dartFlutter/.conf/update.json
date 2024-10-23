@@ -1,0 +1,10 @@
+[
+    {
+        "source": "pubspec.yaml",
+        "target": "pubspec.yaml"
+    },
+    {
+        "source": ".vscode/launch.json",
+        "target": ".vscode/launch.json"
+    },
+]

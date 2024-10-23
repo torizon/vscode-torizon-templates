@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Torizon ARMv8 debug",
+            "type": "dart",
+            "request": "attach",
+            "internalConsoleOptions": "openOnSessionStart",
+            "preLaunchTask": "deploy-torizon-arm64"
+        },
+        {
+            "name": "Torizon ARMv8 release",
+            "type": "dart",
+            "request": "launch",
+            "internalConsoleOptions": "openOnSessionStart",
+            "preLaunchTask": "run-container-torizon-release-arm64"
+        },
+        {
+            "name": "Torizon ARMv8 attach",
+            "type": "dart",
+            "request": "attach",
+            "args": ["--verbose"],
+            "deviceId": "flutter-tester",
+            "observatoryUri": "http://127.0.0.1:42271/",
+          },
+    ]
+}
+

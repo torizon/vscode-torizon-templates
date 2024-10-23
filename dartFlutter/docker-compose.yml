@@ -1,0 +1,87 @@
+version: "3.9"
+services:
+  test-debug:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    image: ${LOCAL_REGISTRY}:5002/test-debug:${TAG}
+    network_mode: host
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+      - type: bind
+        source: /dev
+        target: /dev
+    device_cgroup_rules:
+      # ... for tty0
+      - "c 4:0 rmw"
+      # ... for tty7
+      - "c 4:7 rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      - "c 199:* rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"
+    depends_on: [
+      weston
+    ]
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_LOGIN}/test:${TAG}
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+      - type: bind
+        source: /dev
+        target: /dev
+    device_cgroup_rules:
+      # ... for tty0
+      - "c 4:0 rmw"
+      # ... for tty7
+      - "c 4:7 rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      - "c 199:* rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"
+    depends_on: [
+      weston
+    ]
+
+  weston:
+    image: torizon/weston${GPU}:3
+    environment:
+      - ACCEPT_FSL_EULA=1
+    # Required to get udev events from host udevd via netlink
+    network_mode: host
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+      - type: bind
+        source: /dev
+        target: /dev
+      - type: bind
+        source: /run/udev
+        target: /run/udev
+    cap_add:
+      - CAP_SYS_TTY_CONFIG
+    # Add device access rights through cgroup...
+    device_cgroup_rules:
+      # ... for tty0
+      - "c 4:0 rmw"
+      # ... for tty1
+      - "c 4:1 rmw"
+      # ... for tty7
+      - "c 4:7 rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      - "c 199:* rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"
+

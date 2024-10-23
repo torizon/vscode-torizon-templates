@@ -1,0 +1,42 @@
+# ARGUMENTS --------------------------------------------------------------------
+##
+# Base Container version
+# Using Flutter v3.22.0
+##
+ARG SDK_BASE_VERSION=development
+##
+# Base container version
+##
+ARG BASE_VERSION=deployment
+
+##
+# Board architecture
+##
+ARG IMAGE_ARCH=
+
+##
+# Board GPU vendor prefix
+##
+ARG GPU=
+
+##
+# Directory of the application inside container
+##
+ARG APP_ROOT=
+
+# BUILD ------------------------------------------------------------------------
+# TODO: cross compile x86 to arm
+# We will use emulation here
+##
+# Build Step
+##
+FROM crossware.app:5050/toradex/flutter:early
+
+ARG IMAGE_ARCH
+ARG GPU
+ARG APP_ROOT
+
+RUN mkdir -p ${APP_ROOT}
+
+WORKDIR ${APP_ROOT}
+

@@ -1,0 +1,236 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+            {
+            "label": "ssh-tunnel",
+            "type": "shell",
+            "command": "sshpass",
+            "args": [
+                "-p", "${config:torizon_psswd}",
+                "ssh",
+                "-L", "42271:127.0.0.1:42271", 
+                "torizon@${config:torizon_ip}",
+              ],
+            "isBackground": true,              
+            "problemMatcher": [],
+            "options": {
+              "shell": {
+                "executable": "/bin/bash",
+                "args": ["-c"]
+              }
+            },
+          },
+        {
+            "label": "build-container-image-sdk-arm64",
+            "detail": "",
+            "hide": true,
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "build",
+                "--pull",
+                "-f",
+                "${workspaceFolder}/Dockerfile.sdk",
+                "${workspaceFolder}",
+                "-t",
+                "cross-toolchain-arm64-flutter",
+                "--build-arg",
+                "IMAGE_ARCH=arm64",
+                "--build-arg",
+                "GPU=${config:torizon_gpu}",
+                "--build-arg",
+                "APP_ROOT=${config:torizon_app_root}"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+        {
+            "label": "flutter-clean-arm64",
+            "detail": "Clean the build folder for arm64 using the\ncontainer SDK toolchain.",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}:${config:torizon_app_root}",
+                "cross-toolchain-arm64-flutter",
+                "flutter-elinux",
+                "clean"
+            ],
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-container-image-sdk-arm64"
+            ]
+        },
+        {
+            "label": "flutter-pub-get",
+            "detail": "Get deps from pubspec.yml file",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}:${config:torizon_app_root}",
+                "cross-toolchain-arm64-flutter",
+                "flutter-elinux",
+                "pub",
+                "get"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-container-image-sdk-arm64",
+                "flutter-clean-arm64"
+            ]
+        },
+        {
+            "label": "flutter-pub-outdated",
+            "detail": "Provides more Information for the outdated deps",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}:${config:torizon_app_root}",
+                "cross-toolchain-arm64-flutter",
+                "flutter-elinux",
+                "pub",
+                "outdated"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-container-image-sdk-arm64",
+                "flutter-clean-arm64"
+            ]
+        },
+        {
+            "label": "flutter-pub-upgrade",
+            "detail": "Force updates deps despite of dependency Constraints",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}:${config:torizon_app_root}",
+                "cross-toolchain-arm64-flutter",
+                "flutter-elinux",
+                "pub",
+                "upgrade"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-container-image-sdk-arm64",
+                "flutter-clean-arm64"
+            ]
+        },
+        {
+            "label": "flutter-build-debug",
+            "detail": "Builds the flutter app in debug configuration",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}:${config:torizon_app_root}",
+                "cross-toolchain-arm64-flutter",
+                "flutter-elinux",
+                "build",
+                "elinux",
+                "--debug"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-container-image-sdk-arm64",
+                "flutter-clean-arm64",
+                "flutter-pub-get"
+            ]
+        },
+        {
+            "label": "flutter-build-release",
+            "detail": "Builds the flutter app in debug configuration",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "run",
+                "--rm",
+                "-v",
+                "${workspaceFolder}:${config:torizon_app_root}",
+                "cross-toolchain-arm64-flutter",
+                "flutter-elinux",
+                "build",
+                "elinux",
+                "--release"
+            ],
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-container-image-sdk-arm64",
+                "flutter-clean-arm64",
+                "flutter-pub-get"
+            ]
+        },
+                {
+            "label": "deploy-torizon-arm64",
+            "detail": "",
+            "hide": true,
+            "command": "sleep",
+            "type": "process",
+            "args": [
+                "1"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-arm64",
+                "copy-docker-compose",
+                "pre-cleanup",
+                "build-container-torizon-debug-arm64",
+                "push-container-torizon-debug-arm64",
+                "pull-container-torizon-debug-arm64",
+                "run-container-torizon-debug-arm64",
+                "ssh-tunnel"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "flame",
+                "color": "terminal.ansiYellow"
+            }
+        },
+    ]
+}
