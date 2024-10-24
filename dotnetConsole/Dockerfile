@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3-8.0
+ARG BASE_VERSION=3.4-8.0.8
 
 ##
 # Directory of the application inside container
@@ -35,7 +35,7 @@ dotnet publish -c Release -r linux-${IMAGE_ARCH} --no-self-contained
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/dotnet:${BASE_VERSION} AS deploy
+    torizon/dotnet:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG APP_ROOT
