@@ -1,5 +1,5 @@
-ARG CROSS_SDK_BASE_TAG=3.3.1
-ARG BASE_VERSION=3.3.1-bookworm
+ARG CROSS_SDK_BASE_TAG=3.2.0
+ARG BASE_VERSION=3.5.0
 ##
 # Board architecture
 ##
@@ -12,7 +12,7 @@ ARG APP_ROOT=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM commontorizon/debian-cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
+FROM torizon/debian-cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
 
 ARG APP_ROOT
 ARG IMAGE_ARCH
@@ -51,7 +51,7 @@ RUN cmake --build build-${IMAGE_ARCH}
 ##
 # Deploy Step
 ##
-FROM --platform=linux/${IMAGE_ARCH} commontorizon/debian:${BASE_VERSION} AS deploy
+FROM --platform=linux/${IMAGE_ARCH} torizon/debian:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG APP_ROOT
