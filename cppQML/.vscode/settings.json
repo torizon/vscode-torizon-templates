@@ -16,7 +16,7 @@
   "torizon_app_root": "/home/torizon/app",
   "tcb.packageName": "__change__",
   "tcb.version": "3.11.0",
-  "torizon.gpuPrefixRC": true,
+  "torizon.gpuPrefixRC": false,
   "qtForPython.rcc.liveExecution.enabled": false,
   "qtForPython.qmlls.path": "/usr/lib/qt6/bin/qmlls",
   "qtForPython.qmlls.enabled": true,

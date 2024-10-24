@@ -2,11 +2,11 @@
 ##
 # SDK container version
 ##
-ARG SDK_BASE_VERSION=3.3.1
+ARG SDK_BASE_VERSION=3.4.0
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1
+ARG BASE_VERSION=3.4.0
 
 ##
 # Board architecture
@@ -30,7 +30,7 @@ ARG APP_ROOT=
 # Build Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/qt6-wayland${GPU}:${SDK_BASE_VERSION} AS build
+    torizon/qt6-wayland${GPU}:${SDK_BASE_VERSION} AS build
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -102,7 +102,7 @@ RUN cmake --build build-${IMAGE_ARCH}
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/qt6-wayland${GPU}:${BASE_VERSION} AS deploy
+    torizon/qt6-wayland${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG GPU
