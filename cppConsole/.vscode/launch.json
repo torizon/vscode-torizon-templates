@@ -27,50 +27,6 @@
             "preLaunchTask": "build-debug-local"
         },
         {
-            "name": "Torizon riscv64",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${config:torizon_app_root}/__change__",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${config:torizon_app_root}",
-            "environment": [],
-            "externalConsole": false,
-            "internalConsoleOptions": "openOnSessionStart",
-            "sourceFileMap": {
-                "${config:torizon_app_root}": "${workspaceFolder}"
-            },
-            "pipeTransport": {
-                "debuggerPath": "/usr/bin/gdb",
-                "pipeProgram": "ssh",
-                "pipeArgs": [
-                    "-T",
-                    "-q",
-                    "-p",
-                    "${config:torizon_debug_ssh_port}",
-                    "-o",
-                    "StrictHostKeyChecking=no",
-                    "-o",
-                    "UserKnownHostsFile /dev/null",
-                    "${config:torizon_run_as}@${config:torizon_ip}" // user@device
-                ]
-            },
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description":  "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "deploy-torizon-riscv64"
-        },
-        {
             "name": "Torizon AMD64",
             "type": "cppdbg",
             "request": "launch",

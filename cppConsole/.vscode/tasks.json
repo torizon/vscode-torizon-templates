@@ -26,33 +26,6 @@
             }
         },
         {
-            "label": "build-makedir-amd64",
-            "hide": true,
-            "command": "make",
-            "type": "shell",
-            "args": [
-                "ARCH=amd64",
-                "makedir"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOn": [
-                "build-container-image-sdk-amd64"
-            ],
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "build-makedir-arm",
             "hide": true,
             "command": "make",
@@ -93,33 +66,6 @@
             ],
             "dependsOn": [
                 "build-container-image-sdk-arm64"
-            ],
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "build-makedir-riscv64",
-            "hide": true,
-            "command": "make",
-            "type": "shell",
-            "args": [
-                "ARCH=riscv64",
-                "makedir"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOn": [
-                "build-container-image-sdk-riscv64"
             ],
             "icon": {
                 "id": "tools",
@@ -313,158 +259,6 @@
             }
         },
         {
-            "label": "build-debug-amd64",
-            "detail": "Build a debug version of the application for amd64 using\nthe toolchain from the SDK container.",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "args": [
-                "docker",
-                "run",
-                "--rm",
-                "-v",
-                "${workspaceFolder}:${config:torizon_app_root}",
-                "cross-toolchain-amd64-__container__",
-                "make",
-                "ARCH=amd64",
-                "CC=x86_64-linux-gnu-g++",
-                "debug"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "build-makedir-amd64"
-            ],
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "deploy-torizon-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "rsync",
-            "type": "process",
-            "args": [
-                "-P",
-                "-av",
-                "-e",
-                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/build-amd64/debug/",
-                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
-            ],
-            "dependsOn": [
-                "validate-settings",
-                "validate-arch-amd64",
-                "copy-docker-compose",
-                "pre-cleanup",
-                "build-debug-amd64",
-                "build-container-torizon-debug-amd64",
-                "push-container-torizon-debug-amd64",
-                "pull-container-torizon-debug-amd64",
-                "run-container-torizon-debug-amd64",
-                "pos-cleanup"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "build-debug-riscv64",
-            "detail": "Build a debug version of the application for riscv64 using\nthe toolchain from the SDK container.",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "args": [
-                "docker",
-                "run",
-                "--rm",
-                "-v",
-                "${workspaceFolder}:${config:torizon_app_root}",
-                "cross-toolchain-riscv64-__container__",
-                "make",
-                "ARCH=riscv64",
-                "CC=riscv64-linux-gnu-g++",
-                "debug"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "build-makedir-riscv64"
-            ],
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "deploy-torizon-riscv64",
-            "detail": "",
-            "hide": true,
-            "command": "rsync",
-            "type": "process",
-            "args": [
-                "-P",
-                "-av",
-                "-e",
-                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/build-riscv64/debug/",
-                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
-            ],
-            "dependsOn": [
-                "validate-settings",
-                "validate-arch-riscv64",
-                "copy-docker-compose",
-                "pre-cleanup",
-                "build-debug-riscv64",
-                "build-container-torizon-debug-riscv64",
-                "push-container-torizon-debug-riscv64",
-                "pull-container-torizon-debug-riscv64",
-                "run-container-torizon-debug-riscv64",
-                "pos-cleanup"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "clean-local",
             "detail": "Clean the local application build directory. `make clean`",
             "command": "make",
@@ -541,61 +335,7 @@
                 "panel": "shared",
                 "group": "build-execution"
             }
-        },
-        {
-            "label": "clean-amd64",
-            "detail": "Clean the amd64 application build directory. `make clean`",
-            "command": "make",
-            "type": "shell",
-            "args": [
-                "clean",
-                "ARCH=amd64"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "trash",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "clean-riscv64",
-            "detail": "Clean the riscv64 application build directory. `make clean`",
-            "command": "make",
-            "type": "shell",
-            "args": [
-                "clean",
-                "ARCH=riscv64"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "trash",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
+        }
     ],
 "inputs": []
 }
