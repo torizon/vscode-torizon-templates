@@ -1,5 +1,20 @@
 # Deprecated templates
 
+## Deprecated on Torizon OS 7
+
+| TEMPLATE | DESCRIPTION | RUNTIME | LANGUAGE | HW ARCH | FOLDER | CONTRIBUTOR |
+| -------- | ----------- | ------- | -------- | ------- | ------ | ----------- |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/unogtk5.png?raw=true) | .NET 8 C# Uno 5 Platform Skia.GTK | .NET 8.0 | C# | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [dotnetUno5](./dotnetUno5) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/unofbdrm5.png?raw=true) | .NET 8 C# Uno 5 Platform Frame Buffer | .NET 8.0 | C# | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [dotnetUno5FrameBuffer](./dotnetUno5FrameBuffer) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/jframe.png?raw=true) | Java Swing JFrame Application | JRE | Java | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [javaForms](./javaForms) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/electronjs.png?raw=true) | Node.js JavaScript Electron Application | Electron | JavaScript | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [nodeElectron](./nodeElectron) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/monowinforms.png?raw=true) | Mono 4.7 C# Windows Forms Application | .NET 4.7 | C# | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [monoCsharpForms](./monoCsharpForms) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/gambasform.png?raw=true) | Gambas3 Form Project | Gambas3 | Visual Basic | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [gambasForms](./gambasForms) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
+
+This templates were deprecated due to the fact that their respective maintainer does not have the intention to keep maintaining them on Torizon OS 7. As they were Community Supported Templates, their maintenance is responsability of their respective maintainer. If you use any of this templates and have interest on becoming it's maintainer, please feel free to do so by [opening an issue here on the repository](https://github.com/torizon/vscode-torizon-templates/issues), contributions are welcome and we will help you out with this.
+
+## Already deprecated on Torizon OS 6
+
 | TEMPLATE | DESCRIPTION | RUNTIME | LANGUAGE | HW ARCH | FOLDER | CONTRIBUTOR |
 | -------- | ----------- | ------- | -------- | ------- | ------ | ----------- |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/unogtk.png?raw=true) | .NET 6 C# Uno Platform Skia.GTK | .NET 6.0 | C# | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2)   | [dotnetUno](./dotnetUno) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64&s=64) [@microhobby](https://www.github.com/microhobby) |
