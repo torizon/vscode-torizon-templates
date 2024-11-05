@@ -60,7 +60,7 @@ The purpose of `Dockerfile.sdk` is to create an image with the cross toolchain S
 
 > ⚠️ The `Dockerfile.sdk` file is needed only if the application framework or runtime only runs machine code.
 
-#### Scripts
+### Scripts
 
 For some templates, complex and very specific tasks are required. For these cases add a new script in the [scripts](./scripts) folder.
 
@@ -68,7 +68,7 @@ The idea is that the project created from the template should be independent of 
 
 > ⚠️ Check the [createFromTemplate.ps1](./scripts/createFromTemplate.ps1) script for reference.
 
-#### Substitution tags
+### Substitution tags
 
 Substitution tags can be used inside files and as folders names to rename stuff needed by the project template. There are two substitution tags used by Torizon IDE Extension:
 
@@ -78,7 +78,7 @@ Substitution tags can be used inside files and as folders names to rename stuff 
 
 > ⚠️ Check the [createFromTemplate.ps1](./scripts/createFromTemplate.ps1) script for reference.
 
-#### Dot VS Code Folder
+### Dot VS Code Folder
 
 In the `.vscode` folder the following files are expected:
 
@@ -108,7 +108,7 @@ In the `.vscode` folder the following files are expected:
 
 > ℹ️ All these are VS Code related files, check the Microsoft official documentation to know more: [Documentation for Visual Studio Code](https://code.visualstudio.com/docs)
 
-#### Dot Conf Folder
+### Dot Conf Folder
 
 In the `.conf` folder the following files are expected:
 
@@ -129,7 +129,7 @@ In the `.conf` folder the following files are expected:
 
 > ⚠️ The "private" and public keys used on Torizon IDE Extension projects are only for debug purposes!
 
-#### Dot Doc Folder
+### Dot Doc Folder
 
 In the `.doc` folder is present the documentation specific of each template.
 
@@ -139,6 +139,20 @@ This documentation should give some explanation of how the code is being built a
 
 The media (images, videos, GIFs and so on) of the template documentation should be stored on the [toradex/vscode-torizon-templates-documentation](https://github.com/toradex/vscode-torizon-templates-documentation/]) GitHub repository
 
+### Root Folder
+
+In the `.` (root) folder, there are two files that must be edited when a template is created:
+
+- [README.md](./README.md): you must add the template to the list of Partner or Community templates.
+- [templates.json](./templates.json): you must add a template entry to this file. When a new project is created, the IDE uses this file to list the template for the users.
+
+## Testing a New Template
+
+To test a new template, you must instruct the Torizon IDE Extension to use your repository. Export the following environment variables and open VS Code from a terminal:
+
+- `TEST_TEMPLATES_GIT_REPO`: path to your local repository or Git URL to your remote repository.
+- `TEST_TEMPLATES_GIT_REPO_BRANCH`: Git branch where the template to be tested is being developed. The tip of the branch will be fetched.
+- `TEST_TEMPLATES_GIT_TAG`: this tag is reserved for the IDE usage. For testing, set the value to be the same as `TEST_TEMPLATES_GIT_REPO_BRANCH`.
 
 ## Creating a Pull Request
 
