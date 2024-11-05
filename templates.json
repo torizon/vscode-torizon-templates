@@ -417,6 +417,28 @@
             }
         },
         {
+            "img": "gtk3.png",
+            "folder": "cmakeGTK3",
+            "description": "C++ CMake GTK 3 Application",
+            "runtime": "GTK 3",
+            "language": "C++",
+            "debugSSHPort": "2230",
+            "multiContainer": true,
+            "support": "Community",
+            "deprecated": false,
+            "tests" : {
+                "debuggers": {
+                    "local": ["Local AMD64"],
+                    "arm": ["Torizon ARMv7"],
+                    "arm64": ["Torizon ARMv8"]
+                },
+                "debuggerConsole": "cppdbg",
+                "mainFile": "src/main.cpp",
+                "mainFileBreakpointLine": 42,
+                "successDebugMessage": "Hello Torizon!"
+            }
+        },
+        {
             "img": "tcb.png",
             "folder": "tcb",
             "description": "TorizonCore Builder Project",
