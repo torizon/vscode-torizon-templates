@@ -1,0 +1,89 @@
+version: "3.9"
+services:
+  __container__-debug:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
+    ports:
+      # SSH debug
+      - ${DEBUG_SSH_PORT}:${DEBUG_SSH_PORT}
+      # gdbserver
+      - ${DEBUG_PORT1}:${DEBUG_PORT1}
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+      - type: bind
+        source: /dev
+        target: /dev
+    device_cgroup_rules:
+      # ... for tty
+      - "c 4:* rmw"
+      # to allow the use of DMA heap
+      - "c 253:* rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      - "c 199:* rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"
+    depends_on: [
+      weston
+    ]
+
+  __container__:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_LOGIN}/__container__:${TAG}
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+      - type: bind
+        source: /dev
+        target: /dev
+    device_cgroup_rules:
+      # ... for tty
+      - "c 4:* rmw"
+      # to allow the use of DMA heap
+      - "c 253:* rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      - "c 199:* rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"
+    depends_on: [
+      weston
+    ]
+
+  weston:
+    image: torizon/weston${GPU}:4
+    environment:
+      - ACCEPT_FSL_EULA=1
+    # Required to get udev events from host udevd via netlink
+    network_mode: host
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /tmp
+      - type: bind
+        source: /dev
+        target: /dev
+      - type: bind
+        source: /run/udev
+        target: /run/udev
+    cap_add:
+      - CAP_SYS_TTY_CONFIG
+    # Add device access rights through cgroup...
+    device_cgroup_rules:
+      # ... for tty
+      - "c 4:* rmw"
+      # to allow the use of DMA heap
+      - "c 253:* rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      - "c 199:* rmw"
+      - "c 10:223 rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"

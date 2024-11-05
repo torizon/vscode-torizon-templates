@@ -1,0 +1,11 @@
+{
+    "packages": [
+        "openssh-client",
+        "sshpass",
+        "build-essential",
+        "cmake",
+        "gdb",
+        "g++",
+        "libgtk-4-dev"
+    ]
+}
