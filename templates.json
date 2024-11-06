@@ -231,7 +231,6 @@
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
-                    "riscv": ["Torizon riscv64"],
                     "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
@@ -277,7 +276,6 @@
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
-                    "riscv": ["Torizon riscv64"],
                     "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
