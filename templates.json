@@ -107,102 +107,6 @@
             }
         },
         {
-            "img": "unogtk5.png",
-            "folder": "dotnetUno5",
-            "description": ".NET 8 C# Uno Platform 5.x Skia.GTK",
-            "runtime": ".net 8.0",
-            "language": "C#",
-            "debugSSHPort": "2225",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Local Debug"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "__change__/App.cs",
-                "mainFileBreakpointLine": 66,
-                "successDebugMessage": "Hello Torizon!"
-            }
-        },
-        {
-            "img": "unofbdrm5.png",
-            "folder": "dotnetUno5FrameBuffer",
-            "description": ".NET 8 C# Uno Platform 5 Frame Buffer",
-            "runtime": ".net 8.0",
-            "language": "C#",
-            "debugSSHPort": "2226",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "arm64": ["Torizon ARMv8"],
-                    "arm": ["Torizon ARMv7"]
-                },
-                "debuggerConsole": "run-torizon",
-                "mainFile": "__change__/App.cs",
-                "mainFileBreakpointLine": 50,
-                "successDebugMessage": "Hello Torizon!"
-            }
-        },
-        {
-            "img": "monowinforms.png",
-            "folder": "monoCsharpForms",
-            "description": "Mono 4.7 C# Windows Forms Application",
-            "runtime": ".NET 4.7",
-            "language": "C#",
-            "debugPort": "55555",
-            "debugSSHPort": "2227",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Mono Local"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "Form1.cs",
-                "mainFileBreakpointLine": 23,
-                "successDebugMessage": ""
-            }
-        },
-        {
-            "img": "electronjs.png",
-            "folder": "nodeElectron",
-            "description": "Node.js JavaScript Electron Application",
-            "runtime": "Node.js",
-            "language": "JavaScript",
-            "debugPort": "9229",
-            "debugPort2": "9223",
-            "debugSSHPort": "2228",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Debug Main Process"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "main.js",
-                "mainFileBreakpointLine": 33,
-                "successDebugMessage": ""
-            }
-        },
-        {
             "img": "nodejsts.png",
             "folder": "nodeJSTypeScript",
             "description": "Node.js TypeScript Application",
@@ -274,30 +178,6 @@
             }
         },
         {
-            "img": "cconsole.png",
-            "folder": "cConsole",
-            "description": "C Console Application",
-            "runtime": "libc",
-            "language": "C",
-            "debugSSHPort": "2230",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.c",
-                "mainFileBreakpointLine": 5,
-                "successDebugMessage": "Hello Torizon!"
-            }
-        },
-        {
             "img": "qt6qml.png",
             "folder": "cppQML",
             "description": "C++ Qt 6 QML Application",
@@ -324,65 +204,6 @@
             }
         },
         {
-            "img": "jframe.png",
-            "folder": "javaForms",
-            "description": "Java Swing JFrame Application",
-            "runtime": "JRE",
-            "language": "Java",
-            "debugPort": "2235",
-            "debugSSHPort": "2234",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Run Local"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "src/__change__/Form1.java",
-                "mainFileBreakpointLine": 80,
-                "successDebugMessage": ""
-            }
-        },
-        {
-            "img": "rust-console.png",
-            "folder": "rustConsole",
-            "description": "Rust Console Application",
-            "runtime": "libc",
-            "language": "Rust",
-            "debugSSHPort": "2299",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.rs",
-                "mainFileBreakpointLine": 2,
-                "successDebugMessage": "Hello Torizon!"
-            }
-        },
-        {
-            "img": "gambasform.png",
-            "folder": "gambasForms",
-            "description": "Gambas3 Form Project",
-            "runtime": "gambas3",
-            "language": "Visual Basic",
-            "debugSSHPort": "2250",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": ""
-        },
-        {
             "img": "python3console.png",
             "folder": "python3Console",
             "description": "Python 3 Console Application",
@@ -403,30 +224,6 @@
                 "debuggerConsole": "Python Debug Console",
                 "mainFile": "src/main.py",
                 "mainFileBreakpointLine": 4,
-                "successDebugMessage": "Hello Torizon!"
-            }
-        },
-        {
-            "img": "python3pyside2.png",
-            "folder": "python3Pyside2QML",
-            "description": "Python 3 Pyside 2(Qt 5) QML Application",
-            "runtime": "Pyside 2",
-            "language": "Python 3",
-            "debugPort": "6512",
-            "debugSSHPort": "6502",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Python Local"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": "Python Debug Console",
-                "mainFile": "src/main.py",
-                "mainFileBreakpointLine": 12,
                 "successDebugMessage": "Hello Torizon!"
             }
         },
@@ -455,8 +252,8 @@
             "debugSSHPort": "2231",
             "multiContainer": true,
             "support": "Partner",
-            "status": "ok",
-            "customMessage": "",
+            "status": "incomplete",
+            "customMessage": "Slint 1.8 not working properly with some GPU on Torizon OS 7",
             "tests": {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -481,8 +278,8 @@
             "debugSSHPort": "2231",
             "multiContainer": true,
             "support": "Partner",
-            "status": "ok",
-            "customMessage": "",
+            "status": "incomplete",
+            "customMessage": "Slint 1.8 not working properly with some GPU on Torizon OS 7",
             "tests": {
                 "debuggers": {
                     "local": ["Debug executable "],
@@ -517,30 +314,6 @@
                 "mainFile": "src/main.zig",
                 "mainFileBreakpointLine": 9,
                 "successDebugMessage": "info(toradex): Hello Torizon!"
-            }
-        },
-        {
-            "img": "dotnetslint.png",
-            "folder": "dotnetSlint",
-            "description": ".NET Slint Application",
-            "runtime": ".net 8.0 / Slint 1.7",
-            "language": "C#",
-            "debugSSHPort": "2222",
-            "multiContainer": true,
-            "support": "Community",
-            "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": [".NET Slint Local"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon ARMv7"],
-                    "arm64": ["Torizon ARMv8"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "Program.cs",
-                "mainFileBreakpointLine": 9,
-                "successDebugMessage": "Hello Torizon!"
             }
         }
     ]
