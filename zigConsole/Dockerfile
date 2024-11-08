@@ -2,8 +2,8 @@
 ##
 # Base container version
 ##
-ARG SDK_BASE_VERSION=4.0.0
-ARG BASE_VERSION=4.0.0
+ARG SDK_BASE_VERSION=4.2.0
+ARG BASE_VERSION=4.2.0
 
 ##
 # Board architecture
@@ -22,7 +22,7 @@ FROM torizon/cross-toolchain-${IMAGE_ARCH}:${SDK_BASE_VERSION} AS build
 ARG IMAGE_ARCH
 ARG COMPILER_ARCH
 ARG APP_ROOT
-ENV ZIG_PATH /zig/0.11.0/files
+ENV ZIG_PATH /zig/0.13.0/files
 
 # __deps__
 RUN apt-get -q -y update && \
@@ -37,22 +37,22 @@ RUN apt-get -q -y update && \
     rm -rf /var/lib/apt/lists/*
 # __deps__
 
-# Install Zig 0.11.0 (uses LLVM-16.0.6)
+# Install Zig 0.13.0 (uses LLVM-18.1.6)
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-aarch64.zip && \
         unzip zigup.ubuntu-latest-aarch64.zip -d /usr/bin && \
         chmod +x /usr/bin/zigup && \
-        zigup --install-dir /zig 0.11.0 ; \
-    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        zigup --install-dir /zig 0.13.0 ; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
         wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-armv7a.zip && \
         unzip zigup.ubuntu-latest-armv7a.zip -d /usr/bin && \
         chmod +x /usr/bin/zigup && \
-        zigup --install-dir /zig 0.11.0 ; \
+        zigup --install-dir /zig 0.13.0 ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-x86_64.zip && \
         unzip zigup.ubuntu-latest-x86_64.zip -d /usr/bin && \
         chmod +x /usr/bin/zigup && \
-        zigup --install-dir /zig 0.11.0; \
+        zigup --install-dir /zig 0.13.0; \
     fi
 
 RUN chmod +x ${ZIG_PATH}/zig
