@@ -1,5 +1,4 @@
-# C++ Console Template Specific Documentation
-
+# C/C++ Console Template Specific Documentation
 
 > ⚠️ **WARNING:**  This is just the documentation part specific of this template. **For the complete and general Torizon IDE documentation, check the [developer website documentation](https://developer.toradex.com/torizon/application-development/ide-extension/)** ⚠️
 
@@ -21,3 +20,46 @@ If the project is stuck when trying to debug it, check if the pop-up message bel
 
   ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/bookworm/cppConsole/dryRunPopUp.png)
 
+
+## Addapting this template to use GCC instead of G++
+
+You can easily addapt this template to use GCC instead of G++, by changing it to `gcc` in the following places:
+
+- `CC` on `Makefile`. From:
+  ```
+  CC := g++
+  ```
+  To:
+  ```
+  CC := gcc
+  ```
+
+- `CC` of `build-debug-<arch>` tasks on `.vscode/tasks.json`. From:
+  ```
+  "CC=<compiler-arch>-g++",
+  ```
+  To:
+  ```
+  "CC=<compiler-arch>-gcc",
+  ```
+
+- `make` command of `Dockerfile`. From:
+  ```
+  RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        make ARCH=${IMAGE_ARCH} CC=aarch64-linux-gnu-g++ ; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        make ARCH=${IMAGE_ARCH} CC=arm-linux-gnueabihf-g++ ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        make ARCH=${IMAGE_ARCH} CC=x86_64-linux-gnu-g++ ; \
+    fi
+  ```
+  To:
+  ```
+  RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        make ARCH=${IMAGE_ARCH} CC=aarch64-linux-gnu-gcc ; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        make ARCH=${IMAGE_ARCH} CC=arm-linux-gnueabihf-gcc ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        make ARCH=${IMAGE_ARCH} CC=x86_64-linux-gnu-gcc ; \
+    fi
+  ```

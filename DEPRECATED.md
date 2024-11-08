@@ -12,10 +12,13 @@
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/gambasform.png?raw=true) | Gambas3 Form Project | Gambas3 | Visual Basic | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [gambasForms](./gambasForms) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/rust-console.png?raw=true) | Rust Console Application | libc | Rust | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [rustConsole](./rustConsole) | ![](https://avatars.githubusercontent.com/u/19845403?v=4&s=64) [@skkywalker](https://www.github.com/skkywalker) |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/python3console.png?raw=true) | Python 3 Pyside 2(Qt5) QML | Pyside 2 | Python 3 | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [python3Pyside2QML](./python3Pyside2QML) | ![](https://github.com/toradex/vscode-torizon-templates-documentation/blob/main/thumbnails/none.png?raw=true) [@andreriesco](https://www.github.com/andreriesco) |
+| ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/cconsole.png?raw=true) | C Makefile Console Application | libc | C | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) ![](assets/img/riscv64.png?raw=true&id=2) ![](assets/img/x8664.png?raw=true&id=2) | [cConsole](./cConsole) | ![](https://avatars.githubusercontent.com/u/19562097?v=4&s=64) [@hiagofranco](https://www.github.com/hiagofranco) |
 
 This templates were deprecated due to the fact that their respective maintainer does not have the intention to keep maintaining them on Torizon OS 7. As they were Community Supported Templates, their maintenance is responsability of their respective maintainer. If you use any of this templates and have interest on becoming it's maintainer, please feel free to do so by [opening an issue here on the repository](https://github.com/torizon/vscode-torizon-templates/issues), contributions are welcome and we will help you out with this.
 
 Python 3 Pyside 2(Qt5) QML template is an exception, since it will be replaced by a PySide6 (Qt6) template in the future.
+
+Also, C Console template is not needed, as the C/C++ Console template can also be used with C (information explaining how to use GCC instead of G++ was added to to the `.doc/README.md` of the C/C++ Console template).
 
 ## Already deprecated on Torizon OS 6
 
