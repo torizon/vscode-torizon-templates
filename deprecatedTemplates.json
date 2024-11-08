@@ -1,0 +1,28 @@
+{
+    "DeprecatedTemplates": [
+        {
+            "img": "unogtk.png",
+            "folder": "dotnetUno",
+            "description": ".NET 6 C# Uno Platform Skia.GTK",
+            "runtime": ".net 6.0",
+            "language": "C#",
+            "debugSSHPort": "2225",
+            "multiContainer": true,
+            "support": "Toradex",
+            "status": "deprecated",
+            "customMessage": "Deprecated due to the EOL of .NET 6.0"
+        },
+        {
+            "img": "unofbdrm.png",
+            "folder": "dotnetUnoFrameBuffer",
+            "description": ".NET 6 C# Uno Platform Frame Buffer",
+            "runtime": ".net 6.0",
+            "language": "C#",
+            "debugSSHPort": "2226",
+            "multiContainer": true,
+            "support": "Community",
+            "status": "deprecated",
+            "customMessage": "Deprecated due to the EOL of .NET 6.0"
+        }
+    ]
+}

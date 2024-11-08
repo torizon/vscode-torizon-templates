@@ -111,11 +111,38 @@ if (-not (Test-Path $projectFolder/.conf/tmp)) {
     mkdir $projectFolder/.conf/tmp
 }
 
-# get the metadata
+# get the metadata of deprecatedTemplates.json
+$_deprecatedMetadata = Get-Content "$Env:HOME/.apollox/deprecatedTemplates.json" | ConvertFrom-Json
+$_deprecatedTemplateMetadata =
+    $_deprecatedMetadata.DeprecatedTemplates |
+        Where-Object { $_.folder -eq $templateName }
+
+# If the template is deprecated or broken, it cannot be updated. If it is incomplete the user should be made aware of the problem and choose to proceed or not.
+if ($null -ne $_deprecatedTemplateMetadata) {
+    Write-Host -ForegroundColor DarkRed "This template is deprecated in the most recent version of the Torizon IDE Extension. For details, check https://github.com/torizon/vscode-torizon-templates/blob/dev/DEPRECATED.md"
+    exit 69
+}
+
+# get the metadata of templates.json
 $_metadata = Get-Content "$Env:HOME/.apollox/templates.json" | ConvertFrom-Json
 $_templateMetadata =
     $_metadata.Templates |
         Where-Object { $_.folder -eq $templateName }
+
+if ($_templateMetadata.status -eq "notok") {
+    Write-Host -ForegroundColor DarkRed "This template is broken in the most recent version of the Torizon IDE Extension. Reason:"
+    Write-Host -ForegroundColor DarkRed $_templateMetadata.customMessage
+    exit 69
+
+} elseif ($_templateMetadata.status -eq "incomplete") {
+    Write-Host -ForegroundColor DarkRed "This template is incomplete in the most recent version of the Torizon IDE Extension. Reason:"
+    Write-Host -ForegroundColor DarkRed $_templateMetadata.customMessage
+    $_sure = Read-Host -Prompt "Are you sure you want to proceed with the update? [y/n]"
+
+    if ($_sure.ToLower() -ne "y") {
+        exit 0
+    }
+}
 
 # ----------------------------------------------------------- ALWAYS ACCEPT NEW
 # UPDATE.JSON:

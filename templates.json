@@ -8,7 +8,8 @@
             "language": "None",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false
+            "status": "ok",
+            "customMessage": ""
         },
         {
             "img": "dotnetconsole.png",
@@ -19,7 +20,8 @@
             "debugSSHPort": "2222",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
@@ -41,7 +43,8 @@
             "debugSSHPort": "2222",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
@@ -64,7 +67,8 @@
             "debugSSHPort": "2223",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
@@ -87,7 +91,8 @@
             "debugSSHPort": "2224",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "amd64": ["Torizon AMD64"],
@@ -109,7 +114,8 @@
             "debugSSHPort": "2225",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
@@ -131,7 +137,8 @@
             "debugSSHPort": "2226",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "arm64": ["Torizon ARMv8"],
@@ -153,7 +160,8 @@
             "debugSSHPort": "2227",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Mono Local"],
@@ -178,7 +186,8 @@
             "debugSSHPort": "2228",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Debug Main Process"],
@@ -202,7 +211,8 @@
             "debugSSHPort": "2229",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Node Local"],
@@ -225,7 +235,8 @@
             "debugSSHPort": "2230",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -247,7 +258,8 @@
             "debugSSHPort": "2230",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -269,7 +281,8 @@
             "debugSSHPort": "2230",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -294,7 +307,8 @@
             "debugSSHPort": "2231",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -318,7 +332,8 @@
             "debugSSHPort": "2234",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Run Local"],
@@ -340,7 +355,8 @@
             "debugSSHPort": "2299",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -362,7 +378,8 @@
             "debugSSHPort": "2250",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false
+            "status": "ok",
+            "customMessage": ""
         },
         {
             "img": "python3console.png",
@@ -374,7 +391,8 @@
             "debugSSHPort": "6502",
             "multiContainer": true,
             "support": "Toradex",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Python Local"],
@@ -397,7 +415,8 @@
             "debugSSHPort": "6502",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Python Local"],
@@ -421,20 +440,22 @@
             "multiContainer": false,
             "mergeCommon": false,
             "support": "Toradex",
-            "deprecated": false
+            "status": "ok",
+            "customMessage": ""
         },
         {
             "img": "slint-cpp.png",
             "folder": "cppSlint",
             "description": "C++ Slint Application",
-            "runtime": "Slint 1.0",
+            "runtime": "Slint 1.x",
             "language": "C++",
             "debugPort": "2232",
             "debugPort2": "2233",
             "debugSSHPort": "2231",
             "multiContainer": true,
             "support": "Partner",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -452,14 +473,15 @@
             "img": "slint-rust.png",
             "folder": "rustSlint",
             "description": "Rust Slint Application",
-            "runtime": "Slint 1.0",
+            "runtime": "Slint 1.x",
             "language": "Rust",
             "debugPort": "2232",
             "debugPort2": "2233",
             "debugSSHPort": "2231",
             "multiContainer": true,
             "support": "Partner",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": ["Debug executable "],
@@ -482,7 +504,8 @@
             "debugSSHPort": "2320",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -504,7 +527,8 @@
             "debugSSHPort": "2222",
             "multiContainer": true,
             "support": "Community",
-            "deprecated": false,
+            "status": "ok",
+            "customMessage": "",
             "tests": {
                 "debuggers": {
                     "local": [".NET Slint Local"],

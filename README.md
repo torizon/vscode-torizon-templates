@@ -54,6 +54,20 @@ We encourage you to also contribute templates. The community supported templates
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/unogtk5.png?raw=true) | .NET 8 C# Uno 5 Platform Skia.GTK | .NET 8.0 | C# | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [dotnetUno5](./dotnetUno5) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/unofbdrm5.png?raw=true) | .NET 8 C# Uno 5 Platform Frame Buffer | .NET 8.0 | C# | ![](assets/img/arm32.png?raw=true&id=2) ![](assets/img/arm64.png?raw=true&id=2) | [dotnetUno5FrameBuffer](./dotnetUno5FrameBuffer) | ![](https://avatars.githubusercontent.com/u/2633321?v=4&s=64) [@microhobby](https://www.github.com/microhobby) |
 
+## Templates Status
+
+It's possible to check the current status of a template at the [templates.json](./templates.json) file, in the status property of the respective template.
+There, the status can be:
+
+- `ok`: Which means the template is ready to be used on any of SoM, without any major known issues (but not necessarily tested on every SoM). There may still be some minor issue on the template, which can be found in the [issues part of the repository](https://github.com/torizon/vscode-torizon-templates/issues).
+
+- `incomplete`: Which means that the template may have a known issue that affects it's usability for some SoMs. A summarized description of the issue can be found in the `customMessage` property of the template, but also a more detailed description will be at the [issues part of the repository](https://github.com/torizon/vscode-torizon-templates/issues).
+
+- `notok`:  Which means that the template may have an issue that affects it's usability for most or all SoMs, and therefore should not be used or updated to yet. A summarized description of the issue can be found in the `customMessage` property of the template, but also a more detailed description will be at the [issues part of the repository](https://github.com/torizon/vscode-torizon-templates/issues).
+
+Also, the template can be deprecated. In this case, it will be at the [deprecatedTemplates.json](./deprecatedTemplates.json) file, and it's status will be `deprecated`.
+
+
 # List of Deprecated templates
 
 | TEMPLATE | DESCRIPTION | RUNTIME | LANGUAGE | HW ARCH | FOLDER | CONTRIBUTOR |
