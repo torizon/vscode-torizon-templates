@@ -22,9 +22,9 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-    depends_on:
-      xfce:
-        condition: service_healthy
+    depends_on: [
+      weston
+    ]
 
   __container__:
     build:
@@ -46,12 +46,12 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-    depends_on:
-      xfce:
-        condition: service_healthy
+    depends_on: [
+      weston
+    ]
 
-  xfce:
-    image: commontorizon/xfce:4.0.0
+  weston:
+    image: torizon/weston${GPU}:4.2.0
     # Required to get udev events from host udevd via netlink
     network_mode: host
     privileged: true
@@ -79,5 +79,3 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-      # ... for /dev/fb0
-      - "c 29:* rmw"
