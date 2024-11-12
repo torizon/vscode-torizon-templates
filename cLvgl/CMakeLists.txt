@@ -1,32 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
-project(cmakecheck)
+project(lvgl_example C)
 
-set(CMAKE_C_STANDARD 99) #C99 # lvgl officially support C99 and above
-set(CMAKE_CXX_STANDARD 17) #C17
+# Uncomment if the program needs debugging
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -ggdb")
+
+set(CMAKE_C_STANDARD 99) # LVGL officially supports C99 and above
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+add_subdirectory(lib/lvgl)
 
-add_subdirectory(lvgl)
-add_executable(cmakecheck src/main.c mouse_cursor_icon.c)
+target_include_directories(lvgl PUBLIC lib/ src/)
 
-target_include_directories(lvgl PUBLIC ${PROJECT_SOURCE_DIR})
-target_include_directories(lvgl PRIVATE ${SDL2_INCLUDE_DIRS})
-target_include_directories(lvgl PRIVATE ${SDL2_IMAGE_INCLUDE_DIRS})
-target_include_directories(lvgl PRIVATE ${LIBDRM_INCLUDE_DIRS})
+add_executable(main src/main.c)
+target_link_libraries(main lvgl lvgl::examples lvgl::demos lvgl::thorvg m)
 
-target_link_libraries(cmakecheck PRIVATE lvgl) # Add '-static' if you want a standalone binary
-target_link_libraries(cmakecheck PRIVATE lvgl::examples)
-target_link_libraries(cmakecheck PRIVATE lvgl::demos)
-target_link_libraries(cmakecheck PRIVATE lvgl::thorvg)
-target_link_libraries(cmakecheck PRIVATE m)
-target_link_libraries(cmakecheck PRIVATE pthread)
+add_custom_target (run COMMAND ${EXECUTABLE_OUTPUT_PATH}/main DEPENDS main)
 
 
-set(CMAKE_SYSTEM_NAME Linux)
-
-set_target_properties(cmakecheck PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "bin"
-    ARCHIVE_OUTPUT_DIRECTORY "lib"
-    LIBRARY_OUTPUT_DIRECTORY "lib"
-)

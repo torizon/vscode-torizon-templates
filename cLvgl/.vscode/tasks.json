@@ -2,6 +2,40 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "get-lvgl-lib",
+            "hide": true,
+            "command": "git",
+            "type": "shell",
+            "args": [
+                "-C",
+                "${workspaceFolder}/lib/lvgl",
+                "pull",
+                "||",
+                "git",
+                "clone",
+                "--depth",
+                "1",
+                "-b",
+                "release/v9.2",
+                "https://github.com/lvgl/lvgl",
+                "${workspaceFolder}/lib/lvgl"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
             "label": "build-configure-local",
             "hide": true,
             "command": "cmake",
@@ -48,6 +82,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
+                "get-lvgl-lib",
                 "build-container-image-sdk-arm"
             ],
             "icon": {
@@ -85,6 +120,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
+                "get-lvgl-lib",
                 "build-container-image-sdk-arm64"
             ],
             "icon": {
@@ -398,6 +434,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
+                "get-lvgl-lib",
                 "build-container-image-sdk-amd64"
             ],
             "icon": {

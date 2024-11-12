@@ -523,6 +523,28 @@
                 "mainFileBreakpointLine": 9,
                 "successDebugMessage": "Hello Torizon!"
             }
+        },
+        {
+            "img": "lvgl.png",
+            "folder": "cLvgl",
+            "description": "C LVGL Application",
+            "runtime": "cmake",
+            "language": "C",
+            "debugSSHPort": "2230",
+            "multiContainer": true,
+            "support": "Partner",
+            "deprecated": false,
+            "tests" : {
+                "debuggers": {
+                    "local": ["Local AMD64"],
+                    "arm": ["Torizon ARMv7"],
+                    "arm64": ["Torizon ARMv8"]
+                },
+                "debuggerConsole": "cppdbg",
+                "mainFile": "src/main.c",
+                "mainFileBreakpointLine": 4,
+                "successDebugMessage": "Hello Torizon!"
+            }
         }
     ]
 }
