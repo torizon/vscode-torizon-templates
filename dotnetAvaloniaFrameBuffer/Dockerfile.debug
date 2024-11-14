@@ -4,13 +4,15 @@
 ##
 ARG IMAGE_ARCH=
 
-
+##
+# vsdebugger container base version
+##
+ARG DEBUGGER_BASE_VERSION=4.2.0
 
 ##
 # Base container version
 ##
-ARG BASE_VERSION=4.0.0
-ARG DOTNET_BASE_VERSION=4.0.0
+ARG BASE_VERSION=4.2.0
 
 ##
 # Directory of the application inside container
@@ -32,17 +34,17 @@ ARG SSHUSERNAME=
 ##
 ARG GPU=
 
-# DOTNET -----------------------------------------------------------------------
-FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/dotnet-debug:${DOTNET_BASE_VERSION} AS dotnet
-
-
 # BUILD ------------------------------------------------------------------------
 ##
-# Deploy Step .NET Uno
+# Get vsdebugger
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/wayland-base${GPU}:${BASE_VERSION} AS debug
+    torizon/dotnet8-debug:${DEBUGGER_BASE_VERSION} AS debugger
+##
+# Deploy Step .NET
+##
+FROM --platform=linux/${IMAGE_ARCH} \
+    torizon/dotnet8-gtk3${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -50,20 +52,14 @@ ARG DEBUG_SSH_PORT
 ARG APP_ROOT
 ARG SSHUSERNAME
 
-ENV DOTNET_ROOT=/dotnet
-ENV PATH=$PATH:/dotnet
-
-COPY --from=Dotnet /vsdbg /vsdbg
-COPY --from=Dotnet /dotnet /dotnet
+# Copy vsdebugger
+COPY --from=debugger /vsdbg /vsdbg
 
 # SSH for remote debug
 EXPOSE ${DEBUG_SSH_PORT}
 
 # Make sure we don't get notifications we can't answer during building.
 ENV DEBIAN_FRONTEND="noninteractive"
-
-# stick to bookworm on /etc/apt/sources.list.d
-RUN sed -i 's/sid/bookworm/g' /etc/apt/sources.list.d/debian.sources
 
 # for vivante GPU we need some "special" sauce
 RUN apt-get -q -y update && \
@@ -88,21 +84,9 @@ RUN apt-get -q -y update && \
     file \
     libice6 \
     libsm6 \
-    libicu72 \
-    curl \
-    gettext \
-    apt-transport-https \
-    apt-utils \
-    libx11-6 \
-	libunwind-13 \
-    icu-devtools \
-	libfontconfig1 \
-	libgtk-3-0 \
-    libgtk-3-bin \
-    libgtk-3-common \
-	libdrm2 \
+    libx11-dev \
+    libdrm2 \
 	libinput10 \
-    libssl3 \
     && apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
 
@@ -116,6 +100,10 @@ RUN apt-get -q -y update && \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+# FIXME: change this depending on your hardware
+# ENV AVALONIA_DRM=true
+ENV AVALONIA_FB=true
 
 # ⚠️ DEBUG PURPOSES ONLY!!
 # THIS CONFIGURES AN INSECURE SSH CONNECTION
@@ -138,11 +126,5 @@ RUN mkdir /var/run/sshd && \
 
 RUN rm -r /etc/ssh/ssh*key && \
     dpkg-reconfigure openssh-server
-
-# Copy the compiled application to the $APP_ROOT directory path inside the
-# container, where $APP_ROOT is the torizon_app_root configuration defined
-# in settings.json.
-COPY ./bin/Debug/net8.0/linux-${IMAGE_ARCH}/publish ${APP_ROOT}
-
 
 CMD [ "/usr/sbin/sshd", "-D" ]
