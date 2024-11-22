@@ -211,9 +211,19 @@ if (-not (Test-Path "$location/.gitlab-ci.yml")) {
     Copy-Item "$templateFolder/../assets/gitlab/.gitlab-ci.yml" "$location/.gitlab-ci.yml"
 }
 
-# create a dot file to store the template that was used
-Write-Output "$template" | Out-File -FilePath "$location/.conf/.template"
-Write-Output "$containerName" | Out-File -FilePath "$location/.conf/.container"
+# create a metadata.json to store the name of the template, the name of the container, and the base Torizon OS Version
+$_metadataJson = New-Object PSObject
+
+$_metadataJson | Add-Member -MemberType NoteProperty -Name "templateName" -Value $template
+$_metadataJson | Add-Member -MemberType NoteProperty -Name "containerName" -Value $containerName
+
+$_templatesJson = Get-Content "$templateFolder/templates.json" | ConvertFrom-Json
+$_torizonOSMajor = $_templatesJson.TorizonOSMajor
+$_metadataJson | Add-Member -MemberType NoteProperty -Name "torizonOSMajor" -Value $_torizonOSMajor
+
+
+# Save the modified JSON object to a file
+Set-Content -Path "$location/.conf/metadata.json" -Value ($_metadataJson | ConvertTo-Json) -Encoding UTF8
 
 Write-Host -ForegroundColor DarkGreen "✅ Scripts copy done"
 
