@@ -78,9 +78,9 @@ Write-Host "Project Name ->       $projectName"
 Write-Host "Container Name ->     $containerName"
 
 # get the metadata
-$_metadata = Get-Content "$templateFolder/../templates.json" | ConvertFrom-Json
+$_templatesJson = Get-Content "$templateFolder/../templates.json" | ConvertFrom-Json
 $_templateMetadata =
-    $_metadata.Templates |
+    $_templatesJson.Templates |
         Where-Object { $_.folder -eq $template }
 
 # send telemetry
@@ -216,8 +216,6 @@ $_metadataJson = New-Object PSObject
 
 $_metadataJson | Add-Member -MemberType NoteProperty -Name "templateName" -Value $template
 $_metadataJson | Add-Member -MemberType NoteProperty -Name "containerName" -Value $containerName
-
-$_templatesJson = Get-Content "$templateFolder/templates.json" | ConvertFrom-Json
 $_torizonOSMajor = $_templatesJson.TorizonOSMajor
 $_metadataJson | Add-Member -MemberType NoteProperty -Name "torizonOSMajor" -Value $_torizonOSMajor
 
