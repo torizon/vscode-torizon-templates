@@ -4,6 +4,8 @@
             "name": "__change__",
             "includePath": [
                 "${workspaceFolder}/includes/**",
+                "${workspaceFolder}/lib/**",
+                "${workspaceFolder}/src/**",
                 "/usr/include/**"
             ],
             "intelliSenseMode": "linux-gcc-x64",

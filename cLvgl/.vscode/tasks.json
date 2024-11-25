@@ -3,6 +3,9 @@
     "tasks": [
         {
             "label": "get-lvgl-lib",
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
             "hide": true,
             "command": "git",
             "type": "shell",
