@@ -2,11 +2,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Use release task message",
+            "name": "Torizon ARMv8",
             "request": "launch",
             "type": "node-terminal",
             "command": "exit",
-            "postDebugTask": "use-release-task-message"
+            "postDebugTask": "using-release-task-message",
+            "preLaunchTask": "run-container-torizon-release-arm64"
+        },
+        {
+            "name": "Torizon ARMv7",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "exit",
+            "postDebugTask": "using-release-task-message",
+            "preLaunchTask": "run-container-torizon-release-arm"
+        },
+        {
+            "name": "Torizon AMD64",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "exit",
+            "postDebugTask": "using-release-task-message",
+            "preLaunchTask": "run-container-torizon-release-amd64"
         }
     ]
 }
