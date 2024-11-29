@@ -185,7 +185,7 @@
                 "-ContainerRuntime",
                 "docker",
                 "-RunArguments",
-                "\"--rm --privileged commontorizon/binfmt:9.0.2\"",
+                "\"--rm --privileged torizon/binfmt:latest\"",
                 "-ContainerName",
                 "binfmt"
             ],
