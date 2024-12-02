@@ -50,9 +50,10 @@ if [ "$source" != "https://packages.microsoft.com/$repo/$repo_version/prod" ]; t
     rm packages-microsoft-prod.deb
 
     # Remove the dotnet-sdk installation that doesn't come from the Microsoft source
+    set +e
     sudo apt-get remove --purge $package -y
-
     sudo apt-get autoremove -y
+    set -e
 
     # Enforce the preference for the dotnet and aspnet packages comming from the Microsoft source
     if [ ! -f /etc/apt/preferences ] || ! grep -q "Package: dotnet\* aspnet\* netstandard\*" /etc/apt/preferences
