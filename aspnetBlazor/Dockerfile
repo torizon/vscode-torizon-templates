@@ -28,7 +28,18 @@ WORKDIR ${APP_ROOT}
 
 # build
 RUN dotnet restore __change__.csproj && \
-dotnet publish __change__.csproj -c Release -r linux-${IMAGE_ARCH} --no-self-contained
+    if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        export ARCH=${IMAGE_ARCH} ; \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        export ARCH="arm" ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        export ARCH="x64" ; \
+    fi && \
+    dotnet publish __change__.csproj -c Release -r linux-${ARCH} --no-self-contained && \
+    if [ "${IMAGE_ARCH}" = "amd64" ]; then \
+        mv ./bin/Release/net8.0/linux-x64 ./bin/Release/net8.0/linux-amd64 ; \
+    fi
+
 # BUILD ------------------------------------------------------------------------
 
 

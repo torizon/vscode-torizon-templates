@@ -30,7 +30,7 @@ ARG APP_ROOT
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         echo aarch64-unknown-linux-gnu > /rust-toolchain-arch.txt; \
         echo arm64 > /cross-toolchain-arch.txt; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         echo armv7-unknown-linux-gnueabihf > /rust-toolchain-arch.txt; \
         echo armhf > /cross-toolchain-arch.txt; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
