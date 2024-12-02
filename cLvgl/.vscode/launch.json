@@ -2,31 +2,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Local AMD64",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build-local/bin/main",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description":  "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "build-debug-local"
-        },
-        {
             "name": "Torizon AMD64",
             "type": "cppdbg",
             "request": "launch",
