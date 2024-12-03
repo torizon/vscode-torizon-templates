@@ -40,9 +40,7 @@ RUN dotnet restore __change__.csproj && \
         export ARCH="x64" ; \
     fi && \
     dotnet publish __change__.csproj -c Release -r linux-${ARCH} --no-self-contained && \
-    if [ "${IMAGE_ARCH}" = "amd64" ]; then \
-        mv ./bin/Release/net8.0/linux-x64 ./bin/Release/net8.0/linux-amd64 ; \
-    fi
+    mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}
 
 # BUILD ------------------------------------------------------------------------
 
