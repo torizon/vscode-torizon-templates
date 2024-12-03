@@ -6,7 +6,7 @@ shopt -s expand_aliases
 # For DockerHub the variable can be empty, by tcb platform push command
 # requires a value, so passing the default DockerHub registry to it if it is
 # empty
-if [ $DOCKER_REGISTRY = "" ]; then
+if [ "$DOCKER_REGISTRY" = "" ]; then
     export DOCKER_REGISTRY="registry-1.docker.io"
 fi
 
