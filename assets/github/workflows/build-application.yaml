@@ -49,7 +49,7 @@ jobs:
           PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
           PLATFORM_CLIENT_SECRET: ${{ secrets.PLATFORM_CLIENT_SECRET }}
         run: |
-          ./vscode/tasks.ps1 run docker-login
+          ./.vscode/tasks.ps1 run docker-login
           ./.vscode/tasks.ps1 run run-torizon-binfmt
           ./.vscode/tasks.ps1 run tcb-platform-publish
 
