@@ -62,7 +62,9 @@ if ($null -eq $env:TORIZON_ARCH) {
     if ($TORIZON_ARCH -eq "aarch64") {
         $TORIZON_ARCH = "arm64"
     } elseif ($TORIZON_ARCH -eq "armv7l") {
-        $TORIZON_ARCH = "arm"
+        $TORIZON_ARCH = "armhf"
+    } elseif ($TORIZON_ARCH -eq "arm") {
+        $TORIZON_ARCH = "armhf"
     } elseif ($TORIZON_ARCH -eq "x86_64") {
         $TORIZON_ARCH = "amd64"
     } elseif ($TORIZON_ARCH -eq "riscv") {
