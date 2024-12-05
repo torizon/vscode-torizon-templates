@@ -62,9 +62,11 @@ if ($null -eq $env:TORIZON_ARCH) {
     if ($TORIZON_ARCH -eq "aarch64") {
         $TORIZON_ARCH = "arm64"
     } elseif ($TORIZON_ARCH -eq "armv7l") {
-        $TORIZON_ARCH = "armhf"
+        $TORIZON_ARCH = "arm"
     } elseif ($TORIZON_ARCH -eq "arm") {
-        $TORIZON_ARCH = "armhf"
+        $TORIZON_ARCH = "arm"
+    } elseif ($TORIZON_ARCH -eq "armhf") {
+        $TORIZON_ARCH = "arm"
     } elseif ($TORIZON_ARCH -eq "x86_64") {
         $TORIZON_ARCH = "amd64"
     } elseif ($TORIZON_ARCH -eq "riscv") {
@@ -74,10 +76,10 @@ if ($null -eq $env:TORIZON_ARCH) {
     $imageArch = $TORIZON_ARCH
 }
 
-if ($null -eq $env:APP_ROOT) {
+if (
+    [string]::IsNullOrEmpty($env:APP_ROOT)
+) {
     throw "❌ APP_ROOT not set"
-} else {
-    $appRoot = $env:APP_ROOT
 }
 
 if ($env:TASKS_ITERATIVE -eq $False) {
@@ -130,7 +132,7 @@ if ([string]::IsNullOrEmpty($tag)) {
     }
 
     if ([string]::IsNullOrEmpty($tag)) {
-        throw "❌ Docker image tag cannot be empty"
+        throw "❌ Docker image tag cannot be empty. Please run the fill-pipeline-settings task."
     }
 }
 
@@ -157,11 +159,9 @@ Set-Location $compoFilePath
 # rebuild and tag
 Write-Host "Rebuilding $env:DOCKER_LOGIN/${imageName}:$tag ..."
 
-docker compose build `
-    --build-arg APP_ROOT=$appRoot `
-    --build-arg IMAGE_ARCH=$imageArch `
-    --build-arg GPU=$gpu `
-    $imageName
+# run the build-container-torizon-release-<arch> but without override the env
+$env:TASKS_OVERRIDE_ENV = $false
+./.vscode/tasks.ps1 run "build-container-torizon-release-$imageArch"
 
 Set-Location -
 
