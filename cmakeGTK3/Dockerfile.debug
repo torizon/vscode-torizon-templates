@@ -22,6 +22,11 @@ ARG DEBUG_SSH_PORT=
 ARG SSHUSERNAME=
 
 ##
+# Board GPU vendor prefix
+##
+ARG GPU=
+
+##
 # Application root directory inside the container
 ##
 ARG APP_ROOT=
@@ -31,11 +36,12 @@ ARG APP_ROOT=
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/wayland-gtk3:${BASE_VERSION} AS debug
+    torizon/wayland-gtk3${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG DEBUG_SSH_PORT
 ARG SSHUSERNAME
+ARG GPU
 ARG APP_ROOT
 
 # SSH for remote debug
@@ -44,22 +50,8 @@ EXPOSE ${DEBUG_SSH_PORT}
 # Make sure we don't get notifications we can't answer during building.
 ENV DEBIAN_FRONTEND="noninteractive"
 
-# for vivante GPU we need some "special" sauce
-RUN apt-get -q -y update && \
-        if [ "${GPU}" = "-vivante" ] || [ "${GPU}" = "-imx8" ]; then \
-            apt-get -q -y install \
-            imx-gpu-viv-wayland-dev \
-        ; else \
-            apt-get -q -y install \
-            libgl1 \
-            libgles-dev \
-        ; fi \
-    && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
-
 # your regular RUN statements here
-# Install packages required for debug
+# Install required packages
 RUN apt-get -q -y update && \
     apt-get -q -y install \
     openssl \
@@ -67,8 +59,7 @@ RUN apt-get -q -y update && \
     rsync \
     file \
     curl \
-    gdb \
-    && \
+    gdb && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
 

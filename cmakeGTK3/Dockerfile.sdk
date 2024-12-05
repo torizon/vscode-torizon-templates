@@ -1,10 +1,15 @@
 # ARGUMENTS --------------------------------------------------------------------
-ARG CROSS_SDK_BASE_TAG=4
+    ARG BASE_VERSION=4
 
-##
-# Board architecture
-##
-ARG IMAGE_ARCH=
+    ##
+    # Board architecture
+    ##
+    ARG IMAGE_ARCH=
+
+    ##
+    # Board GPU vendor prefix
+    ##
+    ARG GPU=
 
 ##
 # Application root directory inside the container
@@ -13,30 +18,18 @@ ARG APP_ROOT=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG}
+FROM --platform=linux/${IMAGE_ARCH} torizon/wayland-gtk3${GPU}:${BASE_VERSION}
 
 ARG APP_ROOT
+ARG GPU
 ARG IMAGE_ARCH
-
-# for vivante GPU we need some "special" sauce
-RUN apt-get -q -y update && \
-        if [ "${GPU}" = "-vivante" ] || [ "${GPU}" = "-imx8" ]; then \
-            apt-get -q -y install \
-            imx-gpu-viv-wayland-dev \
-        ; else \
-            apt-get -q -y install \
-            libgl1 \
-            libgles-dev \
-        ; fi \
-    && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
 
 # __deps__
 RUN apt-get -q -y update && \
     apt-get -q -y install \
+    build-essential \
     cmake \
-    libgtk-3-dev:${IMAGE_ARCH} \
+    libgtk-3-dev \
     # ADD YOUR PACKAGES HERE
     && \
     apt-get clean && apt-get autoremove && \
@@ -56,3 +49,4 @@ RUN apt-get -q -y update && \
 
 USER torizon
 WORKDIR ${APP_ROOT}
+

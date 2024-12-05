@@ -1,9 +1,13 @@
-ARG CROSS_SDK_BASE_TAG=4
 ARG BASE_VERSION=4
 ##
 # Board architecture
 ##
 ARG IMAGE_ARCH=
+
+##
+# Board GPU vendor prefix
+##
+ARG GPU=
 
 ##
 # Directory of the application inside container
@@ -12,14 +16,15 @@ ARG APP_ROOT=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
+FROM --platform=linux/${IMAGE_ARCH} torizon/wayland-gtk3${GPU}:${BASE_VERSION} AS build
 
 ARG APP_ROOT
+ARG GPU
 ARG IMAGE_ARCH
 
-# for vivante GPU we need some "special" sauce
+# __deps__
 RUN apt-get -q -y update && \
-        if [ "${GPU}" = "-vivante" ] || [ "${GPU}" = "-imx8" ]; then \
+    if [ "${GPU}" = "-vivante" ] || [ "${GPU}" = "-imx8" ]; then \
             apt-get -q -y install \
             imx-gpu-viv-wayland-dev \
         ; else \
@@ -28,14 +33,10 @@ RUN apt-get -q -y update && \
             libgles-dev \
         ; fi \
     && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
-
-# __deps__
-RUN apt-get -q -y update && \
     apt-get -q -y install \
+    build-essential \
     cmake \
-    libgtk-3-dev:${IMAGE_ARCH} \
+    libgtk-3-dev \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
     # __torizon_packages_build_start__
     # __torizon_packages_build_end__
@@ -50,15 +51,9 @@ WORKDIR ${APP_ROOT}
 
 # Remove the code from the debug builds, inside this container, to build the
 # release version from a clean build
-RUN rm -rf ${APP_ROOT}/build-${IMAGE_ARCH}
-
-RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -Bbuild-${IMAGE_ARCH} ; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -Bbuild-${IMAGE_ARCH} ; \
-    fi
-
-RUN cmake --build build-${IMAGE_ARCH}
+RUN rm -rf ${APP_ROOT}/build-${IMAGE_ARCH} && \
+    cmake -DCMAKE_BUILD_TYPE=Release -Bbuild-${IMAGE_ARCH} && \
+    cmake --build build-${IMAGE_ARCH}
 
 # BUILD ------------------------------------------------------------------------
 
@@ -66,28 +61,14 @@ RUN cmake --build build-${IMAGE_ARCH}
 ##
 # Deploy Step
 ##
-FROM --platform=linux/${IMAGE_ARCH} torizon/wayland-gtk3:${BASE_VERSION} AS deploy
+FROM --platform=linux/${IMAGE_ARCH} torizon/wayland-gtk3${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
+ARG GPU
 ARG APP_ROOT
 
-# for vivante GPU we need some "special" sauce
-RUN apt-get -q -y update && \
-        if [ "${GPU}" = "-vivante" ] || [ "${GPU}" = "-imx8" ]; then \
-            apt-get -q -y install \
-            imx-gpu-viv-wayland-dev \
-        ; else \
-            apt-get -q -y install \
-            libgl1 \
-            libgles-dev \
-        ; fi \
-    && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN apt-get -y update && \
-    apt-get install -y --no-install-recommends \
-    libgtk-3-0 \
+RUN apt-get -y update && apt-get install -y --no-install-recommends \
+        libgtk-4-1 \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
     # __torizon_packages_prod_start__
     # __torizon_packages_prod_end__
