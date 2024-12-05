@@ -1,0 +1,52 @@
+# ARGUMENTS --------------------------------------------------------------------
+    ARG BASE_VERSION=4
+
+    ##
+    # Board architecture
+    ##
+    ARG IMAGE_ARCH=
+
+    ##
+    # Board GPU vendor prefix
+    ##
+    ARG GPU=
+
+##
+# Application root directory inside the container
+##
+ARG APP_ROOT=
+
+
+# BUILD ------------------------------------------------------------------------
+FROM --platform=linux/${IMAGE_ARCH} torizon/wayland-gtk3${GPU}:${BASE_VERSION}
+
+ARG APP_ROOT
+ARG GPU
+ARG IMAGE_ARCH
+
+# __deps__
+RUN apt-get -q -y update && \
+    apt-get -q -y install \
+    build-essential \
+    cmake \
+    libgtk-3-dev \
+    # ADD YOUR PACKAGES HERE
+    && \
+    apt-get clean && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+# __deps__
+
+# automate for torizonPackages.json
+RUN apt-get -q -y update && \
+    apt-get -q -y install \
+# DO NOT REMOVE THIS LABEL: this is used for VS Code automation
+    # __torizon_packages_build_start__
+    # __torizon_packages_build_end__
+# DO NOT REMOVE THIS LABEL: this is used for VS Code automation
+    && \
+    apt-get clean && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+USER torizon
+WORKDIR ${APP_ROOT}
+
