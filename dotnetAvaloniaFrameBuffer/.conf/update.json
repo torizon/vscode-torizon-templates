@@ -38,5 +38,9 @@
     {
         "source": "Views/MainWindow.axaml",
         "target": "Views/MainWindow.axaml"
+    },
+    {
+        "source": "Dockerfile",
+        "target": "Dockerfile"
     }
 ]

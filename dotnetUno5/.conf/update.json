@@ -14,5 +14,9 @@
     {
         "source": "__change__/App.cs",
         "target": "$projectName/App.cs"
+    },
+    {
+        "source": "Dockerfile",
+        "target": "Dockerfile"
     }
 ]

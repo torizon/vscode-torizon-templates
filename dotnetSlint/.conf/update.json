@@ -2,5 +2,9 @@
     {
         "source": "__change__.csproj",
         "target": "$projectName.csproj"
+    },
+    {
+        "source": "Dockerfile",
+        "target": "Dockerfile"
     }
 ]
