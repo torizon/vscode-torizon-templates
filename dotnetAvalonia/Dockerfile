@@ -40,7 +40,10 @@ RUN dotnet restore __change__.csproj && \
         export ARCH="x64" ; \
     fi && \
     dotnet publish __change__.csproj -c Release -r linux-${ARCH} --no-self-contained && \
-    mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}
+    # this if is a edge case when the ARCH and IMAGE_ARCH are equal, like arm64
+    if [ "./bin/Release/net8.0/linux-${ARCH}" != "./bin/Release/net8.0/linux-${IMAGE_ARCH}" ]; then \
+        mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}; \
+    fi
 
 # BUILD ------------------------------------------------------------------------
 
