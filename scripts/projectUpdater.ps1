@@ -160,15 +160,14 @@ $templateName = $_metadataJson.templateName
 $containerName = $_metadataJson.containerName
 $_torizonOSMajor = $_metadataJson.TorizonOSMajor
 
-# If it's not the current version, it's because the person has torizon.templatesBranch setting set
-if ($_templatesJson.TorizonOSMajor -ne "7") {
-    Write-Host -ForegroundColor DarkYellow "The current Torizon OS version is 7. If you want to upgrade to the current version, remove the torizon.templatesBranch setting."
-}
-
 $_templatesJsonTorizonMajor = $_templatesJson.TorizonOSMajor
 
+# If it's not the current version, it's because the person has torizon.templatesBranch setting set
+if ($_templatesJsonTorizonMajor -ne "7") {
+    Write-Host -ForegroundColor DarkYellow "The current Torizon OS version is 7. If you want to upgrade to the current version, remove the torizon.templatesBranch setting."
+}
 # Major update on the template
-if ($_torizonOSMajor -ne $_templatesJsonTorizonMajor) {
+elseif ($_torizonOSMajor -ne "7") {
 
     Write-Host -ForegroundColor DarkRed "Your template is on Torizon OS version ${_torizonOSMajor} and you are updating it to a template in Torizon OS version ${_templatesJsonTorizonMajor}"
     $_sure = Read-Host -Prompt "Are you sure you want to proceed with the update? [y/n]"
@@ -177,6 +176,28 @@ if ($_torizonOSMajor -ne $_templatesJsonTorizonMajor) {
         Write-Host -ForegroundColor DarkRed "If you want to stick to a specific Torizon OS version, set the torizon.templatesBranch on settings.json: https://developer.toradex.com/torizon/application-development/ide-extension/reference-documentation/workspace-settings#torizontemplatesbranch"
         exit 0
     }
+
+    Write-Host `
+        -ForegroundColor DarkYellow `
+        "⚠️  On Torizon 7, the scripts are moved from powershell to a Python shell(https://xon.sh/). So, removing the powershell scripts..."
+
+    Remove-Item -Force $projectFolder/.conf/tmp
+
+    Get-ChildItem -Path "$projectFolder/.conf" -Filter "*.ps1" | ForEach-Object { Remove-Item $_ -Force }
+
+    Copy-Item `
+    $Env:HOME/.apollox/scripts/projectUpdater.xsh `
+    $projectFolder/.conf/projectUpdater.xsh
+
+    Write-Host `
+    -ForegroundColor DarkYellow `
+    "⚠️  And now installing the xonsh apt package and calling the projectUpdater.xsh script..."
+
+    sudo apt update
+    sudo apt install xonsh
+    xonsh $projectFolder/.conf/projectUpdater.xsh $projectFolder $projectName $acceptAll $true
+    exit 0
+
 }
 
 # check first if the folder already exists
