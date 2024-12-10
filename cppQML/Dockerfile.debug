@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1
+ARG BASE_VERSION=3.4.0
 
 ##
 # Debug port
@@ -35,7 +35,7 @@ ARG APP_ROOT=
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/qt6-wayland${GPU}:${BASE_VERSION} AS debug
+    torizon/qt6-wayland${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU

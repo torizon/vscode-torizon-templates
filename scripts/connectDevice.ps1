@@ -35,8 +35,6 @@ try {
         foreach ($_dev in $_jsonArray) {
             $_connectDevs.Add($_dev) | Out-Null
         }
-    } else {
-        $_connectDevs = @()
     }
 
     # get the scan from the file

@@ -140,7 +140,7 @@
         },
         {
             "label": "publish-debug-arm",
-            "detail": "dotnet build command for debugging the application on an armhf target",
+            "detail": "dotnet publish command for debugging the application on an armhf target",
             "command": "dotnet",
             "type": "process",
             "args": [

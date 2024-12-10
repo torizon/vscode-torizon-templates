@@ -23,7 +23,6 @@
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
-                    "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
                 },
@@ -46,7 +45,6 @@
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
-                    "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
                 },
@@ -115,6 +113,7 @@
             "tests": {
                 "debuggers": {
                     "local": ["Local Debug"],
+                    "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
                 },
                 "debuggerConsole": null,
@@ -135,7 +134,8 @@
             "deprecated": false,
             "tests": {
                 "debuggers": {
-                    "arm64": ["Torizon ARMv8"]
+                    "arm64": ["Torizon ARMv8"],
+                    "arm": ["Torizon ARMv7"]
                 },
                 "debuggerConsole": "run-torizon",
                 "mainFile": "__change__/App.cs",
@@ -229,8 +229,6 @@
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
-                    "riscv": ["Torizon riscv64"],
-                    "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
                 },
@@ -275,7 +273,6 @@
             "tests" : {
                 "debuggers": {
                     "local": ["Local AMD64"],
-                    "riscv": ["Torizon riscv64"],
                     "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
@@ -301,7 +298,6 @@
             "tests": {
                 "debuggers": {
                     "local": ["Local AMD64"],
-                    "amd64": ["Torizon AMD64"],
                     "arm": ["Torizon ARMv7"],
                     "arm64": ["Torizon ARMv8"]
                 },

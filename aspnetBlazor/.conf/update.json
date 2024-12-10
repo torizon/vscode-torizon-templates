@@ -130,5 +130,9 @@
     {
         "source": "Data/WeatherForecastService.cs",
         "target": "Data/WeatherForecastService.cs"
+    },
+    {
+        "source": "Dockerfile",
+        "target": "Dockerfile"
     }
 ]

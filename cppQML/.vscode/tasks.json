@@ -144,44 +144,6 @@
             }
         },
         {
-            "label": "open-in-qt-creator-debug-amd64",
-            "detail": "This task first builds the project and then opens it in Qt Creator.\nNeed to have the Qt Creator installed on your system.",
-            "command": "qtcreator",
-            "type": "process",
-            "options": {
-                "env": {
-                    "QT_QPA_PLATFORM": "xcb",
-                    "QT_QUICK_BACKEND": "software"
-                }
-            },
-            "args": [
-                "${workspaceFolder}",
-                "-settingspath",
-                "${workspaceFolder}/.qt",
-                "-theme",
-                "dark"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "build-debug-local",
-                "update-qt-ini-amd64"
-            ],
-            "icon": {
-                "id": "link-external",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "kill-redirect-qml-debugger",
             "detail": "",
             "hide": true,
@@ -331,40 +293,6 @@
             "dependsOn": [
                 "kill-redirect-qml-debugger",
                 "deploy-torizon-arm",
-                "redirect-qml-debugger"
-            ],
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt-small",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "start-gdb-server-remote-amd64",
-            "detail": "Deploy and run the application for amd64 on the remote\ntarget by using gdbserver.",
-            "command": "ssh",
-            "type": "process",
-            "args": [
-                "-p",
-                "${config:torizon_debug_ssh_port}",
-                "-o",
-                "UserKnownHostsFile=/dev/null",
-                "-o",
-                "StrictHostKeyChecking=no",
-                "${config:torizon_run_as}@${config:torizon_ip}",
-                "cd ${config:torizon_app_root} && export QT_LOGGING_RULES=\"*.debug=true; qt.*.debug=false\" && gdbserver localhost:${config:torizon_debug_port1} __change__ -qmljsdebugger=port:${config:torizon_debug_port2},block,services:DebugMessages,QmlDebugger,V8Debugger,QmlInspector,DebugTranslation"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "kill-redirect-qml-debugger",
-                "deploy-torizon-amd64",
                 "redirect-qml-debugger"
             ],
             "problemMatcher": "$msCompile",
@@ -755,152 +683,6 @@
             }
         },
         {
-            "label": "build-configure-amd64",
-            "hide": true,
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "args": [
-                "docker",
-                "run",
-                "--rm",
-                "-v",
-                "${workspaceFolder}:${config:torizon_app_root}",
-                "cross-toolchain-amd64-__container__",
-                "cmake",
-                "-DCMAKE_BUILD_TYPE=Debug",
-                "-Bbuild-amd64"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "build-container-image-sdk-amd64"
-            ],
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "build-debug-amd64",
-            "detail": "Build a debug version of the application for arm64 using\nthe toolchain from the SDK container.",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "args": [
-                "docker",
-                "run",
-                "--rm",
-                "-v",
-                "${workspaceFolder}:${config:torizon_app_root}",
-                "cross-toolchain-amd64-__container__",
-                "cmake",
-                "--build",
-                "build-amd64"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "build-configure-amd64"
-            ],
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "clean-amd64",
-            "detail": "Clean the build folder for amd64 using the\ncontainer SDK toolchain.",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "args": [
-                "docker",
-                "run",
-                "--rm",
-                "-v",
-                "${workspaceFolder}:${config:torizon_app_root}",
-                "cross-toolchain-amd64-__container__",
-                "cmake",
-                "--build",
-                "build-amd64",
-                "--target",
-                "clean"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "build-container-image-sdk-amd64"
-            ],
-            "icon": {
-                "id": "trash",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "deploy-torizon-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "rsync",
-            "type": "process",
-            "args": [
-                "-P",
-                "-av",
-                "-e",
-                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/build-amd64/bin/",
-                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
-            ],
-            "dependsOn": [
-                "validate-settings",
-                "validate-arch-amd64",
-                "copy-docker-compose",
-                "pre-cleanup",
-                "build-debug-amd64",
-                "build-container-torizon-debug-amd64",
-                "push-container-torizon-debug-amd64",
-                "pull-container-torizon-debug-amd64",
-                "run-container-torizon-debug-amd64"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "update-qt-ini-arm64",
             "detail": "",
             "hide": true,
@@ -943,35 +725,6 @@
                 "${config:torizon_ip}:${config:torizon_debug_port1}",
                 "__change__",
                 "arm"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "symbol-parameter",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "update-qt-ini-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "pwsh",
-            "type": "process",
-            "args": [
-                "-nop",
-                "-c",
-                "${env:HOME}/.apollox/scripts/updateQtCreatorIni.ps1",
-                "${workspaceFolder}",
-                "${config:torizon_ip}:${config:torizon_debug_port1}",
-                "__change__",
-                "amd64"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

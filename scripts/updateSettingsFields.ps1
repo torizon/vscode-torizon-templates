@@ -32,6 +32,7 @@ $settingsTemplate = [PSCustomObject]@{
     "wait_sync" = "1"
     "torizon_run_as" = "torizon"
     "torizon_app_root" = "/home/torizon/app"
+    "docker_tag" = "v0.0.0"
     "tcb.packageName" = "__change__"
     "tcb.version" = "3.11.0"
     "torizon.gpuPrefixRC" = $false

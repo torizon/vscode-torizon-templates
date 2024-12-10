@@ -58,7 +58,7 @@ RUN rm -rf ${APP_ROOT}/out
 
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         npm run output-arm64; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         npm run output-arm; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         npm run output-amd64; \

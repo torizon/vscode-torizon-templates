@@ -9,23 +9,6 @@
             "preLaunchTask": "host-install-pip-requirements"
         },
         {
-            "name": "Torizon AMD64",
-            "type": "debugpy",
-            "request": "attach",
-            "justMyCode": false,
-            "connect": {
-                "host": "${config:torizon_ip}",
-                "port": "${config:torizon_debug_port}"
-            },
-            "pathMappings": [
-                {
-                "localRoot": "${workspaceFolder}",
-                "remoteRoot": "${config:torizon_app_root}"
-                }
-            ],
-            "preLaunchTask": "deploy-torizon-amd64"
-        },
-        {
             "name": "Torizon ARMv7",
             "type": "debugpy",
             "request": "attach",

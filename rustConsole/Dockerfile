@@ -37,7 +37,7 @@ RUN apt-get update && \
 
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         echo aarch64-unknown-linux-gnu > ~/rust-toolchain-arch.txt; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         echo armv7-unknown-linux-gnueabihf > ~/rust-toolchain-arch.txt; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         echo x86_64-unknown-linux-gnu > ~/rust-toolchain-arch.txt; \

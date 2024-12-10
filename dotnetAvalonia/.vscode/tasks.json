@@ -173,7 +173,7 @@
         },
         {
             "label": "publish-debug-arm",
-            "detail": "dotnet build command for debugging the application on an armhf target",
+            "detail": "dotnet publish command for debugging the application on an armhf target",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -243,7 +243,7 @@
         },
         {
             "label": "publish-debug-arm64",
-            "detail": "dotnet build command for debugging the application on an arm64 target",
+            "detail": "dotnet publish command for debugging the application on an arm64 target",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -344,7 +344,7 @@
         },
         {
             "label": "publish-debug-amd64",
-            "detail": "dotnet build command for debugging the application on an amd64 target",
+            "detail": "dotnet publish command for debugging the application on an amd64 target",
             "hide": false,
             "type": "shell",
             "command": "rm",

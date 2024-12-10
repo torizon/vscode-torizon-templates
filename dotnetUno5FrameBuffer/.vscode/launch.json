@@ -29,6 +29,30 @@
       "postDebugTask": "stop-torizon-and-clean-framebuffer"
     },
     {
+      "name": "Torizon ARMv7",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "__change__.Skia.Linux.FrameBuffer",
+      "pipeTransport": {
+          "pipeCwd": "${workspaceFolder}",
+          "pipeProgram": "ssh",
+          "pipeArgs": [
+              "-T",
+              "-q",
+              "-p",
+              "${config:torizon_debug_ssh_port}",
+              "-o",
+              "StrictHostKeyChecking=no",
+              "-o",
+              "UserKnownHostsFile /dev/null",
+              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+          ],
+          "debuggerPath": "/vsdbg/vsdbg"
+      },
+      "preLaunchTask": "run-torizon-arm-debug",
+      "postDebugTask": "stop-torizon-and-clean-framebuffer"
+    },
+    {
       "name": "Torizon AMD64",
       "type": "coreclr",
       "request": "attach",

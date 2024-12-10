@@ -8,6 +8,7 @@ ARG IMAGE_ARCH=
 # Base container version
 ##
 ARG BASE_VERSION=3.3.1
+ARG DOTNET_BASE_VERSION=3-8.0
 
 ##
 # Directory of the application inside container
@@ -35,10 +36,24 @@ WORKDIR ${APP_ROOT}/__change__.Skia.Linux.FrameBuffer
 
 # build
 RUN dotnet restore && \
-dotnet publish -c Release -r linux-${IMAGE_ARCH} --no-self-contained
+    if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        export ARCH=${IMAGE_ARCH} ; \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        export ARCH="arm" ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        export ARCH="x64" ; \
+    fi && \
+    dotnet publish -c Release -r linux-${IMAGE_ARCH} --no-self-contained && \
+    # this if is a edge case when the ARCH and IMAGE_ARCH are equal, like arm64
+    if [ "./bin/Release/net8.0/linux-${ARCH}" != "./bin/Release/net8.0/linux-${IMAGE_ARCH}" ]; then \
+        mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}; \
+    fi
+
 # BUILD ------------------------------------------------------------------------
 
-
+# DOTNET -----------------------------------------------------------------------
+FROM --platform=linux/${IMAGE_ARCH} \
+    commontorizon/dotnet:${DOTNET_BASE_VERSION} AS Dotnet
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
@@ -47,6 +62,11 @@ FROM --platform=linux/${IMAGE_ARCH} \
 ARG IMAGE_ARCH
 ARG GPU
 ARG APP_ROOT
+
+ENV DOTNET_ROOT=/dotnet
+ENV PATH=$PATH:/dotnet
+
+COPY --from=Dotnet /dotnet /dotnet
 
 # for vivante GPU we need some "special" sauce
 RUN apt-get -q -y update && \

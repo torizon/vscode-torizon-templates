@@ -88,16 +88,25 @@ function _scan_network() {
         -f $env:HOME/.apollox/scripts/scanNetworkDevices.ps1
 }
 
-function _connect_device() {
+function _scan_network_display_previous_scan() {
+    pwsh -nop `
+        -f $env:HOME/.apollox/scripts/scanNetworkDevices.ps1 display
+}
+
+function _connect_device {
+    param(
+        [Parameter(Mandatory = $true, HelpMessage="The device id to connect to")]
+        [string] $id
+    )
+
     # read the args
-    $_id = Read-Host "Device id"
     $_login = Read-Host "Login"
     $_pass = Read-Host "Password" -MaskInput
     Write-Host ""
 
     pwsh -nop `
         -f $env:HOME/.apollox/scripts/connectDevice.ps1 `
-            -id $_id `
+            -id $id `
             -login $_login `
             -pass $_pass
 }
@@ -348,14 +357,26 @@ try {
                 "help" {
                     Write-Host "📖 :: SCAN HELP :: 📖"
                     Write-Host ""
-                    Write-Host " ➡️ connect"
-                    Write-Host "`t interactively connect to a network device listed in the scan"
+                    Write-Host " ➡️ connect <index>"
+                    Write-Host "`t connect to a network device listed in the scan"
+                    Write-Host ""
+                    Write-Host " ➡️ list"
+                    Write-Host "`t display the list of the network devices found in the previous scan"
                     Write-Host ""
                     exit 0
                 }
+                "list" {
+                    _scan_network_display_previous_scan
+                }
                 "connect" {
-                    _scan_network
-                    _connect_device
+                    # make sure that a scan index is provided
+                    if ($null -eq $args[2]) {
+                        Write-Host -ForegroundColor Red "❌ :: No scan index provided :: ❌"
+                        Write-Host ""
+                        exit 400
+                    }
+
+                    _connect_device -id $args[2]
                 }
                 Default {
                     _scan_network

@@ -16,6 +16,7 @@ TCD_COMP_ARGS_MAIN="
 TCD_COMP_ARGS_SCAN="
     help
     connect
+    list
 "
 
 TCD_COMP_ARGS_CONNECT="

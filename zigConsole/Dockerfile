@@ -43,7 +43,7 @@ RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         unzip zigup.ubuntu-latest-aarch64.zip -d /usr/bin && \
         chmod +x /usr/bin/zigup && \
         zigup --install-dir /zig 0.11.0 ; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-armv7a.zip && \
         unzip zigup.ubuntu-latest-armv7a.zip -d /usr/bin && \
         chmod +x /usr/bin/zigup && \
@@ -79,7 +79,7 @@ RUN rm -rf ${APP_ROOT}/target
 # (ReleaseSmall | ReleaseFast) no runtime stacktrace (undefined & fast)
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         zig build -Doptimize=ReleaseSmall -Dtarget=aarch64-linux-gnu --summary all -freference-trace ; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         zig build -Doptimize=ReleaseSmall -Dtarget=arm-linux-gnu --summary all -freference-trace ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         zig build -Doptimize=ReleaseSmall -Dtarget=x86_64-linux-gnu --summary all -freference-trace ; \
@@ -88,7 +88,7 @@ RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
 RUN mkdir -p target/deploy && \
     if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         cp -r zig-out/aarch64/ReleaseSmall/bin/* target/deploy ; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         cp -r zig-out/arm/ReleaseSmall/bin/* target/deploy ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         cp zig-out/x86_64/ReleaseSmall/bin/$APP_EXECUTABLE target/deploy ; \

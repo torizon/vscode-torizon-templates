@@ -125,8 +125,8 @@
             }
         },
         {
-            "label": "publish-debug-amd64",
-            "detail": "",
+            "label": "publish-debug-arm64",
+            "detail": "dotnet publish command for debugging the application on an arm64 target",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -137,7 +137,7 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "-r",
-                "linux-amd64",
+                "linux-arm64",
                 "--no-self-contained"
             ],
             "dependsOrder": "sequence",
@@ -155,8 +155,8 @@
             }
         },
         {
-            "label": "publish-debug-arm64",
-            "detail": "",
+            "label": "publish-debug-arm",
+            "detail": "dotnet publish command for debugging the application on an armhf target",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -167,7 +167,37 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "-r",
-                "linux-arm64",
+                "linux-arm",
+                "--no-self-contained"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "publish-debug-amd64",
+            "detail": "dotnet publish command for debugging the application on an amd64 target",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "-c",
+                "Debug",
+                "${workspaceFolder}/__change__.Skia.Gtk/__change__.Skia.Gtk.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "-r",
+                "linux-amd64",
                 "--no-self-contained"
             ],
             "dependsOrder": "sequence",
@@ -208,6 +238,46 @@
                 "push-container-torizon-debug-arm64",
                 "pull-container-torizon-debug-arm64",
                 "run-container-torizon-debug-arm64",
+                "pos-cleanup"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "debug-alt",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "deploy-torizon-arm",
+            "detail": "",
+            "hide": true,
+            "command": "rsync",
+            "type": "process",
+            "args": [
+                "-P",
+                "-av",
+                "-e",
+                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
+                "${workspaceFolder}/__change__.Skia.Gtk/bin/Debug/net8.0/linux-arm/publish/",
+                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-arm",
+                "copy-docker-compose",
+                "pre-cleanup",
+                "publish-debug-arm",
+                "build-container-torizon-debug-arm",
+                "push-container-torizon-debug-arm",
+                "pull-container-torizon-debug-arm",
+                "run-container-torizon-debug-arm",
                 "pos-cleanup"
             ],
             "dependsOrder": "sequence",
@@ -300,6 +370,58 @@
                 "Debug",
                 "-r",
                 "linux-arm64"
+            ],
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "clean-debug-arm",
+            "detail": "dotnet clean command for cleaning the application build for the armhf target",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/__change__.Skia.Gtk/__change__.Skia.Gtk.csproj",
+                "-c",
+                "Debug",
+                "-r",
+                "linux-arm"
+            ],
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "clean-debug-amd64",
+            "detail": "dotnet clean command for cleaning the application build for the amd64 target",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/__change__.Skia.Gtk/__change__.Skia.Gtk.csproj",
+                "-c",
+                "Debug",
+                "-r",
+                "linux-amd64"
             ],
             "problemMatcher": "$msCompile",
             "icon": {
@@ -426,6 +548,32 @@
             "dependsOn": [
                 "config-hot-reload-address",
                 "deploy-torizon-arm64",
+                "run-app-for-hot-reload"
+            ],
+            "icon": {
+                "id": "vm-connect",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "launch-hot-reload-arm",
+            "detail": "This task will launch the application on the board, without\nattach the debugger, this will allow the application to\nuse the Uno Platform hot reload feature.",
+            "command": "echo",
+            "type": "shell",
+            "args": [
+                "✅"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "config-hot-reload-address",
+                "deploy-torizon-arm",
                 "run-app-for-hot-reload"
             ],
             "icon": {
