@@ -39,7 +39,7 @@ services:
       - cog
 
   cog:
-    image: commontorizon/cog${GPU}:3.3.1
+    image: torizon/cog${GPU}:3.4.0
     command: http://localhost:7001 -w
     environment:
       - ACCEPT_FSL_EULA=1
@@ -70,7 +70,7 @@ services:
       - weston
 
   weston:
-    image: commontorizon/weston${GPU}:3.3.2
+    image: torizon/weston${GPU}:3.5.0
     environment:
       - ACCEPT_FSL_EULA=1
     # Required to get udev events from host udevd via netlink

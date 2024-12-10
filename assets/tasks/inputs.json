@@ -33,8 +33,7 @@
             "options": [
                 "arm",
                 "arm64",
-                "amd64",
-                "riscv64"
+                "amd64"
             ]
         }
     ]

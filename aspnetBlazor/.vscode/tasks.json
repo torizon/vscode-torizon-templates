@@ -104,32 +104,6 @@
             }
         },
         {
-            "label": "clean-debug-amd64",
-            "detail": "dotnet clean command for cleaning the application build for the amd64 target",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "clean",
-                "${workspaceFolder}/__change__.csproj",
-                "-c",
-                "Debug",
-                "-r",
-                "linux-x64"
-            ],
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "trash",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "watch-local",
             "detail": "dotnet watch command, watch the changes on the application, compile it and reload automatically",
             "command": "dotnet",
@@ -223,103 +197,6 @@
             }
         },
         {
-            "label": "publish-debug-amd64",
-            "detail": "dotnet publish command for debugging the application on an amd64 target",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/__change__.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "-c",
-                "Debug",
-                "-r",
-                "linux-amd64",
-                "--no-self-contained"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "tools",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "fixup-donet-arch-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "rm",
-            "type": "shell",
-            "args": [
-                "-rf",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-amd64",
-                "&&",
-                "mv",
-                "bin/Debug/net8.0/linux-x64",
-                "bin/Debug/net8.0/linux-amd64"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "gear",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "deploy-torizon-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "rsync",
-            "type": "process",
-            "args": [
-                "-P",
-                "-av",
-                "-e",
-                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-amd64/publish/",
-                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
-            ],
-            "dependsOn": [
-                "validate-settings",
-                "validate-arch-amd64",
-                "copy-docker-compose",
-                "pre-cleanup",
-                "publish-debug-amd64",
-                "build-container-torizon-debug-amd64",
-                "push-container-torizon-debug-amd64",
-                "pull-container-torizon-debug-amd64",
-                "run-container-torizon-debug-amd64"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "publish-debug-arm64",
             "detail": "dotnet publish command for debugging the application on an arm64 target",
             "command": "dotnet",
@@ -367,41 +244,6 @@
                 "up",
                 "-d",
                 "__container__-browser-debug"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "wait-a-bit"
-            ],
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "run-container-cog-torizon-debug-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "DOCKER_HOST=${config:torizon_ip}:2375",
-            "type": "shell",
-            "args": [
-                "LOCAL_REGISTRY=${config:host_ip}",
-                "TAG=amd64",
-                "GPU=${config:torizon_gpu}",
-                "docker",
-                "compose",
-                "-p",
-                "torizon",
-                "up",
-                "-d",
-                "blazorzin-browser-debug"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -483,46 +325,6 @@
                 "push-container-torizon-debug-arm64",
                 "pull-container-torizon-debug-arm64",
                 "run-container-cog-torizon-debug-arm64"
-            ],
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "debug-alt",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
-            "label": "deploy-torizon-browser-amd64",
-            "detail": "",
-            "hide": true,
-            "command": "rsync",
-            "type": "process",
-            "args": [
-                "-P",
-                "-av",
-                "-e",
-                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-amd64/publish/",
-                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
-            ],
-            "dependsOn": [
-                "validate-settings",
-                "validate-arch-amd64",
-                "copy-docker-compose",
-                "pre-cleanup",
-                "publish-debug-amd64",
-                "fixup-donet-arch-amd64",
-                "build-container-torizon-debug-amd64",
-                "push-container-torizon-debug-amd64",
-                "pull-container-torizon-debug-amd64",
-                "run-container-cog-torizon-debug-amd64"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

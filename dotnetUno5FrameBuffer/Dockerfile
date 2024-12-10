@@ -36,7 +36,19 @@ WORKDIR ${APP_ROOT}/__change__.Skia.Linux.FrameBuffer
 
 # build
 RUN dotnet restore && \
-dotnet publish -c Release -r linux-${IMAGE_ARCH} --no-self-contained
+    if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        export ARCH=${IMAGE_ARCH} ; \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        export ARCH="arm" ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        export ARCH="x64" ; \
+    fi && \
+    dotnet publish -c Release -r linux-${IMAGE_ARCH} --no-self-contained && \
+    # this if is a edge case when the ARCH and IMAGE_ARCH are equal, like arm64
+    if [ "./bin/Release/net8.0/linux-${ARCH}" != "./bin/Release/net8.0/linux-${IMAGE_ARCH}" ]; then \
+        mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}; \
+    fi
+
 # BUILD ------------------------------------------------------------------------
 
 # DOTNET -----------------------------------------------------------------------

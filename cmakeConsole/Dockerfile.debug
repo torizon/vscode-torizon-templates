@@ -9,7 +9,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1-bookworm
+ARG BASE_VERSION=3.5.0
 
 ##
 # Debug port
@@ -31,7 +31,7 @@ ARG APP_ROOT=
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/debian:${BASE_VERSION} AS debug
+    torizon/debian:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG DEBUG_SSH_PORT

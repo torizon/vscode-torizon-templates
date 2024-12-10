@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3-8.0
+ARG BASE_VERSION=3.4-8.0.8
 
 ##
 # Directory of the application inside container
@@ -28,14 +28,26 @@ WORKDIR ${APP_ROOT}
 
 # build
 RUN dotnet restore && \
-dotnet publish -c Release -r linux-${IMAGE_ARCH} --no-self-contained
+    if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        export ARCH=${IMAGE_ARCH} ; \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        export ARCH="arm" ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        export ARCH="x64" ; \
+    fi && \
+    dotnet publish -c Release -r linux-${ARCH} --no-self-contained && \
+    # this if is a edge case when the ARCH and IMAGE_ARCH are equal, like arm64
+    if [ "./bin/Release/net8.0/linux-${ARCH}" != "./bin/Release/net8.0/linux-${IMAGE_ARCH}" ]; then \
+        mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}; \
+    fi
+
 # BUILD ------------------------------------------------------------------------
 
 
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/dotnet:${BASE_VERSION} AS deploy
+    torizon/dotnet:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG APP_ROOT

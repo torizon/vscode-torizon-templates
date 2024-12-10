@@ -2,11 +2,11 @@
 ##
 # SDK container version
 ##
-ARG SDK_BASE_VERSION=3.3.1
+ARG SDK_BASE_VERSION=3.4.0
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1
+ARG BASE_VERSION=3.4.0
 
 ##
 # Board architecture
@@ -30,7 +30,7 @@ ARG APP_ROOT=
 # Build Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/qt6-wayland${GPU}:${SDK_BASE_VERSION} AS build
+    torizon/qt6-wayland${GPU}:${SDK_BASE_VERSION} AS build
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -89,7 +89,7 @@ RUN rm -rf ${APP_ROOT}/build-${IMAGE_ARCH}
 
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -Bbuild-${IMAGE_ARCH} ; \
-    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -Bbuild-${IMAGE_ARCH} ; \
     fi
 
@@ -102,7 +102,7 @@ RUN cmake --build build-${IMAGE_ARCH}
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/qt6-wayland${GPU}:${BASE_VERSION} AS deploy
+    torizon/qt6-wayland${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG GPU
