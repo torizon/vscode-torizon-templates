@@ -24,7 +24,7 @@ ARG APP_ROOT=
 ##
 
 # BUILD/DEPLOY -----------------------------------------------------------------------
-FROM crossware.app:5050/toradex/flutter:${SDK_BASE_VERSION} as build
+FROM crossware.app:5050/public-repos/flutter:${SDK_BASE_VERSION} as build
 
 ARG IMAGE_ARCH
 ARG GPU

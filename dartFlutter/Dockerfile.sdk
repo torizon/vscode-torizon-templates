@@ -30,7 +30,7 @@ ARG APP_ROOT=
 ##
 # Build Step
 ##
-FROM crossware.app:5050/toradex/flutter:early
+FROM crossware.app:5050/public-repos/flutter:early
 
 ARG IMAGE_ARCH
 ARG GPU
