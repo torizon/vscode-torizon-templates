@@ -1,10 +1,10 @@
 version: "3.9"
 services:
-  test-debug:
+  __container__-debug:
     build:
       context: .
       dockerfile: Dockerfile.debug
-    image: ${LOCAL_REGISTRY}:5002/test-debug:${TAG}
+    image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
     network_mode: host
     volumes:
       - type: bind
@@ -27,11 +27,11 @@ services:
       weston
     ]
 
-  test:
+  __container__:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ${DOCKER_LOGIN}/test:${TAG}
+    image: ${DOCKER_LOGIN}/__container__:${TAG}
     volumes:
       - type: bind
         source: /tmp

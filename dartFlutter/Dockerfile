@@ -34,7 +34,7 @@ COPY . ${APP_ROOT}
 WORKDIR ${APP_ROOT}
 RUN flutter-elinux clean; flutter-elinux pub get; flutter-elinux build elinux --release
 
-FROM crossware.app:5050/toradex/flutter:${BASE_VERSION} as final
+FROM crossware.app:5050/public-repos/flutter:${BASE_VERSION} as final
 ARG APP_ROOT
 
 WORKDIR ${APP_ROOT}
