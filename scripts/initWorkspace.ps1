@@ -43,7 +43,7 @@ if (!(Test-Path $env:HOME/.tcd/target.json)) {
 }
 
 # check if the workspace is valid
-if (!(Test-Path ./.conf/.template)) {
+if (!(Get-Content ./.conf/metadata.json | ConvertFrom-Json).templateName -and !(Test-Path ./.conf/.template)) {
     Write-Host -ForegroundColor Red "❌ :: This folder does not have a valid Torizon project Workspace :: ❌"
     Write-Host ""
     exit 400
