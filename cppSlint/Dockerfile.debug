@@ -6,9 +6,8 @@ ARG IMAGE_ARCH=
 
 ##
 # Base container version
-# Using the Slint v1.7.2 base images
 ##
-ARG BASE_VERSION=3.3.1-bookworm-1.9.1
+ARG BASE_VERSION=3.3.0
 
 ##
 # Application root directory inside the container
@@ -33,7 +32,8 @@ ARG GPU=
 ##
 # Deploy Step
 ##
-FROM commontorizon/slint-base-${IMAGE_ARCH}${GPU}:${BASE_VERSION} AS debug
+FROM --platform=linux/${IMAGE_ARCH} \
+    torizon/wayland-base${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -74,6 +74,20 @@ RUN apt-get -q -y update && \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+# Install Slint dependencies
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install \
+    libfontconfig1 \
+    libxkbcommon0 \
+    libinput10 \
+    fonts-noto-core \
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra \
+    fonts-noto-color-emoji \
+    fonts-noto-ui-core \
+    fonts-noto-ui-extra \
+    && rm -rf /var/lib/apt/lists/*
 
 # automate for torizonPackages.json
 RUN apt-get -q -y update && \
