@@ -30,6 +30,11 @@ ARG SSHUSERNAME=
 ARG GPU=
 
 ##
+# Slint Version
+##
+ARG SLINT_VERSION=nightly
+
+##
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
@@ -40,6 +45,7 @@ ARG GPU
 ARG DEBUG_SSH_PORT
 ARG APP_ROOT
 ARG SSHUSERNAME
+ARG SLINT_VERSION
 
 # SSH for remote debug
 EXPOSE ${DEBUG_SSH_PORT}
@@ -74,6 +80,23 @@ RUN apt-get -q -y update && \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+# Download Slint binary packages
+RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        CROSS_TOOLCHAIN_ARCH=arm64 ; \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        CROSS_TOOLCHAIN_ARCH=armhf ; \
+    fi && \
+    if [ "$SLINT_VERSION" = "nightly" ]; then \
+        GITHUB_RELEASE=nightly; \
+        GITHUB_FILENAME_INFIX=nightly; \
+    else \
+        GITHUB_RELEASE=$SLINT_VERSION; \
+        GITHUB_FILENAME_INFIX=$SLINT_VERSION; \
+    fi && \
+    wget -O - https://github.com/slint-ui/slint/releases/download/$GITHUB_RELEASE/Slint-cpp-$GITHUB_FILENAME_INFIX-Linux-$CROSS_TOOLCHAIN_ARCH.tar.gz \
+    | tar xzvf - --strip-components 1 -C /usr --wildcards --no-wildcards-match-slash "*/lib/*" && \
+    rm -rf /usr/lib/cmake/Slint
 
 # Install Slint dependencies
 RUN apt-get update \
