@@ -169,7 +169,7 @@
                 "-p",
                 "${config:torizon_debug_ssh_port}",
                 "${config:torizon_run_as}@${config:torizon_ip}",
-                "cd ${config:torizon_app_root} && . ${config:torizon_app_root}/.venv/bin/activate && screen -d -m python3 -m debugpy --listen 0.0.0.0:${config:torizon_debug_port1} --log-to src/log --wait-for-client src/main.py",
+                "cd ${config:torizon_app_root} && . ${config:torizon_app_root}/.venv/bin/activate && screen -d -m python3 -m debugpy --listen 0.0.0.0:${config:torizon_debug_port1} --log-to src/log --wait-for-client src/main.py"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -242,7 +242,7 @@
                 "-p",
                 "${config:torizon_debug_ssh_port}",
                 "${config:torizon_run_as}@${config:torizon_ip}",
-                "cd ${config:torizon_app_root} && . ${config:torizon_app_root}/.venv/bin/activate && screen -d -m python3 -m debugpy --listen 0.0.0.0:${config:torizon_debug_port1} --log-to src/log --wait-for-client src/main.py",
+                "cd ${config:torizon_app_root} && . ${config:torizon_app_root}/.venv/bin/activate && screen -d -m python3 -m debugpy --listen 0.0.0.0:${config:torizon_debug_port1} --log-to src/log --wait-for-client src/main.py"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -308,7 +308,7 @@
                 "panel": "shared",
                 "group": "python-related"
             }
-        },
+        }
     ],
     "inputs": []
 }

@@ -1,4 +1,6 @@
 {
+    "buildDeps": [
+    ],
     "prodRuntimeDeps": [
     ],
     "devRuntimeDeps": [

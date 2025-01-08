@@ -14,8 +14,8 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated"
-            },
-        },
+            }
+        }
     ],
 "inputs": []
 }

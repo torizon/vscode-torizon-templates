@@ -450,7 +450,7 @@
             "args": [
                 "run",
                 "--project",
-                "${workspaceFolder}/__change__.Skia.Gtk/__change__.Skia.Gtk.csproj",
+                "${workspaceFolder}/__change__.Skia.Gtk/__change__.Skia.Gtk.csproj"
             ],
             "icon": {
                 "id": "vm-connect",

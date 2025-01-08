@@ -466,7 +466,7 @@
                 "panel": "shared",
                 "group": "build-execution"
             }
-        },
+        }
     ],
-"inputs": []
+    "inputs": []
 }

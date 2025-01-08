@@ -36,7 +36,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "compile",
+                "compile"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -62,7 +62,7 @@
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "jar",
+                "jar"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -289,7 +289,7 @@
             "command": "echo",
             "type": "process",
             "args": [
-                "done",
+                "done"
             ],
             "dependsOn": [
                 "run-debugger-amd64",
@@ -382,7 +382,7 @@
             "command": "echo",
             "type": "process",
             "args": [
-                "done",
+                "done"
             ],
             "dependsOn": [
                 "run-debugger-arm64",
@@ -403,5 +403,5 @@
             }
         }
     ],
-"inputs": []
+    "inputs": []
 }

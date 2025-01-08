@@ -52,7 +52,7 @@
                 "cross-toolchain-arm64-__container__",
                 "zig",
                 "build",
-                "-Dtarget=aarch64-linux-gnu",
+                "-Dtarget=aarch64-linux-gnu"
             ],
             "problemMatcher": [
                 {
@@ -99,7 +99,7 @@
                 "cp",
                 "-r",
                 "zig-out/aarch64/Debug/bin/*",
-                "executable-arm64",
+                "executable-arm64"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -136,7 +136,7 @@
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
                 "pull-container-torizon-debug-arm64",
-                "run-container-torizon-debug-arm64",
+                "run-container-torizon-debug-arm64"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -166,7 +166,7 @@
                 "cross-toolchain-arm-__container__",
                 "zig",
                 "build",
-                "-Dtarget=arm-linux-gnu",
+                "-Dtarget=arm-linux-gnu"
             ],
             "problemMatcher": [
                 {
@@ -213,7 +213,7 @@
                 "cp",
                 "-r",
                 "zig-out/arm/Debug/bin/*",
-                "executable-arm",
+                "executable-arm"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -250,7 +250,7 @@
                 "build-container-torizon-debug-arm",
                 "push-container-torizon-debug-arm",
                 "pull-container-torizon-debug-arm",
-                "run-container-torizon-debug-arm",
+                "run-container-torizon-debug-arm"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

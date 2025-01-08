@@ -64,7 +64,7 @@
                     "StrictHostKeyChecking=no",
                     "-o",
                     "UserKnownHostsFile /dev/null",
-                    "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+                    "${config:torizon_run_as}@${config:torizon_ip}"
                 ]
             },
             "MIMode": "gdb",
@@ -108,7 +108,7 @@
                     "StrictHostKeyChecking=no",
                     "-o",
                     "UserKnownHostsFile /dev/null",
-                    "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+                    "${config:torizon_run_as}@${config:torizon_ip}"
                 ]
             },
             "MIMode": "gdb",
@@ -152,7 +152,7 @@
                     "StrictHostKeyChecking=no",
                     "-o",
                     "UserKnownHostsFile /dev/null",
-                    "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+                    "${config:torizon_run_as}@${config:torizon_ip}"
                 ]
             },
             "MIMode": "gdb",

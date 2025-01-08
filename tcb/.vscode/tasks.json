@@ -678,13 +678,13 @@
                 "cwd": "${workspaceFolder}",
                 "env": {
                     "TCB_VERSION": "${config:tcb.version}",
-                    "STORAGE_DIR": "${workspaceFolder}/storage",
+                    "STORAGE_DIR": "${workspaceFolder}/storage"
                 }
             },
             "args": [
                 "bash",
                 "--init-file",
-                ".conf/bashrc.tcb",
+                ".conf/bashrc.tcb"
             ],
             "problemMatcher": [
                 "$tsc"
@@ -699,9 +699,9 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "tcb-setup",
+                "group": "tcb-setup"
             }
-        },
+        }
     ],
     "inputs": [
         {

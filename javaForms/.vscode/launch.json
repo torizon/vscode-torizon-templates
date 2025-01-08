@@ -27,5 +27,5 @@
             "preLaunchTask": "deploy-torizon-arm64",
             "postDebugTask": "exterminate-debugger"
         }
-    ],
+    ]
 }

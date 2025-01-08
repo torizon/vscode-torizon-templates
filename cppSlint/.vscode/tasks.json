@@ -18,7 +18,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
-                "deploy-torizon-arm64",
+                "deploy-torizon-arm64"
             ],
             "problemMatcher": "$msCompile",
             "icon": {
@@ -44,7 +44,7 @@
             },
             "args": [
                 "localhost:${config:torizon_debug_port1}",
-                "${workspaceFolder}/build/x86_64/__change__",
+                "${workspaceFolder}/build/x86_64/__change__"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -341,7 +341,7 @@
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
                 "pull-container-torizon-debug-arm64",
-                "run-container-torizon-debug-arm64",
+                "run-container-torizon-debug-arm64"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -490,7 +490,7 @@
                 "build-container-torizon-debug-arm",
                 "push-container-torizon-debug-arm",
                 "pull-container-torizon-debug-arm",
-                "run-container-torizon-debug-arm",
+                "run-container-torizon-debug-arm"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -639,7 +639,7 @@
                 "build-container-torizon-debug-amd64",
                 "push-container-torizon-debug-amd64",
                 "pull-container-torizon-debug-amd64",
-                "run-container-torizon-debug-amd64",
+                "run-container-torizon-debug-amd64"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -654,7 +654,7 @@
                 "panel": "shared",
                 "group": "build-execution"
             }
-        },
+        }
     ],
     "inputs": []
 }

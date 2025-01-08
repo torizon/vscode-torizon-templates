@@ -136,7 +136,7 @@
                 "rsync",
                 "-a",
                 "${workspaceFolder}/out/__change__-linux-armv7l/",
-                "${workspaceFolder}/out/__change__-linux-arm",
+                "${workspaceFolder}/out/__change__-linux-arm"
             ],
             "dependsOrder": "sequence",
             "dependsOn":[
@@ -180,7 +180,7 @@
                 "push-container-torizon-debug-arm",
                 "pull-container-torizon-debug-arm",
                 "run-container-torizon-debug-arm",
-                "wait-a-bit",
+                "wait-a-bit"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -330,7 +330,7 @@
                 "push-container-torizon-debug-amd64",
                 "pull-container-torizon-debug-amd64",
                 "run-container-torizon-debug-amd64",
-                "wait-a-bit",
+                "wait-a-bit"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

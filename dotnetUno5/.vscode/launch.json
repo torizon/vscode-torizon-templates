@@ -1,18 +1,11 @@
 {
-  // Use IntelliSense to find out which attributes exist for C# debugging
-  // Use hover for the description of the existing attributes
-  // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
   "version": "0.2.0",
   "configurations": [
     {
-      // Use IntelliSense to find out which attributes exist for C# debugging
-      // Use hover for the description of the existing attributes
-      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
       "name": "Local Debug",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-debug-local",
-      // If you have changed target frameworks, make sure to update the program path.
       "program": "${workspaceFolder}/__change__.Skia.Gtk/bin/Debug/net8.0/__change__.Skia.Gtk.dll",
       "args": [],
       "env": {
@@ -20,7 +13,6 @@
         "GDK_BACKEND": "x11"
       },
       "cwd": "${workspaceFolder}/__change__.Skia.Gtk",
-      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
       "console": "internalConsole",
       "stopAtEntry": false
     },
@@ -34,8 +26,6 @@
       "console": "internalConsole",
       "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug",
-        //"GDK_BACKEND": "x11",
-        //"GDK_GL": "gles",
         "UNO_FULLSCREEN": "true"
       },
       "args": [],
@@ -51,7 +41,7 @@
               "StrictHostKeyChecking=no",
               "-o",
               "UserKnownHostsFile /dev/null",
-              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+              "${config:torizon_run_as}@${config:torizon_ip}"
           ],
           "debuggerPath": "/vsdbg/vsdbg"
       },
@@ -67,8 +57,6 @@
       "console": "internalConsole",
       "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug",
-        //"GDK_BACKEND": "x11",
-        //"GDK_GL": "gles",
         "UNO_FULLSCREEN": "true"
       },
       "args": [],
@@ -84,7 +72,7 @@
               "StrictHostKeyChecking=no",
               "-o",
               "UserKnownHostsFile /dev/null",
-              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+              "${config:torizon_run_as}@${config:torizon_ip}"
           ],
           "debuggerPath": "/vsdbg/vsdbg"
       },
@@ -100,8 +88,6 @@
       "console": "internalConsole",
       "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug",
-        //"GDK_BACKEND": "x11",
-        //"GDK_GL": "gles",
         "UNO_FULLSCREEN": "true"
       },
       "args": [],
@@ -117,7 +103,7 @@
               "StrictHostKeyChecking=no",
               "-o",
               "UserKnownHostsFile /dev/null",
-              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+              "${config:torizon_run_as}@${config:torizon_ip}"
           ],
           "debuggerPath": "/vsdbg/vsdbg"
       },

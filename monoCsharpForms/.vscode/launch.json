@@ -35,6 +35,6 @@
             "port": "${config:torizon_debug_port1}",
             "preLaunchTask": "deploy-torizon-mono-debug-server-arm64",
             "postDebugTask": "pre-cleanup"
-        },
+        }
     ]
 }

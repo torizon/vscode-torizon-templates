@@ -1,7 +1,4 @@
 {
-  // Use IntelliSense to find out which attributes exist for C# debugging
-  // Use hover for the description of the existing attributes
-  // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
   "version": "0.2.0",
   "configurations": [
     {
@@ -21,7 +18,7 @@
               "StrictHostKeyChecking=no",
               "-o",
               "UserKnownHostsFile /dev/null",
-              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+              "${config:torizon_run_as}@${config:torizon_ip}"
           ],
           "debuggerPath": "/vsdbg/vsdbg"
       },
@@ -45,7 +42,7 @@
               "StrictHostKeyChecking=no",
               "-o",
               "UserKnownHostsFile /dev/null",
-              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+              "${config:torizon_run_as}@${config:torizon_ip}"
           ],
           "debuggerPath": "/vsdbg/vsdbg"
       },
@@ -69,7 +66,7 @@
               "StrictHostKeyChecking=no",
               "-o",
               "UserKnownHostsFile /dev/null",
-              "${config:torizon_run_as}@${config:torizon_ip}" // user@device
+              "${config:torizon_run_as}@${config:torizon_ip}"
           ],
           "debuggerPath": "/vsdbg/vsdbg"
       },

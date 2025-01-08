@@ -24,7 +24,7 @@
             "port": "${config:torizon_debug_port2}",
             "webRoot": "${workspaceFolder}",
             "pathMapping": {
-                "file://${config:torizon_app_root}/resources/app/": "${workspaceFolder}/./",
+                "file://${config:torizon_app_root}/resources/app/": "${workspaceFolder}/./"
             },
             "enableContentValidation": true,
             "trace": true,
@@ -72,6 +72,6 @@
             "remoteRoot": "${config:torizon_app_root}/resources/app/",
             "preLaunchTask": "start-torizon-debug-arm64",
             "postDebugTask": "stop-torizon-debug"
-        },
+        }
     ]
 }
