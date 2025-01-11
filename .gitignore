@@ -1,3 +1,7 @@
 node_modules/
 **/bin/**
 **/obj/**
+**/build/lib/**
+**/dist
+**/*.egg-info
+**/.pypirc

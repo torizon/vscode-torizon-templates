@@ -23,6 +23,12 @@ services:
         - BRANCH=${BRANCH}
     image: commontorizon/pwsh-gitlab:${BRANCH}
 
+  xonsh:
+    build:
+      context: ../
+      dockerfile: container/Containerfile.xonsh
+    image: commontorizon/xonsh:${BRANCH}
+
   torizon-dev:
     build:
       context: ../

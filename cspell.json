@@ -4,13 +4,22 @@
         "./cspell.json"
     ],
     "files": [
-        "**/{*,.*}/**/*.ps1"
+        "**/{*,.*}/**/*.ps1",
+        "**/{*,.*}/**/*.xsh",
+        "**/{*,.*}/**/*.py"
+    ],
+    "overrides": [
+        {
+            "filename": "**/{*,.*}/**/*.xsh",
+            "languageId": "Xonsh"
+        }
     ],
     "dictionaryDefinitions": [],
     "dictionaries": [],
     "words": [
         "armhf",
         "beagleplay",
+        "DISTRO",
         "Fleetid",
         "listenport",
         "netsh",
@@ -18,10 +27,13 @@
         "Oster",
         "ostree",
         "portproxy",
+        "pylsp",
+        "strerror",
         "tcbuild",
         "TEZI",
         "TORIZONPACKAGES",
-        "workdir"
+        "workdir",
+        "xonsh"
     ],
     "ignoreWords": [
         "torizon",
@@ -82,9 +94,25 @@
                 "#.*?(?=\n|$)",
                 "string"
             ]
+        },
+        {
+            "languageId": "Xonsh",
+            "includeRegExpList": [
+                "#.*?(?=\n|$)",
+                "string"
+            ]
+        },
+        {
+            "languageId": "Python",
+            "includeRegExpList": [
+                "#.*?(?=\n|$)",
+                "string"
+            ]
         }
     ],
     "enableFiletypes": [
-        "powershell"
+        "powershell",
+        "xonsh",
+        "python"
     ]
 }

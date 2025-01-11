@@ -1,0 +1,35 @@
+# Copyright (c) 2025 Toradex
+# SPDX-License-Identifier: MIT
+
+ARG BRANCH=dev
+ARG UID=1000
+
+FROM debian:bookworm-slim
+
+# install the dependencies
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+    python3 \
+    python3-pip \
+    python3-setuptools \
+    pipx \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add the Torizon user with the same UID as the host user
+ARG UID
+RUN useradd -m -u ${UID} torizon
+
+# setup xonsh
+COPY ./bash/setup-xonsh.sh /home/torizon/setup-xonsh.sh
+RUN chmod +x /home/torizon/setup-xonsh.sh
+
+# Switch to the Torizon user
+USER torizon
+
+RUN touch /home/torizon/.xonshrc \
+    && /home/torizon/setup-xonsh.sh
+
+ENTRYPOINT [ "/home/torizon/.local/bin/xonsh" ]
+
+CMD [ "--help" ]

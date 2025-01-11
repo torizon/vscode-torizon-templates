@@ -36,8 +36,21 @@ async function main() {
             // enable console.log
             console.log = _clTmp;
 
-            console.log(
-                JSON.stringify(td)
+            // dump to file
+            let _devsConnected = [];
+            if (fs.existsSync(`${process.env.HOME}/.tcd/connected.json`)) {
+                _devsConnected = JSON.parse(
+                    fs.readFileSync(`${process.env.HOME}/.tcd/connected.json`, "utf8")
+                );
+            }
+
+            let _devJson = td;
+            _devJson["__pass__"] = args[2];
+            _devsConnected.push(_devJson);
+
+            fs.writeFileSync(
+                `${process.env.HOME}/.tcd/connected.json`,
+                JSON.stringify(_devsConnected, null, 4)
             );
 
             exit(0);

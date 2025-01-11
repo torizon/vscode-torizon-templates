@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "apollox": "file:apollox-0.2.1.tgz"
+  }
+}

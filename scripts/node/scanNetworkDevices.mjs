@@ -11,7 +11,7 @@ async function main() {
 
     // show the devices found in async mode
     const devDect = new DeviceDetection((dev) => {
-        _clTmp(`\t\t ${ix} ➡️  ${dev.Hostname} (${dev.Ip}) \n`);
+        _clTmp(`\n\t\t ${ix} ➡️  ${dev.Hostname} (${dev.Ip}) \n`);
         ix++;
     });
 
