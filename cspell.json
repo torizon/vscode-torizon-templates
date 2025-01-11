@@ -61,7 +61,6 @@
         "nodeps",
         "datas",
         "sshpass",
-        "pwsh",
         "armv",
         "aarch",
         "riscv",
