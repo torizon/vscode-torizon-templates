@@ -4,11 +4,10 @@
         {
             "label": "check-deps",
             "detail": "This task will check if the dependencies needed to run\nthe project are installed in the host machine.",
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
             "args": [
-                "-nop",
-                "${workspaceFolder}/.conf/checkDeps.ps1"
+                "${workspaceFolder}/.conf/check-deps.xsh"
             ],
             "dependsOrder": "sequence",
             "icon": {
@@ -56,14 +55,13 @@
         {
             "label": "try-update-template",
             "detail": "This task has automation steps to update the project\nbased on the template used to create it.",
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "-nop",
-                "${workspaceFolder}/.conf/projectUpdater.ps1",
+                "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
                 "${workspaceFolderBasename}",
                 "0"
@@ -87,14 +85,13 @@
         {
             "label": "try-update-template-accepting-all",
             "detail": "This task has automation steps to update the project\nbased on the template used to create it.",
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "args": [
-                "-nop",
-                "${workspaceFolder}/.conf/projectUpdater.ps1",
+                "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
                 "${workspaceFolderBasename}",
                 "1"
@@ -119,17 +116,15 @@
             "label": "run-docker-registry",
             "detail": "",
             "hide": true,
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
             "args": [
-                "-nop",
-                "-file",
-                "${workspaceFolder}/.conf/runContainerIfNotExists.ps1",
-                "-ContainerRuntime",
+                "${workspaceFolder}/.conf/run-container-if-not-exists.xsh",
+                "--container-runtime",
                 "docker",
-                "-RunArguments",
+                "--run-arguments",
                 "\"-d -p 5002:5000 --restart=always registry:2\"",
-                "-ContainerName",
+                "--container-name",
                 "registry"
             ],
             "dependsOrder": "sequence",
@@ -148,17 +143,10 @@
             "label": "run-docker-registry-wsl",
             "detail": "",
             "hide": true,
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
-            "options": {
-                "env": {
-                    "TASKS_USE_PWSH_INSTEAD_BASH": "true"
-                }
-            },
             "args": [
-                "-nop",
-                "-file",
-                "${workspaceFolder}/.vscode/tasks.ps1",
+                "${workspaceFolder}/.vscode/tasks.xsh",
                 "run",
                 "run-docker-registry"
             ],
@@ -178,15 +166,15 @@
             "label": "run-torizon-binfmt",
             "detail": "",
             "hide": true,
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
             "args": [
-                "${workspaceFolder}/.conf/runContainerIfNotExists.ps1",
-                "-ContainerRuntime",
+                "${workspaceFolder}/.conf/run-container-if-not-exists.xsh",
+                "--container-runtime",
                 "docker",
-                "-RunArguments",
+                "--run-arguments",
                 "\"--rm --privileged torizon/binfmt:latest\"",
-                "-ContainerName",
+                "--container-name",
                 "binfmt"
             ],
             "dependsOrder": "sequence",
@@ -205,11 +193,10 @@
             "label": "run-share-wsl-ports",
             "detail": "",
             "hide": true,
-            "command": "pwsh",
+            "command": "xonsh",
             "type": "process",
             "args": [
-                "-nop",
-                "${workspaceFolder}/.conf/shareWSLPorts.ps1",
+                "${workspaceFolder}/.conf/share-wsl-ports.xsh",
                 "${workspaceFolder}"
             ],
             "dependsOrder": "sequence",
@@ -577,9 +564,8 @@
                 }
             },
             "args": [
-                "pwsh",
-                "-nop",
-                "./.conf/torizonIO.ps1",
+                "xonsh",
+                "./.conf/torizon-io.xsh",
                 "update",
                 "fleet",
                 "latest",
