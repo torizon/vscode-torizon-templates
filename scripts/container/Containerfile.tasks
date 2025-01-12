@@ -1,10 +1,14 @@
 ARG BRANCH=dev
-ARG REPO=commontorizon/vscode-torizon-templates
+ARG REPO=torizon/vscode-torizon-templates
 
-FROM commontorizon/pwsh:${BRANCH}
+
+FROM torizonextras/xonsh:${BRANCH}
 
 ARG BRANCH
 ARG REPO
+
+
+USER root
 
 RUN apt-get update && \
     apt-get install -y \
@@ -15,12 +19,29 @@ RUN apt-get update && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /root
+## Setup Docker
+# to share the docker socket with the host
+VOLUME /var/run/docker.sock:/var/run/docker.sock
+
+# use docker tools
+COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker:dind /usr/local/libexec/docker/cli-plugins /usr/local/lib/docker/cli-plugins
+
+WORKDIR /home/torizon
 RUN git clone --branch ${BRANCH} \
-    https://github.com/${REPO}.git
+    https://github.com/${REPO}.git && \
+    mv vscode-torizon-templates .apollox
+
+USER torizon
 
 WORKDIR /workspace
 
-ENTRYPOINT [ "pwsh", "-c" ]
+# update the path
+ENV PATH="/home/torizon/.local/bin:${PATH}"
 
-CMD [ "/scripts/tasks.ps1" ]
+ENTRYPOINT [ \
+    "/home/torizon/.local/bin/xonsh", \
+        "./.vscode/tasks.xsh" \
+]
+
+CMD [ "" ]

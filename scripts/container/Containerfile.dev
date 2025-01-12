@@ -1,22 +1,13 @@
 ARG BRANCH=dev
 ARG UID=1000
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+FROM torizonextras/torizon-dev-tasks:${BRANCH}
 
 ARG BRANCH
 ARG UID
 
-COPY ./tui /build
-WORKDIR /build
-
-RUN dotnet restore && \
-dotnet publish -c Release
-
-
-FROM commontorizon/torizon-dev-tasks:${BRANCH}
-
-ARG BRANCH
-ARG UID
+USER root
 
 # we need to install all the ApolloX dependencies
 # powershell wget git curl is already installed in the base image
@@ -71,20 +62,18 @@ COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
 COPY --from=docker:dind /usr/local/libexec/docker/cli-plugins /usr/local/lib/docker/cli-plugins
 
 # get current scripts
-RUN mv /root/vscode-torizon-templates /root/.apollox
+WORKDIR /home/torizon/.apollox/scripts/node
 RUN chmod -R 757 /root && \
-    cd /root/.apollox/scripts/node && \
-    npm install ./apollox-0.1.4.tgz
-
-# from build copy the libraries
-COPY --from=build /build/bin/Release/net6.0/publish/ /root/.tui/
+    npm install ./apollox-0.2.1.tgz
 
 # inject the zygote
 COPY ./zygote.ps1 /root/.apollox/scripts/zygote.ps1
-RUN chmod +x /root/.apollox/scripts/zygote.ps1 && \
-    ln -s /root/.apollox/scripts/zygote.ps1 /usr/local/bin/zygote
+RUN chmod +x /home/torizon/.apollox/script/zygote.xsh && \
+    ln -s /home/torizon/.apollox/script/zygote.xsh /usr/local/bin/zygote
+
+USER torizon
 
 # the workspace will be the mount point for local path
 WORKDIR /workspace
 
-CMD [ "pwsh" ]
+CMD [ "xonsh" ]

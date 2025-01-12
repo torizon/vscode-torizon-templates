@@ -1,10 +1,12 @@
-version: "3.9"
 services:
-  pwsh:
+
+
+  xonsh:
     build:
       context: ../
-      dockerfile: container/Containerfile.pwsh
-    image: commontorizon/pwsh:${BRANCH}
+      dockerfile: container/Containerfile.xonsh
+    image: torizonextras/xonsh:${BRANCH}
+
 
   tasks:
     build:
@@ -13,21 +15,17 @@ services:
       args:
         - BRANCH=${BRANCH}
         - REPO=toradex/vscode-torizon-templates
-    image: commontorizon/torizon-dev-tasks:${BRANCH}
+    image: torizonextras/torizon-dev-tasks:${BRANCH}
 
-  pwsh-gitlab:
+
+  xonsh-wrapper:
     build:
       context: ../
-      dockerfile: container/Containerfile.gitlab
+      dockerfile: container/Containerfile.wrapper
       args:
         - BRANCH=${BRANCH}
-    image: commontorizon/pwsh-gitlab:${BRANCH}
+    image: torizonextras/xonsh-wrapper:${BRANCH}
 
-  xonsh:
-    build:
-      context: ../
-      dockerfile: container/Containerfile.xonsh
-    image: commontorizon/xonsh:${BRANCH}
 
   torizon-dev:
     build:
@@ -36,11 +34,11 @@ services:
       args:
         - BRANCH=${BRANCH}
         - UID=${UUID}
-    image: commontorizon/torizon-dev:${BRANCH}
+    image: torizonextras/torizon-dev:${BRANCH}
     privileged: true
     network_mode: host
     environment:
-      - APOLLOX_TEMPLATES_GIT_REPO=https://github.com/toradex/vscode-torizon-templates.git
+      - APOLLOX_TEMPLATES_GIT_REPO=https://github.com/torizon/vscode-torizon-templates.git
       - APOLLOX_TEMPLATES_GIT_REPO_BRANCH=${BRANCH}
       #- APOLLOX_TEMPLATES_GIT_TAG=
       - WSL_DISTRO_NAME=${WSL_DISTRO_NAME}

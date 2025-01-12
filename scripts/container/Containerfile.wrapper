@@ -4,17 +4,23 @@ FROM commontorizon/torizon-dev-tasks:${BRANCH}
 
 ARG BRANCH
 
+USER root
+
+# to share the docker socket with the host
+VOLUME /var/run/docker.sock:/var/run/docker.sock
+
 # use docker tools
 COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
 COPY --from=docker:dind /usr/local/libexec/docker/cli-plugins /usr/local/lib/docker/cli-plugins
 
 # from scripts we need only the gitlabWrapper.ps1
-WORKDIR /root/vscode-torizon-templates
-RUN rm -rf /scripts
-COPY ./gitlabWrapper.ps1 /usr/local/bin/gitlabWrapper.ps1
-RUN chmod +x /usr/local/bin/gitlabWrapper.ps1
+WORKDIR /home/torizon/.apollox
+COPY ./xonsh-wrapper.xsh /usr/local/bin/xonsh-wrapper.xsh
+RUN chmod +x /usr/local/bin/xonsh-wrapper.xsh
+
+USER torizon
 WORKDIR /workspace
 
 ENTRYPOINT []
 
-CMD [ "pwsh" ]
+CMD [ "xonsh" ]
