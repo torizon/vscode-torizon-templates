@@ -28,7 +28,8 @@ jobs:
   check-eof-new-line:
     runs-on: ubuntu-latest
     container:
-      image: torizonextras/torizon-dev:next
+      image: torizonextras/torizon-dev:dev
+      options: --user root
     name: Check EOF New Line
     steps:
       - uses: actions/checkout@v3
@@ -38,4 +39,4 @@ jobs:
         shell: bash
 
         run: |
-          xonsh ./scripts/valid-new-line.xsh
+          /home/torizon/.local/bin/xonsh ./scripts/valid-new-line.xsh
