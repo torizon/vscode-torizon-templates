@@ -11,6 +11,8 @@
 
 # use the xonsh environment to update the OS environment
 $UPDATE_OS_ENVIRON = True
+# this script expect to have the error handling
+$RAISE_SUBPROC_ERROR = False
 
 import os
 import sys

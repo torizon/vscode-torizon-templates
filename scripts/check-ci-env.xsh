@@ -11,6 +11,8 @@
 
 # use the xonsh environment to update the OS environment
 $UPDATE_OS_ENVIRON = True
+# this script should handle the subprocess errors
+$RAISE_SUBPROC_ERROR = False
 
 import os
 from torizon_templates_utils.errors import Error,Error_Out

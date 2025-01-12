@@ -10,6 +10,8 @@
 
 # use the xonsh environment to update the OS environment
 $UPDATE_OS_ENVIRON = True
+# this script should handle the subprocess errors
+$RAISE_SUBPROC_ERROR = False
 
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""
