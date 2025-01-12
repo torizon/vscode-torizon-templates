@@ -1,7 +1,9 @@
 {
     "version": "0.2",
     "ignorePaths": [
-        "./cspell.json"
+        "./cspell.json",
+        "**/qtpp/**",
+        "python3Pyside2QML/**"
     ],
     "files": [
         "**/{*,.*}/**/*.ps1",
@@ -22,6 +24,7 @@
         "DISTRO",
         "Fleetid",
         "listenport",
+        "mypy",
         "netsh",
         "notok",
         "Oster",
@@ -83,7 +86,8 @@
         "fullname",
         "Devs",
         "wbem",
-        "depok"
+        "depok",
+        "repr"
     ],
     "import": [],
     "languageSettings": [
