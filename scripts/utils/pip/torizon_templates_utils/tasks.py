@@ -517,6 +517,8 @@ class TaskRunner:
         ret: List[str] = []
 
         for value in env:
+            if "workspaceFolderBasename" in value:
+                value = self.__replace_env_var("workspaceFolderBasename", value)
             if "workspaceFolder" in value:
                 value = self.__replace_env_var("workspaceFolder", value)
             ret.append(value)
@@ -893,6 +895,10 @@ class TaskRunner:
 
         # we need to change the cwd if it's set
         if _cwd is not None:
+            _cwd = self.__check_workspace_folder([_cwd])[0]
+            _cwd = self.__check_config([_cwd])[0]
+            _cwd = self.__check_vscode_env([_cwd])[0]
+
             os.chdir(_cwd)
 
         # execute the task

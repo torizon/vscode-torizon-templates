@@ -120,6 +120,8 @@ if "TASKS_CUSTOM_SETTINGS_JSON" in os.environ:
 try:
     # setting the workspaceFolder
     os.environ["workspaceFolder"] = _script_root
+    # setting the workspaceFolderBasename
+    os.environ["workspaceFolderBasename"] = os.path.basename(_script_root)
 
     # parse the tasks.json file
     _settings = vscode_tasks.get_settings_json(_script_root, _tasks_settings_json)
