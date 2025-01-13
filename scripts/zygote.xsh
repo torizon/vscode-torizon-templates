@@ -361,6 +361,39 @@ def _target_shutdown(args):
     _target_console(args)
 
 
+def _tasks_list(args):
+    if os.path.exists(f"./.vscode/tasks.json") and os.path.exists(f"./.vscode/tasks.xsh"):
+        xonsh ./.vscode/tasks.xsh list
+    else:
+        print(f"❌ :: Current folder [{os.getcwd()}] is not a valid Torizon template :: ❌", color=Color.RED)
+        Error_Out(
+            f"❌ :: Current folder [{os.getcwd()}] does not ./.vscode/tasks.json or ./.vscode/tasks.xsh :: ❌",
+            Error.ETOMCRUISE
+        )
+
+
+def _tasks_desc(args):
+    if os.path.exists(f"./.vscode/tasks.json") and os.path.exists(f"./.vscode/tasks.xsh"):
+        xonsh ./.vscode/tasks.xsh desc @(args.label)
+    else:
+        print(f"❌ :: Current folder [{os.getcwd()}] is not a valid Torizon template :: ❌", color=Color.RED)
+        Error_Out(
+            f"❌ :: Current folder [{os.getcwd()}] does not ./.vscode/tasks.json or ./.vscode/tasks.xsh :: ❌",
+            Error.ETOMCRUISE
+        )
+
+
+def _tasks_run(args):
+    if os.path.exists(f"./.vscode/tasks.json") and os.path.exists(f"./.vscode/tasks.xsh"):
+        xonsh ./.vscode/tasks.xsh run @(args.label)
+    else:
+        print(f"❌ :: Current folder [{os.getcwd()}] is not a valid Torizon template :: ❌", color=Color.RED)
+        Error_Out(
+            f"❌ :: Current folder [{os.getcwd()}] does not ./.vscode/tasks.json or ./.vscode/tasks.xsh :: ❌",
+            Error.ETOMCRUISE
+        )
+
+
 class PrintVersionAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         distro_info = distro.os_release_info()
@@ -513,6 +546,40 @@ parser_init.set_defaults(func=_init_workspace)
 # ------------------------------------------------------------------------- INIT
 
 
+# ------------------------------------------------------------------------ TASKS
+parser_tasks = subparser.add_parser(
+    "tasks",
+    help="Show the list of tasks available on workspace"
+)
+parser_tasks_sub = parser_tasks.add_subparsers(title="subcommands")
+parser_tasks_list = parser_tasks_sub.add_parser(
+    "list",
+    help="Show the list of tasks available on workspace"
+)
+parser_tasks_list.set_defaults(func=_tasks_list)
+parser_tasks_desc = parser_tasks_sub.add_parser(
+    "desc",
+    help="Show the description of a given task"
+)
+parser_tasks_desc.add_argument(
+    "label",
+    type=str,
+    help="Name of the task to show the description"
+)
+parser_tasks_desc.set_defaults(func=_tasks_desc)
+parser_tasks_run = parser_tasks_sub.add_parser(
+    "run",
+    help="Run a given task"
+)
+parser_tasks_run.add_argument(
+    "label",
+    type=str,
+    help="Name of the task to run"
+)
+parser_tasks_run.set_defaults(func=_tasks_run)
+# ------------------------------------------------------------------------ TASKS
+
+
 # ---------------------------------------------------------------------- VERSION
 parser.add_argument(
     "--version", "-v",
@@ -523,8 +590,7 @@ parser.add_argument(
 # ---------------------------------------------------------------------- VERSION
 
 
-# TODO: to this work it need to be initialized by the /etc/bash_completion
-#       we can add the content of the --print-completion to ~/.bash_completion
+# FIXME: only export this argument when need to update the bash completion
 # Magic completion 🌈
 shtab.add_argument_to(parser, "--print-completion")
 
