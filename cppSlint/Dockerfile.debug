@@ -32,7 +32,7 @@ ARG GPU=
 ##
 # Slint Version
 ##
-ARG SLINT_VERSION=nightly
+ARG SLINT_VERSION=1.9.2
 
 ##
 # Deploy Step

@@ -23,7 +23,7 @@ ARG GPU=
 ##
 # Slint Version
 ##
-ARG SLINT_VERSION=nightly
+ARG SLINT_VERSION=1.9.2
 
 # BUILD ------------------------------------------------------------------------
 FROM torizon/debian-cross-toolchain-${IMAGE_ARCH}${GPU}:${CROSS_SDK_BASE_TAG} AS build
