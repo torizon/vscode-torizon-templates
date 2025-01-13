@@ -296,6 +296,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
+                "build-container-image-sdk-arm64"
             ],
             "icon": {
                 "id": "trash",
@@ -323,6 +324,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
+                "build-container-image-sdk-arm"
             ],
             "icon": {
                 "id": "trash",
