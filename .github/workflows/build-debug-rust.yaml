@@ -8,6 +8,9 @@ on:
 jobs:
   rust-debug:
     runs-on: ubuntu-latest
+    container:
+      image: torizonextras/torizon-dev:dev
+      options: --user root
     if: github.ref == 'refs/heads/bookworm' || github.ref == 'refs/heads/dev'
     name: Rust Container Debug
     strategy:
@@ -26,7 +29,7 @@ jobs:
           cat abs-path
 
       - name: Build ${{ matrix.project.folder }} Dockerfile
-        shell: pwsh
+        shell: xonsh {0}
         env:
           PROJECT_FOLDER: ${{ matrix.project.folder }}
           PROJECT_CONTAINER: ${{ matrix.project.container }}
@@ -34,31 +37,36 @@ jobs:
           DOCKER_LOGIN: localhost:5002
 
         run: |
-          $_vendor = ($env:VENDOR | ConvertFrom-Json)
-          $env:TORIZON_ARCH = $_vendor.torizon_arch
-          $env:PROJECT_ARCH = $_vendor.arch
+          import os
+          import json
 
-          scripts/createFromTemplate.ps1 `
-            $env:GITHUB_WORKSPACE/$env:PROJECT_FOLDER `
-            "${env:PROJECT_FOLDER}CITest" `
-            "${env:PROJECT_CONTAINER}-ci-test" `
-            $env:GITHUB_WORKSPACE `
-            $env:PROJECT_FOLDER `
-            false `
-            false
+          $RAISE_SUBPROC_ERROR = True
+          $XONSH_SHOW_TRACEBACK = True
+          $UPDATE_OS_ENVIRON = True
 
-          cp abs-path "${env:GITHUB_WORKSPACE}/${env:PROJECT_FOLDER}CITest"
-          cd "${env:GITHUB_WORKSPACE}/${env:PROJECT_FOLDER}CITest"
+          vendor = json.loads(os.environ['VENDOR'])
+          $TORIZON_ARCH = vendor["torizon_arch"]
+          $PROJECT_ARCH = vendor["arch"]
 
+          xonsh ./scripts/create-from-template.xsh \
+                  @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}") \
+                  @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                  @(f"{os.environ['PROJECT_CONTAINER']}-ci-test") \
+                  @(os.environ['GITHUB_WORKSPACE']) \
+                  @(os.environ['PROJECT_FOLDER']) \
+                  "false" \
+                  "false"
 
-          $_settingsJson = Get-Content -Path ".vscode/settings.json" | ConvertFrom-Json
-          $_settingsJson.torizon_arch = $env:TORIZON_ARCH
-          Set-Content -Path ".vscode/settings.json" -Value ($_settingsJson | ConvertTo-Json) -Encoding UTF8
+          cp "abs-path" @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
+          os.chdir(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
 
-          # TODO: this is bad, but it's the only way to make it work for now
-          chmod 777 . -R
+          with open(".vscode/settings.json", "r") as file:
+            settings_json = json.load(file)
+          settings_json["torizon_arch"] = os.environ['TORIZON_ARCH']
+          with open(".vscode/settings.json", "w") as file:
+            json.dump(settings_json, file, indent=4)
 
-          ./.vscode/tasks.ps1 run run-torizon-binfmt
-          ./.vscode/tasks.ps1 run build-debug-${env:PROJECT_ARCH}
-          ./.vscode/tasks.ps1 run copy-debug-executable-${env:PROJECT_ARCH}
-          ./.vscode/tasks.ps1 run build-container-torizon-debug-${env:PROJECT_ARCH}
+          xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
+          xonsh ./.vscode/tasks.xsh run @(f"build-debug-{os.environ['PROJECT_ARCH']}")
+          xonsh ./.vscode/tasks.xsh run @(f"copy-debug-executable-{os.environ['PROJECT_ARCH']}")
+          xonsh ./.vscode/tasks.xsh run @(f"build-container-torizon-debug-{os.environ['PROJECT_ARCH']}")
