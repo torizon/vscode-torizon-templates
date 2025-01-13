@@ -18,11 +18,11 @@ jobs:
         project:
           - folder: cppQML
             container: cpp-qml
-            vendor: "{ arch: 'arm64', torizon_arch: 'aarch64' }"
+            vendor: '{ "arch": "arm64", "torizon_arch": "aarch64" }'
 
           - folder: cppSlint
             container: cpp-slint
-            vendor: "{ arch: 'arm64', torizon_arch: 'aarch64' }"
+            vendor: '{ "arch": "arm64", "torizon_arch": "aarch64" }'
 
     steps:
       - uses: actions/checkout@v3

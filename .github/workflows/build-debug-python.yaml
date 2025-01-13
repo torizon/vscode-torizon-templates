@@ -18,7 +18,7 @@ jobs:
         project:
           - folder: python3Console
             container: python3-console
-            vendor: "{ arch: 'arm64', torizon_arch: 'aarch64' }"
+            vendor: '{ "arch": "arm64", "torizon_arch": "aarch64" }'
 
     steps:
       - uses: actions/checkout@v3
