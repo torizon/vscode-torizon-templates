@@ -15,7 +15,7 @@ jobs:
         project:
           - folder: python3Console
             container: python3-console
-            vendor: "{ arch: 'arm64', torizon_arch: 'aarch64' }"
+            vendor:  '{ "arch": "arm64", "torizon_arch": "aarch64" }'
 
     steps:
       - uses: actions/checkout@v3
@@ -25,8 +25,19 @@ jobs:
           echo "${{ github.workspace }}" >> abs-path
           cat abs-path
 
+      - name: Setup Xonsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip pipx
+          sudo bash ./scripts/bash/setup-xonsh.sh
+          sudo ln -s /root/.local/bin/xonsh /usr/bin/xonsh
+
+      - name: Update torizon-utils module
+        run: |
+          pipx inject -f xonsh ./scripts/utils/pip/
+
       - name: Build ${{ matrix.project.folder }} Dockerfile
-        shell: pwsh
+        shell: xonsh {0}
         env:
           PROJECT_FOLDER: ${{ matrix.project.folder }}
           PROJECT_CONTAINER: ${{ matrix.project.container }}
@@ -34,25 +45,34 @@ jobs:
           DOCKER_LOGIN: localhost:5002
 
         run: |
-          $_vendor = ($env:VENDOR | ConvertFrom-Json)
-          $env:TORIZON_ARCH = $_vendor.torizon_arch
-          $env:PROJECT_ARCH = $_vendor.arch
+          import os
+          import json
 
-          scripts/createFromTemplate.ps1 `
-            $env:GITHUB_WORKSPACE/$env:PROJECT_FOLDER `
-            "${env:PROJECT_FOLDER}CITest" `
-            "${env:PROJECT_CONTAINER}-ci-test" `
-            $env:GITHUB_WORKSPACE `
-            $env:PROJECT_FOLDER `
-            false `
-            false
+          $RAISE_SUBPROC_ERROR = True
+          $XONSH_SHOW_TRACEBACK = True
+          $UPDATE_OS_ENVIRON = True
 
-          cp abs-path "${env:GITHUB_WORKSPACE}/${env:PROJECT_FOLDER}CITest"
-          cd "${env:GITHUB_WORKSPACE}/${env:PROJECT_FOLDER}CITest"
+          vendor = json.loads(os.environ['VENDOR'])
+          $TORIZON_ARCH = vendor["torizon_arch"]
+          $PROJECT_ARCH = vendor["arch"]
 
-          $_settingsJson = Get-Content -Path ".vscode/settings.json" | ConvertFrom-Json
-          $_settingsJson.torizon_arch = $env:TORIZON_ARCH
-          Set-Content -Path ".vscode/settings.json" -Value ($_settingsJson | ConvertTo-Json) -Encoding UTF8
+          xonsh ./scripts/create-from-template.xsh \
+                  @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}") \
+                  @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                  @(f"{os.environ['PROJECT_CONTAINER']}-ci-test") \
+                  @(os.environ['GITHUB_WORKSPACE']) \
+                  @(os.environ['PROJECT_FOLDER']) \
+                  "false" \
+                  "false"
 
-          ./.vscode/tasks.ps1 run run-torizon-binfmt
-          ./.vscode/tasks.ps1 run build-container-torizon-debug-${env:PROJECT_ARCH}
+          cp "abs-path" @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
+          os.chdir(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
+
+          with open(".vscode/settings.json", "r") as file:
+            settings_json = json.load(file)
+          settings_json["torizon_arch"] = os.environ['TORIZON_ARCH']
+          with open(".vscode/settings.json", "w") as file:
+            json.dump(settings_json, file, indent=4)
+
+          xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
+          xonsh ./.vscode/tasks.xsh run @(f"build-container-torizon-debug-{os.environ['PROJECT_ARCH']}")

@@ -48,6 +48,7 @@ arg_parser.add_argument(
 args = arg_parser.parse_args()
 container_runtime = args.container_runtime.replace("\"", "")
 run_arguments = args.run_arguments.replace("\"", "")
+run_arguments = run_arguments.replace("'", "")
 container_name = args.container_name.replace("\"", "")
 
 if "GITLAB_CI" in os.environ:
