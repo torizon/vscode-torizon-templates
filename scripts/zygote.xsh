@@ -343,6 +343,42 @@ def _target_console(args):
         )
 
 
+def _target_list_builtin_dto(args):
+    _target = __get_target()
+
+    if _target == None:
+        Error_Out(
+            "❌ :: No target device set :: ❌",
+            Error.ENOFOUND
+        )
+    else:
+        _target_get(args)
+
+        cd $SCRIPT_PATH
+        xonsh ./target-list-device-tree-overlays.xsh \
+            @(f"{_target['Login']}") \
+            @(f"{_target['__pass__']}") \
+            @(f"{_target['Ip']}")
+
+
+def _target_list_applied_dto(args):
+    _target = __get_target()
+
+    if _target == None:
+        Error_Out(
+            "❌ :: No target device set :: ❌",
+            Error.ENOFOUND
+        )
+    else:
+        _target_get(args)
+
+        cd $SCRIPT_PATH
+        xonsh ./target-list-applied-device-tree-overlays.xsh \
+            @(f"{_target['Login']}") \
+            @(f"{_target['__pass__']}") \
+            @(f"{_target['Ip']}")
+
+
 def _init_workspace(args):
     xonsh @(f"{os.environ['HOME']}/.apollox/scripts/init-workspace.xsh")
 
@@ -392,6 +428,25 @@ def _tasks_run(args):
             f"❌ :: Current folder [{os.getcwd()}] does not ./.vscode/tasks.json or ./.vscode/tasks.xsh :: ❌",
             Error.ETOMCRUISE
         )
+
+
+def _tasks_apply_dto(args):
+    _target = __get_target()
+
+    if _target == None:
+        Error_Out(
+            "❌ :: No target device set :: ❌",
+            Error.ENOFOUND
+        )
+    else:
+        _target_get(args)
+
+        cd $SCRIPT_PATH
+        xonsh ./apply-device-tree-overlay.xsh \
+            @(f"{_target['Login']}") \
+            @(f"{_target['__pass__']}") \
+            @(f"{_target['Ip']}") \
+            @(args.dto_list)
 
 
 class PrintVersionAction(argparse.Action):
@@ -480,6 +535,26 @@ parser_target_shutdown = parser_target_sub.add_parser(
     help="Shutdown the target device"
 )
 parser_target_shutdown.set_defaults(func=_target_shutdown)
+parser_target_list_built_in = parser_target_sub.add_parser(
+    "list-builtin-dto",
+    help="Show a list of available pre-built overlays that can be applied to the target device"
+)
+parser_target_list_built_in.set_defaults(func=_target_list_builtin_dto)
+parser_target_list_applied = parser_target_sub.add_parser(
+    "list-applied-dto",
+    help="Show a list of the overlays applied to the target device"
+)
+parser_target_list_applied.set_defaults(func=_target_list_applied_dto)
+parser_target_apply_dto = parser_target_sub.add_parser(
+    "apply-dto",
+    help="Apply a list of device tree overlay to the target device"
+)
+parser_target_apply_dto.add_argument(
+    "dto_list",
+    type=str,
+    help="List of device tree overlays to apply (comma separated)"
+)
+parser_target_apply_dto.set_defaults(func=_tasks_apply_dto)
 # ----------------------------------------------------------------------- TARGET
 
 
