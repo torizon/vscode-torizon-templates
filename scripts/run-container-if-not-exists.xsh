@@ -68,6 +68,15 @@ _exec_container_info = !(@(container_runtime) container inspect @(container_name
 if _exec_container_info.returncode == 0:
     print(f"Container {container_name} already created")
     print(f"Checking if container {container_name} is running...")
+    _exec_info = json.loads(_exec_container_info.out)
+
+    if _exec_info[0]["State"]["Running"]:
+        print(f"Container {container_name} is already running")
+    else:
+        print(f"Container {container_name} is not running. Starting ...")
+        print(f"Cmd: {container_runtime} start {container_name}")
+        evalx(f"{container_runtime} start {container_name}")
+
 else:
     if "No such container" in _exec_container_info.err:
         print("Container does not exists. Starting ...")

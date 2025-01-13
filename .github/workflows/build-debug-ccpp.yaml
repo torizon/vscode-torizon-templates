@@ -70,6 +70,9 @@ jobs:
           with open(".vscode/settings.json", "w") as file:
             json.dump(settings_json, file, indent=4)
 
+          # FIXME:  this is bad, but it's the only to make it work here
+          chmod 777 . -R
+
           xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
           xonsh ./.vscode/tasks.xsh run @(f"build-debug-{os.environ['PROJECT_ARCH']}")
           xonsh ./.vscode/tasks.xsh run @(f"build-container-torizon-debug-{os.environ['PROJECT_ARCH']}")
