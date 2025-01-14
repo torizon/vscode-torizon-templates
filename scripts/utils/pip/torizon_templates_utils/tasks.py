@@ -428,6 +428,8 @@ class TaskRunner:
         self.__settings = settings
         self.__debug = debug
         self.__gitlab_ci = False
+        self.__github_ci = False
+        self.__docker_host = "tcp://docker:2375"
         self.__override_env = True
         self.__cli_inputs: Dict[str, str] = {}
         self.__can_receive_interactive_input = False
@@ -442,6 +444,10 @@ class TaskRunner:
 
         if "GITLAB_CI" in os.environ:
             self.__gitlab_ci = True
+
+        if "GITHUB_WORKSPACE_DOCKER" in os.environ:
+            self.__github_ci = True
+            self.__docker_host_port = "tcp://0.0.0.0:2376"
 
         if "TASKS_OVERRIDE_ENV" in os.environ:
             self.__override_env = False
@@ -604,7 +610,7 @@ class TaskRunner:
 
 
     def __contains_special_chars(self, str: str) -> bool:
-        _pattern = r"[^a-zA-Z0-9\.\-_|>\/=]"
+        _pattern = r"[^a-zA-Z0-9\.\-_|>\/=:+&]"
         return re.search(_pattern, str) is not None
 
 
@@ -794,9 +800,9 @@ class TaskRunner:
         return None
 
 
-    def __replace_docker_host(self, arg: str) -> str:
+    def __replace_docker_host(self, arg: str, addr: str = "tcp://docker:2375") -> str:
         if "DOCKER_HOST" in arg:
-            arg = arg.replace("DOCKER_HOST=", "DOCKER_HOST=tcp://docker:2375")
+            arg = arg.replace("DOCKER_HOST=", f"DOCKER_HOST={addr}")
 
         return arg
 
@@ -877,8 +883,8 @@ class TaskRunner:
         _args = self.__quoting_special_chars(_args)
 
         # if in gitlab ci env we need to replace the DOCKER_HOST
-        if self.__gitlab_ci:
-            _cmd = self.__replace_docker_host(_cmd)
+        if self.__gitlab_ci or self.__github_ci:
+            _cmd = self.__replace_docker_host(_cmd, self.__docker_host_port)
 
         # inject env
         if _env is not None:

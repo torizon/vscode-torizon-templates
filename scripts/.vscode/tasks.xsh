@@ -123,6 +123,19 @@ try:
     # setting the workspaceFolderBasename
     os.environ["workspaceFolderBasename"] = os.path.basename(_script_root)
 
+
+    ## Platform specific edge cases
+    if "GITHUB_WORKSPACE" in os.environ:
+        os.environ["HOST_GITHUB_WORKSPACE"] = $(cat ./abs-path)
+        os.environ["DOCKER_HOST"] = "tcp://docker:2376"
+
+    # for Torizon Dev container in container
+    if "APOLLOX_WORKSPACE" in os.environ:
+        os.environ["workspaceFolder"] = os.environ["APOLLOX_WORKSPACE"]
+
+    if "GITLAB_CI" in os.environ:
+        os.environ["DOCKER_HOST"] = "tcp://docker:2375"
+
     # parse the tasks.json file
     _settings = vscode_tasks.get_settings_json(_script_root, _tasks_settings_json)
     _tasks = vscode_tasks.get_tasks_json(_script_root)
