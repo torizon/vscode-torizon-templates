@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "use-release-task-message",
+            "label": "using-release-task-message",
             "type": "shell",
-            "command": "echo  'This template has no debug, use the run-container-torizon-release-<arch> task (TASK RUNNER tab) to build the container and run it on the board'",
+            "command": "echo  'This template has no debug, so it is using the run-container-torizon-release-<arch> task (TASK RUNNER tab). This debug task is just to allow it be executed with other templates that have debug, on a multi-container project.'",
             "icon": {
                 "id": "layers",
                 "color": "terminal.ansiCyan"
@@ -12,7 +12,7 @@
             "presentation": {
                 "echo": false,
                 "reveal": "always",
-                "focus": true,
+                "focus": false,
                 "panel": "dedicated"
             }
         }

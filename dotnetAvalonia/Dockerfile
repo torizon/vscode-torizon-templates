@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3-8.0
+ARG BASE_VERSION=4.2.0
 
 ##
 # Directory of the application inside container
@@ -50,14 +50,11 @@ RUN dotnet restore __change__.csproj && \
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/dotnet-x-gtk:${BASE_VERSION} AS deploy
+    torizon/dotnet8-gtk3${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG GPU
 ARG APP_ROOT
-
-# stick to bookworm on /etc/apt/sources.list.d
-RUN sed -i 's/sid/bookworm/g' /etc/apt/sources.list.d/debian.sources
 
 # for vivante GPU we need some "special" sauce
 RUN apt-get -q -y update && \
@@ -75,6 +72,7 @@ RUN apt-get -q -y update && \
 RUN apt-get -y update && apt-get install -y --no-install-recommends \
     libice6 \
     libsm6 \
+    libx11-6 \
     # ADD YOUR PACKAGES HERE
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
     # __torizon_packages_prod_start__

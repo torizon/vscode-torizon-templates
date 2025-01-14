@@ -1,5 +1,4 @@
 const std = @import("std");
-const Path = std.Build.LazyPath;
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -7,7 +6,7 @@ pub fn build(b: *std.Build) void {
 
     const binary = b.addExecutable(.{
         .name = "__change__",
-        .root_source_file = Path.relative("src/main.zig"),
+        .root_source_file = b.path("src/main.zig"),
         // or (implicit LazyPath struct, w/ path field)
         // .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
@@ -34,7 +33,10 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(binary);
 
     // overwrite default output
-    b.resolveInstallPrefix(b.fmt("zig-out/{s}/{s}", .{ @tagName(target.getCpuArch()), @tagName(optimize) }), .{});
+    b.resolveInstallPrefix(b.fmt("zig-out/{s}/{s}", .{
+        @tagName(binary.rootModuleTarget().cpu.arch),
+        @tagName(optimize),
+    }), .{});
 
     // This *creates* a Run step in the build graph, to be executed when another
     // step is evaluated that depends on it. The next line below will establish

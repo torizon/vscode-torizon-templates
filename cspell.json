@@ -28,6 +28,7 @@
         "mypy",
         "netsh",
         "notok",
+        "xonsh",
         "Oster",
         "ostree",
         "portproxy",

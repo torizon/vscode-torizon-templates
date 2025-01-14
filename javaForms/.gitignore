@@ -1,8 +1,0 @@
-dist/
-build/
-
-credentials.zip
-*.lock.yml
-
-.conf/.depok
-.conf/.docok

@@ -1,9 +1,0 @@
-{
-    "packages": [
-        "openssh-client",
-        "sshpass"
-    ],
-    "installDepsScripts": [
-        ".conf/installDepsScripts/installRustDeps.sh"
-    ]
-}

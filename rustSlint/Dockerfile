@@ -1,10 +1,10 @@
 # ARGUMENTS --------------------------------------------------------------------
 ##
 # Base container version
-# Using Slint v1.7.2 base images
+# Using Slint v1.8.0 base images
 ##
-ARG CROSS_SDK_BASE_TAG=3.3.1-bookworm-1.9.1
-ARG BASE_VERSION=3.3.1
+ARG CROSS_SDK_BASE_TAG=4.0.0-1.8.0
+ARG BASE_VERSION=4.2.0
 
 ##
 # Board architecture
@@ -75,7 +75,7 @@ RUN TARGET=$(cat /rust-toolchain-arch.txt) && \
     cp -r target/$TARGET/release build
 
 # DEPLOY ------------------------------------------------------------------------
-FROM --platform=linux/${IMAGE_ARCH} commontorizon/wayland-base${GPU}:${BASE_VERSION} AS deploy
+FROM --platform=linux/${IMAGE_ARCH} torizon/wayland-base${GPU}:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -107,8 +107,6 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
 	&& apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
 
-# Default to the Skia backend for best performance
-ENV SLINT_BACKEND=linuxkms-skia
 # Default to Slint running in fullscreen
 ENV SLINT_FULLSCREEN=1
 

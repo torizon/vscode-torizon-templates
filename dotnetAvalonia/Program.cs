@@ -16,14 +16,14 @@ class Program
         .StartWithClassicDesktopLifetime(args);
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp() 
+    public static AppBuilder BuildAvaloniaApp()
     {
         IReadOnlyList<X11RenderingMode> renders = new List<X11RenderingMode>
             {
                 X11RenderingMode.Egl,
                 X11RenderingMode.Software
             };
-    
+
         return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .WithInterFont()

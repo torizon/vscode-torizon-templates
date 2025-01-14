@@ -2,7 +2,7 @@
 ##
 # Base container version
 ##
-ARG BASE_VERSION=3.3.1-bookworm
+ARG BASE_VERSION=4.2.0
 
 ##
 # Board architecture
@@ -20,7 +20,7 @@ ARG APP_ROOT=
 
 # BUILD ------------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/debian:${BASE_VERSION} AS build
+    torizon/debian:${BASE_VERSION} AS build
 
 ARG IMAGE_ARCH
 ARG APP_ROOT
@@ -58,7 +58,7 @@ RUN rm -rf ${APP_ROOT}/out
 
 RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         npm run output-arm64; \
-    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
         npm run output-arm; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         npm run output-amd64; \
@@ -71,7 +71,7 @@ RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
 
 # DEPLOY -----------------------------------------------------------------------
 FROM --platform=linux/${IMAGE_ARCH} \
-    commontorizon/debian:${BASE_VERSION} AS deploy
+    torizon/debian:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG APP_ROOT

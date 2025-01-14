@@ -1,8 +1,0 @@
-' Gambas class file
-
-
-Public Sub Button1_Click()
-
-  Message.Info("TORIZON")
-
-End

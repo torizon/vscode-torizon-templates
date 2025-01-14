@@ -2,8 +2,8 @@
 ##
 # Base container version
 ##
-ARG SDK_BASE_VERSION=3.3.1
-ARG BASE_VERSION=3.3.1-bookworm
+ARG SDK_BASE_VERSION=0.13.0
+ARG BASE_VERSION=4.2.0
 
 ##
 # Board architecture
@@ -17,17 +17,14 @@ ARG APP_ROOT=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM commontorizon/debian-cross-toolchain-${IMAGE_ARCH}:${SDK_BASE_VERSION} AS build
+FROM kassany/bookworm-ziglang:${SDK_BASE_VERSION} AS build
 
-ARG IMAGE_ARCH
-ARG COMPILER_ARCH
 ARG APP_ROOT
-ENV ZIG_PATH /zig/0.11.0/files
+ARG IMAGE_ARCH
 
-# __deps__
-RUN apt-get -q -y update && \
-    apt-get -q -y install \
-    wget unzip \
+RUN apt-get update && \
+    apt-get install -y \
+    # ADD YOUR PACKAGES HERE
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
     # __torizon_packages_build_start__
     # __torizon_packages_build_end__
@@ -35,27 +32,6 @@ RUN apt-get -q -y update && \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
-# __deps__
-
-# Install Zig 0.11.0 (uses LLVM-16.0.6)
-RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
-        wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-aarch64.zip && \
-        unzip zigup.ubuntu-latest-aarch64.zip -d /usr/bin && \
-        chmod +x /usr/bin/zigup && \
-        zigup --install-dir /zig 0.11.0 ; \
-    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
-        wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-armv7a.zip && \
-        unzip zigup.ubuntu-latest-armv7a.zip -d /usr/bin && \
-        chmod +x /usr/bin/zigup && \
-        zigup --install-dir /zig 0.11.0 ; \
-    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
-        wget -q https://github.com/kassane/zigup/releases/download/2023_09_29/zigup.ubuntu-latest-x86_64.zip && \
-        unzip zigup.ubuntu-latest-x86_64.zip -d /usr/bin && \
-        chmod +x /usr/bin/zigup && \
-        zigup --install-dir /zig 0.11.0; \
-    fi
-
-RUN chmod +x ${ZIG_PATH}/zig
 
 
 # default linux-libc: host - glibc (most), cross-compilation - musl (static)
@@ -97,7 +73,7 @@ RUN mkdir -p target/deploy && \
 # BUILD ------------------------------------------------------------------------
 
 # DEPLOY ------------------------------------------------------------------------
-FROM --platform=linux/${IMAGE_ARCH} commontorizon/debian:${BASE_VERSION} AS deploy
+FROM --platform=linux/${IMAGE_ARCH} torizon/debian:${BASE_VERSION} AS deploy
 
 ARG IMAGE_ARCH
 ARG APP_ROOT

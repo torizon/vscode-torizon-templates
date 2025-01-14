@@ -46,6 +46,6 @@
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "${config:torizon_app_root}",
             "preLaunchTask": "start-torizon-debug-arm64"
-        }
+        },
     ]
 }
