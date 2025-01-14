@@ -6,9 +6,8 @@ ARG IMAGE_ARCH=
 
 ##
 # Base container version
-# Using the Slint v1.7.2 base images
 ##
-ARG BASE_VERSION=3.3.1-bookworm-1.9.1
+ARG BASE_VERSION=3.3.0
 
 ##
 # Application root directory inside the container
@@ -31,15 +30,22 @@ ARG SSHUSERNAME=
 ARG GPU=
 
 ##
+# Slint Version
+##
+ARG SLINT_VERSION=1.9.2
+
+##
 # Deploy Step
 ##
-FROM commontorizon/slint-base-${IMAGE_ARCH}${GPU}:${BASE_VERSION} AS debug
+FROM --platform=linux/${IMAGE_ARCH} \
+    torizon/wayland-base${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU
 ARG DEBUG_SSH_PORT
 ARG APP_ROOT
 ARG SSHUSERNAME
+ARG SLINT_VERSION
 
 # SSH for remote debug
 EXPOSE ${DEBUG_SSH_PORT}
@@ -74,6 +80,37 @@ RUN apt-get -q -y update && \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+# Download Slint binary packages
+RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
+        CROSS_TOOLCHAIN_ARCH=arm64 ; \
+    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
+        CROSS_TOOLCHAIN_ARCH=armhf ; \
+    fi && \
+    if [ "$SLINT_VERSION" = "nightly" ]; then \
+        GITHUB_RELEASE=nightly; \
+        GITHUB_FILENAME_INFIX=nightly; \
+    else \
+        GITHUB_RELEASE=$SLINT_VERSION; \
+        GITHUB_FILENAME_INFIX=$SLINT_VERSION; \
+    fi && \
+    wget -O - https://github.com/slint-ui/slint/releases/download/$GITHUB_RELEASE/Slint-cpp-$GITHUB_FILENAME_INFIX-Linux-$CROSS_TOOLCHAIN_ARCH.tar.gz \
+    | tar xzvf - --strip-components 1 -C /usr --wildcards --no-wildcards-match-slash "*/lib/*" && \
+    rm -rf /usr/lib/cmake/Slint
+
+# Install Slint dependencies
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install \
+    libfontconfig1 \
+    libxkbcommon0 \
+    libinput10 \
+    fonts-noto-core \
+    fonts-noto-cjk \
+    fonts-noto-cjk-extra \
+    fonts-noto-color-emoji \
+    fonts-noto-ui-core \
+    fonts-noto-ui-extra \
+    && rm -rf /var/lib/apt/lists/*
 
 # automate for torizonPackages.json
 RUN apt-get -q -y update && \
