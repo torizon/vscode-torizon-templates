@@ -324,6 +324,26 @@
             }
         },
         {
+            "img": "flutter.png",
+            "folder": "dartFlutter",
+            "description": "Dart Flutter template",
+            "runtime": "flutter",
+            "language": "dart",
+            "debugPort": "42271",
+            "debugSSHPort": "42271",
+            "multiContainer": false,
+            "support": "Partner",
+            "deprecated": false,
+            "tests": {
+                "debuggers": {
+                    "local": ["Local AMD64"],
+                    "arm64": ["Torizon ARMv8"]
+                },
+                "debuggerConsole": "dart",
+                "mainFile": "lib/main.dart"
+            }
+        },
+        {
             "img": "jframe.png",
             "folder": "javaForms",
             "description": "Java Swing JFrame Application",
