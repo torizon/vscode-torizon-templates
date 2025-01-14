@@ -28,6 +28,11 @@ jobs:
           echo "${{ github.workspace }}" >> abs-path
           cat abs-path
 
+      - name: Update torizon-utils module
+        run: |
+          chmod a+rwx . -R
+          sudo -u torizon pipx inject xonsh ./scripts/utils/pip/
+
       - name: Build ${{ matrix.project.folder }} Dockerfile
         shell: xonsh {0}
         env:

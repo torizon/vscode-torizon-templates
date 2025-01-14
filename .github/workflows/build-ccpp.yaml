@@ -7,10 +7,10 @@ on:
 
 jobs:
   ccpp:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: torizonextras/torizon-dev:dev
-      options: --user root
+      options: --privileged --user root
     if: github.ref == 'refs/heads/bookworm' || github.ref == 'refs/heads/dev'
     name: C/C++ Container
     strategy:
@@ -32,6 +32,23 @@ jobs:
           echo "${{ github.workspace }}" >> abs-path
           cat abs-path
 
+      - name: Update torizon-utils module
+        run: |
+          chmod a+rwx . -R
+          sudo -u torizon pipx inject xonsh ./scripts/utils/pip/
+
+      - name: Run Docker Daemon
+        run: |
+          mkdir -p /var/lib/docker
+          dockerd \
+            --data-root=/var/lib/docker \
+            --host=unix:///var/run/docker-alt.sock \
+            --tls=false \
+            --host=tcp://0.0.0.0:2376 \
+            --userland-proxy-path=/usr/libexec/docker/docker-proxy \
+            --userland-proxy=false &
+          sleep 10
+
       - name: Build ${{ matrix.project.folder }} Dockerfile
         shell: xonsh {0}
         env:
@@ -39,6 +56,7 @@ jobs:
           PROJECT_CONTAINER: ${{ matrix.project.container }}
           VENDOR: ${{ matrix.project.vendor }}
           DOCKER_LOGIN: localhost:5002
+          GITHUB_WORKSPACE_DOCKER: 2376
 
         run: |
           import os

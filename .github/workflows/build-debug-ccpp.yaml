@@ -7,10 +7,10 @@ on:
 
 jobs:
   ccpp-debug:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: torizonextras/torizon-dev:dev
-      options: --user root
+      options: --privileged --user root
     if: github.ref == 'refs/heads/bookworm' || github.ref == 'refs/heads/dev'
     name: C/C++ Container Debug
     strategy:
@@ -27,10 +27,33 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cleanup Space
+        run: |
+          # our builds are a bit larger than expected
+          # so we need to clean up the space from the runner
+          sudo nsenter -t 1 -m -u -n -i -- df -h
+
       - name: Get Host Absolute Workspace Path
         run: |
           echo "${{ github.workspace }}" >> abs-path
           cat abs-path
+
+      - name: Update torizon-utils module
+        run: |
+          chmod a+rwx . -R
+          sudo -u torizon pipx inject xonsh ./scripts/utils/pip/
+
+      - name: Run Docker Daemon
+        run: |
+          mkdir -p /var/lib/docker
+          dockerd \
+            --data-root=/var/lib/docker \
+            --host=unix:///var/run/docker-alt.sock \
+            --tls=false \
+            --host=tcp://0.0.0.0:2376 \
+            --userland-proxy-path=/usr/libexec/docker/docker-proxy \
+            --userland-proxy=false &
+          sleep 10
 
       - name: Build ${{ matrix.project.folder }} Dockerfile
         shell: xonsh {0}
@@ -39,6 +62,7 @@ jobs:
           PROJECT_CONTAINER: ${{ matrix.project.container }}
           VENDOR: ${{ matrix.project.vendor }}
           DOCKER_LOGIN: localhost:5002
+          GITHUB_WORKSPACE_DOCKER: 2376
 
         run: |
           import os
@@ -70,9 +94,7 @@ jobs:
           with open(".vscode/settings.json", "w") as file:
             json.dump(settings_json, file, indent=4)
 
-          # FIXME:  this is bad, but it's the only to make it work here
-          chmod 777 . -R
-
+          chmod a+rwx . -R
           xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
           xonsh ./.vscode/tasks.xsh run @(f"build-debug-{os.environ['PROJECT_ARCH']}")
           xonsh ./.vscode/tasks.xsh run @(f"build-container-torizon-debug-{os.environ['PROJECT_ARCH']}")
