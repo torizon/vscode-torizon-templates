@@ -1,0 +1,57 @@
+name: Publish Torizon Utils
+
+on:
+  workflow_run:
+    workflows:
+      - "Sanity Check"
+      - "C\\/C\\+\\+ Containers"
+      - "C\\/C\\+\\+ Debug Containers"
+      - "Python Debug Containers"
+      - "Rust Debug Containers"
+      - "Python Containers"
+      - "Rust Containers"
+    types:
+      - completed
+
+jobs:
+  publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Sanity version
+        run: |
+          # read the toml
+          version=$(cat ./scripts/utils/pip/pyproject.toml | grep version | cut -d '"' -f 2)
+          # check with the latest version published on pypi
+          latest_version=$(curl -s https://pypi.org/pypi/torizon-templates-utils/json | jq -r '.info.version')
+
+          if [ "$version" == "$latest_version" ]; then
+            echo "Version $version is already published on PyPI"
+            exit 69
+          fi
+
+      - name: Create Package
+        run: |
+          cd ./scripts/utils/pip
+          python3 -m build
+
+      - name: Create .pypirc
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_CREDS }}
+        run: |
+          echo "[pypi]" > ./scripts/utils/pip/.pypirc
+          echo "username = $TWINE_USERNAME" >> ./scripts/utils/pip/.pypirc
+          echo "password = $TWINE_PASSWORD" >> ./scripts/utils/pip/.pypirc
+
+      - name: Publish Package
+        run: |
+          cd ./scripts/utils/pip
+          python3 -m \
+            twine \
+              upload \
+              --config-file .pypirc \
+              dist/*
