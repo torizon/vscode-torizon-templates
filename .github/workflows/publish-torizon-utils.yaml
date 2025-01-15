@@ -1,23 +1,10 @@
 name: Publish Torizon Utils
-
 on:
-  workflow_run:
-    workflows:
-      - "Sanity Check"
-      - "C\\/C\\+\\+ Containers"
-      - "C\\/C\\+\\+ Debug Containers"
-      - "Python Debug Containers"
-      - "Rust Debug Containers"
-      - "Python Containers"
-      - "Rust Containers"
-    types:
-      - completed
+  workflow_call:
 
 jobs:
   publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -30,10 +17,26 @@ jobs:
 
           if [ "$version" == "$latest_version" ]; then
             echo "Version $version is already published on PyPI"
-            exit 69
+            echo "SKIP_PUBLISH=true" >> $GITHUB_ENV
+          else
+            echo "Version $version is not published on PyPI"
+            echo "SKIP_PUBLISH=false" >> $GITHUB_ENV
           fi
 
+      - name: Setup Python
+        if: env.SKIP_PUBLISH != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            python3-venv \
+            python3-setuptools \
+            python3-build \
+            pipx \
+            twine
+
       - name: Create Package
+        if: env.SKIP_PUBLISH != 'true'
         run: |
           cd ./scripts/utils/pip
           python3 -m build

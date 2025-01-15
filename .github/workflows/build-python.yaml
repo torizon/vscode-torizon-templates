@@ -1,9 +1,6 @@
 name: Python Containers
 on:
-  push:
-    branches:
-      - dev
-      - bookworm
+  workflow_call:
 
 jobs:
   python3:
