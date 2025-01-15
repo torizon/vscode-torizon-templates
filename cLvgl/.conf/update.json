@@ -1,0 +1,14 @@
+[
+    {
+        "source": "CMakeLists.txt",
+        "target": "CMakeLists.txt"
+    },
+    {
+        "source": ".vscode/c_cpp_properties.json",
+        "target": ".vscode/c_cpp_properties.json"
+    },
+    {
+        "source": "Dockerfile.sdk",
+        "target": "Dockerfile.sdk"
+    }
+]
