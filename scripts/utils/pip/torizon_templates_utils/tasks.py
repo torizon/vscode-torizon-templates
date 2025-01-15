@@ -604,7 +604,7 @@ class TaskRunner:
 
 
     def __contains_special_chars(self, str: str) -> bool:
-        _pattern = r"[^a-zA-Z0-9\.\-_|>\/=]"
+        _pattern = r"[^a-zA-Z0-9\.\-_|>\/=+&_]"
         return re.search(_pattern, str) is not None
 
 
