@@ -48,17 +48,19 @@ if not os.path.exists(f"{os.environ['HOME']}/.tcd/target.json"):
     )
 
 # check if the workspace is valid
-if not os.path.exists("./.conf/metadata.json"):
+if os.path.exists("./.conf/metadata.json"):
     _metadata_json_file = open("./.conf/metadata.json", "r")
     _metadata_json = json.load(_metadata_json_file)
     _metadata_json_file.close()
 
     _project_name = _metadata_json["projectName"]
 
+else:
     Error_Out(
         "❌ :: This folder is not a valid Torizon template :: ❌",
         Error.ETOMCRUISE
     )
+
 
 # mimic the vs code auto run
 print("🔧 :: Running Local Registry :: 🔧")
@@ -89,7 +91,7 @@ if _rc_prefix is None:
 _hostname = _target_device["Hostname"]
 _settings["torizon_psswd"] = _target_device["__pass__"]
 _settings["torizon_ip"] = _target_device["Ip"]
-_settings["torizon_ssh_port"] = _target_device["ShhPort"]
+_settings["torizon_ssh_port"] = _target_device["SshPort"]
 _settings["torizon_login"] = _target_device["Login"]
 _settings["host_ip"] = get_host_ip()
 _settings["torizon_arch"] = _target_device["Arch"]
