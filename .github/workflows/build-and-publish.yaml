@@ -1,0 +1,47 @@
+name: Build and Publish
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  sanity-check:
+    uses: ./.github/workflows/ci-tests.yaml
+
+  build-ccpp:
+    uses: ./.github/workflows/build-ccpp.yaml
+    needs: sanity-check
+
+  build-debug-ccpp:
+    uses: ./.github/workflows/build-debug-ccpp.yaml
+    needs: sanity-check
+
+  build-debug-python:
+    uses: ./.github/workflows/build-debug-python.yaml
+    needs: sanity-check
+
+  build-python:
+    uses: ./.github/workflows/build-python.yaml
+    needs: sanity-check
+
+  build-debug-rust:
+    uses: ./.github/workflows/build-debug-rust.yaml
+    needs: sanity-check
+
+  build-rust:
+    uses: ./.github/workflows/build-rust.yaml
+    needs: sanity-check
+
+  publish-torizon-utils:
+    uses: ./.github/workflows/publish-torizon-utils.yaml
+    secrets: inherit
+    needs:
+      - build-ccpp
+      - build-debug-ccpp
+      - build-debug-python
+      - build-python
+      - build-debug-rust
+      - build-rust

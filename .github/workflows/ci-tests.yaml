@@ -1,11 +1,6 @@
 name: Sanity Check
 on:
-  push:
-    branches:
-      - dev
-  pull_request:
-    branches:
-      - dev
+  workflow_call:
 
 jobs:
   spell-check:

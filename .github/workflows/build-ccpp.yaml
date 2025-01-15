@@ -1,9 +1,6 @@
 name: C/C++ Containers
 on:
-  push:
-    branches:
-      - dev
-      - bookworm
+  workflow_call:
 
 jobs:
   ccpp:
