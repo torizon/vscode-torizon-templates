@@ -5,7 +5,7 @@ shopt -s expand_aliases
 
 _COMPOSE_FILE="$HOME/.tcd/docker-compose.yml"
 _BASH_COMPLETION_FILE="$HOME/.tcd/torizon-dev-completion.bash"
-export APOLLOX_REPO="toradex/vscode-torizon-templates"
+export APOLLOX_REPO="torizon/vscode-torizon-templates"
 export APOLLOX_BRANCH="dev"
 export BRANCH="dev"
 export UUID=$(id -u)
@@ -31,7 +31,7 @@ fi
 # check if _BASH_COMPLETION_FILE exists
 if [ ! -f "$_BASH_COMPLETION_FILE" ]; then
     # download it from GitHub
-    wget -q https://raw.githubusercontent.com/$APOLLOX_REPO/$APOLLOX_BRANCH/scripts/bash/torizon-dev-completion.bash -O $_BASH_COMPLETION_FILE
+    wget -q https://raw.githubusercontent.com/$APOLLOX_REPO/$APOLLOX_BRANCH/scripts/bash/tcd-completion.bash -O $_BASH_COMPLETION_FILE
 fi
 
 # we pull everytime we source it to get updates
@@ -41,18 +41,6 @@ docker \
     pull torizon-dev
 
 function torizon-dev {
-    # check if we are in the WSL
-    if [ -n "$WSL_DISTRO_NAME" ]; then
-        # check if the APOLLOX_PORTS_SHARED is already set
-        if [ -z "$APOLLOX_PORTS_SHARED" ]; then
-            powershell.exe \
-                -NoProfile \
-                -C "start-process powershell -verb runas -ArgumentList '-NoProfile -C \"(Remove-NetFireWallRule -DisplayName ApolloX) -or \$true ;  New-NetFireWallRule -DisplayName ApolloX -Direction Outbound -LocalPort 8090,5002 -Action Allow -Protocol TCP ;  New-NetFireWallRule -DisplayName ApolloX -Direction Inbound -LocalPort 8090,5002 -Action Allow -Protocol TCP ;  (netsh interface portproxy delete v4tov4 listenport=8090 listenaddress=0.0.0.0) -or \$true ;  (netsh interface portproxy delete v4tov4 listenport=5002 listenaddress=0.0.0.0) -or \$true ;  (netsh interface portproxy add v4tov4 listenport=8090 listenaddress=0.0.0.0 connectport=8090 connectaddress=172.24.54.164) -or \$true ;  (netsh interface portproxy add v4tov4 listenport=5002 listenaddress=0.0.0.0 connectport=5002 connectaddress=172.24.54.164) -or \$true ; echo done\"'"
-
-            export APOLLOX_PORTS_SHARED="1"
-        fi
-    fi
-
     myhash=$(echo -n "$PWD" | openssl dgst -sha256 | sed 's/^.* //')
     export SHA_DIR=$myhash
 

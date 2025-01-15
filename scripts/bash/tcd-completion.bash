@@ -229,4 +229,4 @@ _shtab_zygote_xsh() {
   return 0
 }
 
-complete -o filenames -F _shtab_zygote_xsh zygote.xsh
+complete -o filenames -F _shtab_zygote_xsh torizon-dev

@@ -55,7 +55,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/run/dbus:/var/run/dbus
       - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
-      - ${HOME}/.tcd/:/root/.tcd/
+      - ${HOME}/.tcd/:/home/torizon/.tcd/
       - ${PWD}:/workspace
       - ${PWD}:${PWD}
     container_name: torizon-dev-${SHA_DIR}

@@ -23,6 +23,8 @@ RUN apt-get update && \
     file sshpass \
     net-tools \
     iproute2 \
+    iptables \
+    kmod \
 # extension tools
 # graphical tools
     wayland-protocols \
@@ -36,6 +38,10 @@ RUN apt-get update && \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+# set the iptables legacy
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
 # we also need to install nodejs 20
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
@@ -57,8 +63,14 @@ VOLUME /run/user/${UID}/wayland-0:/run/user/${UID}/wayland-0
 # to share the docker socket with the host
 VOLUME /var/run/docker.sock:/var/run/docker.sock
 
-# use docker tools
+# use docker daemon and tools
+COPY --from=docker:dind /usr/local/bin/containerd /usr/local/bin/
+COPY --from=docker:dind /usr/local/bin/runc /usr/local/bin/
+COPY --from=docker:dind /usr/local/bin/dockerd /usr/local/bin/
 COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker:dind /usr/local/bin/docker-init /usr/local/bin/
+COPY --from=docker:dind /usr/local/bin/docker-proxy /usr/local/bin/
+COPY --from=docker:dind /usr/local/bin/containerd-shim-runc-v2 /usr/local/bin/
 COPY --from=docker:dind /usr/local/libexec/docker/cli-plugins /usr/local/lib/docker/cli-plugins
 
 # get current scripts
@@ -67,9 +79,9 @@ RUN chmod -R 757 /root && \
     npm install ./apollox-0.2.1.tgz
 
 # inject the zygote
-COPY ./zygote.ps1 /root/.apollox/scripts/zygote.ps1
-RUN chmod +x /home/torizon/.apollox/script/zygote.xsh && \
-    ln -s /home/torizon/.apollox/script/zygote.xsh /usr/local/bin/zygote
+COPY ./zygote.xsh /home/torizon/.apollox/scripts/zygote.xsh
+RUN chmod +x /home/torizon/.apollox/scripts/zygote.xsh && \
+    ln -s /home/torizon/.apollox/scripts/zygote.xsh /usr/local/bin/zygote
 
 USER torizon
 
