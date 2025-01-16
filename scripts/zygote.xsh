@@ -667,7 +667,7 @@ parser.add_argument(
 
 # FIXME: only export this argument when need to update the bash completion
 # Magic completion 🌈
-shtab.add_argument_to(parser, "--print-completion")
+# shtab.add_argument_to(parser, "--print-completion")
 
 
 try:

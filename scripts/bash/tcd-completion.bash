@@ -7,7 +7,7 @@ _shtab_zygote_xsh_connect_subparsers=('list')
 _shtab_zygote_xsh_new_subparsers=('cli')
 _shtab_zygote_xsh_tasks_subparsers=('list' 'desc' 'run')
 
-_shtab_zygote_xsh_option_strings=('-h' '--help' '--print-completion' '--version' '-v')
+_shtab_zygote_xsh_option_strings=('-h' '--help' '--version' '-v')
 _shtab_zygote_xsh_scan_option_strings=('-h' '--help')
 _shtab_zygote_xsh_scan_list_option_strings=('-h' '--help')
 _shtab_zygote_xsh_scan_connect_option_strings=('-h' '--help')
@@ -33,7 +33,6 @@ _shtab_zygote_xsh_tasks_run_option_strings=('-h' '--help')
 
 
 _shtab_zygote_xsh_pos_0_choices=('scan' 'target' 'connect' 'new' 'init' 'tasks')
-_shtab_zygote_xsh___print_completion_choices=('bash' 'zsh' 'tcsh')
 _shtab_zygote_xsh_scan_pos_0_choices=('list' 'connect')
 _shtab_zygote_xsh_target_pos_0_choices=('get' 'set' 'console' 'reboot' 'shutdown' 'list-builtin-dto' 'list-applied-dto' 'apply-dto')
 _shtab_zygote_xsh_connect_pos_0_choices=('list')
