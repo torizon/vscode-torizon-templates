@@ -1,0 +1,22 @@
+name: Publish Torizon Utils
+on:
+  workflow_call:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Xonsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip pipx
+          sudo bash ./scripts/bash/setup-xonsh.sh
+          sudo ln -s /root/.local/bin/xonsh /usr/bin/xonsh
+
+      - name: Build
+        run: |
+          echo "${{ secrets.DOCKER_PASS }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+          cd ./scripts
+          xonsh ./scripts/build-internal-containers.xsh

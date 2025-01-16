@@ -45,3 +45,14 @@ jobs:
       - build-python
       - build-debug-rust
       - build-rust
+
+  publish-torizon-dev:
+    uses: ./.github/workflows/build-publish-torizon-dev.yaml
+    secrets: inherit
+    needs:
+      - build-ccpp
+      - build-debug-ccpp
+      - build-debug-python
+      - build-python
+      - build-debug-rust
+      - build-rust
