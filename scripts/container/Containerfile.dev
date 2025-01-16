@@ -88,4 +88,8 @@ USER torizon
 # the workspace will be the mount point for local path
 WORKDIR /workspace
 
-CMD [ "xonsh" ]
+ENTRYPOINT [ \
+    "/usr/local/bin/zygote"  \
+]
+
+CMD [ "--version" ]

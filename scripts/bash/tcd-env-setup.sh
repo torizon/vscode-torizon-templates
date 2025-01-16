@@ -13,8 +13,11 @@ export DGID=$(getent group docker | cut -d: -f3)
 
 # for the store of the device data
 if [ ! -d "$HOME/.tcd" ]; then
+    echo "Creating $HOME/.tcd ..."
     mkdir $HOME/.tcd
 else
+    echo "Found $HOME/.tcd ..."
+    echo "Cleaning up container assets ..."
     # remove the files so we can download it again
     # remove the docker-compose.yml
     rm -rf $HOME/.tcd/docker-compose.yml
@@ -24,16 +27,19 @@ fi
 
 # check if _COMPOSE_FILE exists
 if [ ! -f "$_COMPOSE_FILE" ]; then
+    echo "Downloading docker-compose.yml ..."
     # download it from GitHub
     wget -q https://raw.githubusercontent.com/$APOLLOX_REPO/$APOLLOX_BRANCH/scripts/container/docker-compose.yml -O $_COMPOSE_FILE
 fi
 
 # check if _BASH_COMPLETION_FILE exists
 if [ ! -f "$_BASH_COMPLETION_FILE" ]; then
+    echo "Downloading tool completion ..."
     # download it from GitHub
     wget -q https://raw.githubusercontent.com/$APOLLOX_REPO/$APOLLOX_BRANCH/scripts/bash/tcd-completion.bash -O $_BASH_COMPLETION_FILE
 fi
 
+echo "Pulling the torizon-dev image ..."
 # we pull everytime we source it to get updates
 docker \
     compose \
@@ -54,6 +60,7 @@ function torizon-dev {
             compose \
             -f $_COMPOSE_FILE \
             run \
+            --entrypoint /bin/bash \
             --name torizon-dev-$myhash \
             -d torizon-dev > /dev/null
     fi
@@ -62,6 +69,10 @@ function torizon-dev {
     docker exec -it torizon-dev-$myhash zygote $@
 }
 
+echo "Sourcing the completion file ..."
 # FIXME:    we need to also copy the completion file to
 #           /usr/share/bash-completion/completions/torizon-dev
 source $_BASH_COMPLETION_FILE
+
+echo "Done ✅"
+echo "Anyone who has never made a mistake has never tried anything new. - Albert Einstein"
