@@ -4,7 +4,7 @@ on:
 
 jobs:
   ccpp:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/bookworm' || github.ref == 'refs/heads/dev'
     name: C/C++ Container
     strategy:

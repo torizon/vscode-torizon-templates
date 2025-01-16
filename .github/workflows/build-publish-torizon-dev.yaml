@@ -4,7 +4,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v3
 
@@ -19,4 +19,4 @@ jobs:
         run: |
           echo "${{ secrets.DOCKER_PASS }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
           cd ./scripts
-          xonsh ./scripts/build-internal-containers.xsh
+          xonsh ./build-internal-containers.xsh
