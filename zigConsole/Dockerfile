@@ -3,7 +3,7 @@
 # Base container version
 ##
 ARG SDK_BASE_VERSION=0.13.0
-ARG BASE_VERSION=4.2.0
+ARG BASE_VERSION=4
 
 ##
 # Board architecture

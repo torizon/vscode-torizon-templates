@@ -7,12 +7,12 @@ ARG IMAGE_ARCH=
 ##
 # vsdebugger container base version
 ##
-ARG DEBUGGER_BASE_VERSION=4.2.0
+ARG DEBUGGER_BASE_VERSION=4
 
 ##
 # Base container version
 ##
-ARG BASE_VERSION=4.2.0
+ARG BASE_VERSION=4
 
 ##
 # Directory of the application inside container

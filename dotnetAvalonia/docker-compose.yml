@@ -51,7 +51,7 @@ services:
     ]
 
   weston:
-    image: torizon/weston${GPU}:4.2.0
+    image: torizon/weston${GPU}:4
     # Required to get udev events from host udevd via netlink
     network_mode: host
     privileged: true
