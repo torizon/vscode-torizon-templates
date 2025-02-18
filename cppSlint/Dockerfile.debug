@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG BASE_VERSION=4
+ARG BASE_VERSION=stable-rc
 
 ##
 # Application root directory inside the container

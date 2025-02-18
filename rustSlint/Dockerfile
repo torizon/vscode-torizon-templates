@@ -2,8 +2,8 @@
 ##
 # Base container version
 ##
-ARG CROSS_SDK_BASE_TAG=4
-ARG BASE_VERSION=4
+ARG CROSS_SDK_BASE_TAG=stable-rc
+ARG BASE_VERSION=stable-rc
 
 ##
 # Board architecture

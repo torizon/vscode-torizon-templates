@@ -7,7 +7,7 @@ ARG IMAGE_ARCH=
 ##
 # Base container version
 ##
-ARG CROSS_SDK_BASE_TAG=4
+ARG CROSS_SDK_BASE_TAG=stable-rc
 
 ##
 # Directory of the application inside container

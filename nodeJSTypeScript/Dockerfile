@@ -2,7 +2,7 @@
 ##
 # Base container version
 ##
-ARG BASE_VERSION=4
+ARG BASE_VERSION=stable-rc
 
 ##
 # Board architecture
