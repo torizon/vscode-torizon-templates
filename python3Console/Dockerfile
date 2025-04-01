@@ -52,4 +52,4 @@ WORKDIR ${APP_ROOT}
 
 ENV APP_ROOT=${APP_ROOT}
 # Activate and run the code
-CMD . ${APP_ROOT}/.venv/bin/activate && python3 src/main.py --no-sandbox
+CMD . ${APP_ROOT}/.venv/bin/activate && python3 -u src/main.py --no-sandbox

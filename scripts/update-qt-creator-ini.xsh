@@ -26,7 +26,13 @@ _deviceHostname = sys.argv[2]
 _projectName = sys.argv[3]
 _deviceArch = sys.argv[4]
 
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(
+    empty_lines_in_values=False
+)
+
+# maintain the case of the keys
+config.optionxform = lambda option: option
+
 config.read(f"{_path}/.qt/QtProject/QtCreator.ini")
 
 # debug
