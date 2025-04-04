@@ -126,7 +126,7 @@ if _rc_prefix is None:
 _hostname = _target_device["Hostname"]
 _settings["torizon_psswd"] = _target_device["__pass__"]
 _settings["torizon_ip"] = _target_device["Ip"]
-_settings["torizon_ssh_port"] = _target_device["SshPort"]
+_settings["torizon_ssh_port"] = f"{_target_device['SshPort']}"
 _settings["torizon_login"] = _target_device["Login"]
 _settings["host_ip"] = get_host_ip()
 _settings["torizon_arch"] = _target_device["Arch"]

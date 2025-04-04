@@ -96,6 +96,9 @@ if not _project_path or _project_path == "":
         Error.EUSER
     )
 
+# Resolve relative paths to absolute paths based on the current working directory
+_project_path = os.path.abspath(os.path.join("/workspace", _project_path))
+
 if not os.path.exists(_project_path):
     Error_Out(
         "❌ :: Project path does not exists :: ❌",

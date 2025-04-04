@@ -153,6 +153,9 @@ def _new_cli(args):
             Error.EINVAL
         )
 
+    # fix up the path to be relative to the /workspace dir
+    args.path = os.path.abspath(os.path.join("/workspace", args.path))
+
     # check if the path already exists
     if os.path.exists(f"{args.path}/{args.name}"):
         Error_Out(

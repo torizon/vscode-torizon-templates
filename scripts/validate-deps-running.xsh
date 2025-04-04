@@ -37,6 +37,30 @@ _env_vars_settings = [
 
 print("\n⚠️ VALIDATING ENVIRONMENT\n", color=Color.YELLOW)
 
+# print the environment info for future debug
+print(f"OS:         {os.uname().sysname}")
+print(f"OS Version: {os.uname().release}")
+print(f"OS Arch:    {os.uname().machine}")
+print(f"Under WSL:  {os.getenv('WSL_DISTRO_NAME', 'false')}")
+
+# print info about the vs code
+_cmd_ret_reg: CommandPipeline
+_cmd_ret_reg = !(code --version)
+
+if _cmd_ret_reg.returncode == 0:
+    print("VS Code:")
+    print(f"{_cmd_ret_reg.out}")
+
+    # get the extension version
+    _cmd_ret_reg = !(code --list-extensions --show-versions | grep toradex.apollox-vscode)
+    if _cmd_ret_reg.returncode == 0:
+        print(f"TOR Extension:  {_cmd_ret_reg.out}")
+    else:
+        print("Extension:  Not installed")
+else:
+    print("VS Code:     None")
+
+
 _missing_env_var_settings = False
 
 # validate the env vars
@@ -67,7 +91,6 @@ if _cmd_ret != 0:
     )
 
 # check if the docker container with name registry is running
-_cmd_ret_reg: CommandPipeline
 _cmd_ret_reg = !(docker ps -q -f name=registry)
 
 if _cmd_ret_reg.out == "":
@@ -77,5 +100,42 @@ if _cmd_ret_reg.out == "":
         "❌ Docker container registry is not running!\n",
         Error.ENOCONF
     )
+
+# check if the registry container is using the port 5002
+_cmd_ret_reg = !(docker ps -f name=registry --format "{{.Ports}}")
+
+if "5002->5000/tcp" not in _cmd_ret_reg.out:
+    Error_Out(
+        f"❌ Docker container registry is not using port 5002!\nMaybe there is some conflict with another container using the same name/port\n{_cmd_ret_reg.out}",
+        Error.ENOCONF
+    )
+
+# check if the binfmt is enabled
+_cmd_ret_reg = !(bash -c 'cat /proc/sys/fs/binfmt_misc/status')
+
+if "enabled" not in _cmd_ret_reg.out:
+    Error_Out(
+        "❌ binfmt is not enabled!\n",
+        Error.ENOCONF
+    )
+
+
+# check if the binfmt is registered
+# FIXME: we check for arm64 and arm32 for now, if a new arch is introduced
+# we need to add the check here
+_cmd_ret_reg = !(bash -c 'ls /proc/sys/fs/binfmt_misc/qemu-aarch64')
+if "qemu-aarch64" not in _cmd_ret_reg.out:
+    Error_Out(
+        "❌ binfmt for arm64 is not registered!\n",
+        Error.ENOCONF
+    )
+
+_cmd_ret_reg = !(bash -c 'ls /proc/sys/fs/binfmt_misc/qemu-arm')
+if "qemu-arm" not in _cmd_ret_reg.out:
+    Error_Out(
+        "❌ binfmt for arm32 is not registered!\n",
+        Error.ENOCONF
+    )
+
 
 print("\n✅ Environment is valid!\n", color=Color.GREEN)
