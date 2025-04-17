@@ -26,7 +26,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -64,7 +64,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -102,7 +102,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -140,7 +140,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -164,7 +164,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -182,19 +182,23 @@
                 "-c",
                 "nc.traditional ${config:torizon_ip} ${config:torizon_debug_port2}"
             ],
-            "problemMatcher": [{
-                "pattern": [{
-                    "regexp": ".",
-                    "file": 1,
-                    "location": 2,
-                    "message": 3
-                }],
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": ".",
-                    "endsPattern": "."
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": "."
+                    }
                 }
-            }],
+            ],
             "icon": {
                 "id": "link-external",
                 "color": "terminal.ansiYellow"
@@ -204,7 +208,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -238,7 +242,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -260,8 +264,7 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "debug-alt-small",
                 "color": "terminal.ansiYellow"
@@ -271,7 +274,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -305,7 +308,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -329,7 +332,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -357,7 +360,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -383,7 +386,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -420,7 +423,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -455,7 +458,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -492,7 +495,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -531,7 +534,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -568,7 +571,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -603,7 +606,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -640,7 +643,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -679,7 +682,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -706,7 +709,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -733,7 +736,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -760,7 +763,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -777,8 +780,7 @@
                 "$gcc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "gear",
                 "color": "terminal.ansiYellow"
@@ -788,7 +790,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         }
     ],

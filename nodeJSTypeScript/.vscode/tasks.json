@@ -14,9 +14,11 @@
                 "run",
                 "build"
             ],
-            "problemMatcher": ["$tsc"],
+            "problemMatcher": [
+                "$tsc"
+            ],
             "dependsOrder": "sequence",
-            "dependsOn":[
+            "dependsOn": [
                 "npm-install"
             ],
             "icon": {
@@ -28,7 +30,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -55,7 +57,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -72,7 +74,7 @@
                 "output-arm64"
             ],
             "dependsOrder": "sequence",
-            "dependsOn":[
+            "dependsOn": [
                 "npm-install"
             ],
             "icon": {
@@ -84,7 +86,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -126,7 +128,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -143,7 +145,7 @@
                 "output-arm64"
             ],
             "dependsOrder": "sequence",
-            "dependsOn":[
+            "dependsOn": [
                 "npm-install"
             ],
             "icon": {
@@ -155,7 +157,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -197,7 +199,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -214,7 +216,7 @@
                 "output-amd64"
             ],
             "dependsOrder": "sequence",
-            "dependsOn":[
+            "dependsOn": [
                 "npm-install"
             ],
             "icon": {
@@ -226,7 +228,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -268,7 +270,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         }
     ],

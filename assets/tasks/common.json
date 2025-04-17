@@ -28,7 +28,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "update-template"
+                "group": "update-template-__change__"
             }
         },
         {
@@ -58,7 +58,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "update-template"
+                "group": "update-template-__change__"
             }
         },
         {
@@ -88,7 +88,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "update-template"
+                "group": "update-template-__change__"
             }
         },
         {
@@ -126,7 +126,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -173,7 +173,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -212,7 +212,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -253,7 +253,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -463,7 +463,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -486,7 +486,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -509,7 +509,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -545,7 +545,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -568,7 +568,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -598,7 +598,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -625,7 +625,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -649,7 +649,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -673,7 +673,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -697,7 +697,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -733,7 +733,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -774,7 +774,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -801,7 +801,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -852,7 +852,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -903,7 +903,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -954,7 +954,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -995,7 +995,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1036,7 +1036,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1077,7 +1077,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1114,7 +1114,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1151,7 +1151,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1188,7 +1188,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1224,7 +1224,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1260,7 +1260,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1296,7 +1296,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1335,7 +1335,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1374,7 +1374,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1413,7 +1413,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1463,7 +1463,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1513,7 +1513,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1563,7 +1563,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1602,7 +1602,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1641,7 +1641,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1680,7 +1680,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1717,7 +1717,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1754,7 +1754,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1791,7 +1791,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1835,7 +1835,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1879,7 +1879,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -1923,7 +1923,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -2019,7 +2019,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {

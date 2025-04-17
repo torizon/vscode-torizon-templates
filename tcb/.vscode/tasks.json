@@ -38,8 +38,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "git-branch",
                 "color": "terminal.ansiGreen"
@@ -49,7 +48,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "update-template"
+                "group": "update-template-__change__"
             }
         },
         {
@@ -79,7 +78,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "update-template"
+                "group": "update-template-__change__"
             }
         },
         {
@@ -109,7 +108,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "update-template"
+                "group": "update-template-__change__"
             }
         },
         {
@@ -229,8 +228,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "note",
                 "color": "terminal.ansiYellow"
@@ -240,7 +238,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "tcb-setup"
+                "group": "tcb-setup-__change__"
             }
         },
         {
@@ -282,7 +280,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "tcb-setup"
+                "group": "tcb-setup-__change__"
             }
         },
         {
@@ -308,8 +306,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "tools",
                 "color": "terminal.ansiYellow"
@@ -320,7 +317,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "tcb-build"
+                "group": "tcb-build-__change__"
             }
         },
         {
@@ -346,8 +343,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "wrench",
                 "color": "terminal.ansiYellow"
@@ -357,7 +353,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "tcb-bundle"
+                "group": "tcb-bundle-__change__"
             }
         },
         {
@@ -383,8 +379,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "wrench",
                 "color": "terminal.ansiYellow"
@@ -394,7 +389,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "tcb-bundle"
+                "group": "tcb-bundle-__change__"
             }
         },
         {
@@ -420,8 +415,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "wrench",
                 "color": "terminal.ansiYellow"
@@ -431,7 +425,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "tcb-bundle"
+                "group": "tcb-bundle-__change__"
             }
         },
         {
@@ -458,8 +452,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "package",
                 "color": "terminal.ansiYellow"
@@ -469,7 +462,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "tcb-deploy"
+                "group": "tcb-deploy-__change__"
             }
         },
         {
@@ -507,7 +500,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "tcb-deploy"
+                "group": "tcb-deploy-__change__"
             }
         },
         {
@@ -545,7 +538,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -573,8 +566,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "cloud-upload",
                 "color": "terminal.ansiYellow"
@@ -584,7 +576,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -608,9 +600,9 @@
             },
             "args": [
                 "-e",
-                "\"✅ github-actions-settings done\n",
+                "\"\u2705 github-actions-settings done\n",
                 "\n",
-                "'⚠️  ENV VARIABLES NEED TO BE SET IN CI/CD PLATFORM'\n",
+                "'\u26a0\ufe0f  ENV VARIABLES NEED TO BE SET IN CI/CD PLATFORM'\n",
                 "\tDOCKER_PSSWD\n",
                 "\tPLATFORM_CLIENT_ID\n",
                 "\tPLATFORM_CLIENT_SECRET\n",
@@ -620,8 +612,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "notebook",
                 "color": "terminal.ansiYellow"
@@ -631,7 +622,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "dedicated",
-                "group": "cloud-related"
+                "group": "cloud-related-__change__"
             }
         },
         {
@@ -661,8 +652,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "notebook",
                 "color": "terminal.ansiYellow"
@@ -743,7 +733,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "tcb-setup"
+                "group": "tcb-setup-__change__"
             }
         }
     ],

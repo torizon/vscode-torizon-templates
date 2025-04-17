@@ -6,17 +6,21 @@
             "type": "shell",
             "command": "sshpass",
             "args": [
-                "-p", "${config:torizon_psswd}",
+                "-p",
+                "${config:torizon_psswd}",
                 "ssh",
-                "-L", "42271:127.0.0.1:42271",
+                "-L",
+                "42271:127.0.0.1:42271",
                 "torizon@${config:torizon_ip}"
             ],
             "isBackground": true,
             "options": {
-              "shell": {
-                "executable": "/bin/bash",
-                "args": ["-c"]
-              }
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
+                }
             },
             "icon": {
                 "id": "layers",
@@ -27,7 +31,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -58,7 +62,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -88,7 +92,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -104,8 +108,7 @@
                 "0.5"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "tools",
                 "color": "terminal.ansiYellow"
@@ -115,7 +118,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -127,8 +130,7 @@
                 "clean"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "tools",
                 "color": "terminal.ansiYellow"
@@ -138,7 +140,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -178,7 +180,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         }
     ],

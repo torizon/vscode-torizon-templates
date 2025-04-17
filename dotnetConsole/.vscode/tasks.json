@@ -24,7 +24,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -48,7 +48,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -74,7 +74,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -100,7 +100,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -124,7 +124,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -154,7 +154,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -193,7 +193,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -223,7 +223,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         },
         {
@@ -262,7 +262,7 @@
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",
-                "group": "build-execution"
+                "group": "build-execution-__change__"
             }
         }
     ],
