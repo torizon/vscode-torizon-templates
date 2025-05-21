@@ -285,7 +285,8 @@
                 "login",
                 "--username",
                 "${command:docker_login}",
-                "--password-stdin"
+                "--password-stdin",
+                "${command:docker_registry}"
             ],
             "dependsOrder": "sequence",
             "icon": {
