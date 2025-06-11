@@ -52,6 +52,13 @@ Usage:
 
     [telemetry]         This is a bool like argument. This signals if the script
                         is being used from VS Code extension.
+
+    Exception Behavior:
+
+    --customFields      When this flag is set, the script will be used to
+                        create a new project from a template that has custom
+                        fields.
+
 """
     )
 
@@ -59,6 +66,8 @@ Usage:
 
 
 _old_cwd = os.getcwd()
+_has_custom_fields = False
+_custom_fields = []
 
 template_folder = get_arg_not_empty(1)
 project_name = get_arg_not_empty(2)
@@ -73,6 +82,11 @@ template = get_optional_arg(5, _template)
 vscode = get_optional_arg(6, False)
 telemetry = get_optional_arg(7, True)
 
+
+if "--customFields" in sys.argv:
+    _has_custom_fields = True
+    _custom_fields = json.loads(sys.argv[sys.argv.index("--customFields") + 1])
+
 # the new_project_path need to be a full path
 new_project_path = f"{new_project_path}/{project_name}"
 
@@ -85,6 +99,7 @@ print(f"\tNew Project Path: {new_project_path}")
 print(f"\tTemplate: {template}")
 print(f"\tIs VS Code: {vscode}")
 print(f"\tSend Telemetry: {telemetry}")
+print(f"\tHas Custom Fields: {_has_custom_fields}")
 
 # get the template metadata from ../templates.json
 try:
@@ -140,31 +155,64 @@ cp -r @(template_folder) @(new_project_path)
 print("✅ Folder copy done!", color=Color.GREEN)
 
 # apply the common tasks and inputs
-if "mergeCommon" not in _template_metadata or _template_metadata['mergeCommon'] != False:
-    print("Applying common tasks ...", color=Color.YELLOW)
+print("Applying common tasks ...", color=Color.YELLOW)
 
-    _f_commontasks = open(f"{template_folder}/../assets/tasks/common.json", "r")
-    _common_tasks = json.load(_f_commontasks)
-    _f_commontasks.close()
+with open(f"{template_folder}/../assets/tasks/common.json", "r") as f:
+    _common_tasks = json.load(f)
 
-    _f_commoninputs = open(f"{template_folder}/../assets/tasks/inputs.json", "r")
-    _common_inputs = json.load(_f_commoninputs)
-    _f_commoninputs.close()
+with open(f"{template_folder}/../assets/tasks/inputs.json", "r") as f:
+    _common_inputs = json.load(f)
 
-    _f_projtasks = open(f"{new_project_path}/.vscode/tasks.json", "r")
-    _proj_tasks = json.load(_f_projtasks)
-    _f_projtasks.close()
+with open(f"{new_project_path}/.vscode/tasks.json", "r") as f:
+    _proj_tasks = json.load(f)
 
-    # merge then
-    _proj_tasks["tasks"] += _common_tasks["tasks"]
-    _proj_tasks["inputs"] += _common_inputs["inputs"]
+merge_config = _template_metadata.get("mergeCommon", {})
+task_labels_to_merge = merge_config.get("tasks", "all")
+input_ids_to_merge = merge_config.get("inputs", "all")
 
-    # write back
-    _f_projtasks = open(f"{new_project_path}/.vscode/tasks.json", "w+")
-    _f_projtasks.write(json.dumps(_proj_tasks, indent=4))
-    _f_projtasks.close()
+def should_merge(item_label, allowed):
+    return allowed == "all" or "all" in allowed or item_label in allowed
 
-    print("✅ Common tasks applied!", color=Color.GREEN)
+merged_tasks = [
+    task for task in _common_tasks.get("tasks", [])
+    if should_merge(task.get("label"), task_labels_to_merge)
+]
+merged_inputs = [
+    input_ for input_ in _common_inputs.get("inputs", [])
+    if should_merge(input_.get("id"), input_ids_to_merge)
+]
+
+_proj_tasks.setdefault("tasks", []).extend(merged_tasks)
+_proj_tasks.setdefault("inputs", []).extend(merged_inputs)
+
+with open(f"{new_project_path}/.vscode/tasks.json", "w") as f:
+    f.write(json.dumps(_proj_tasks, indent=4))
+
+print("✅ Common tasks applied!", color=Color.GREEN)
+
+print("Applying common settings ...", color=Color.YELLOW)
+
+project_settings_path = f"{new_project_path}/.vscode/settings.json"
+common_settings_path = f"{template_folder}/../assets/settings/common.json"
+
+try:
+    with open(common_settings_path, "r") as f:
+        _common_settings = json.load(f)
+        
+    with open(project_settings_path, "r") as f:
+        _proj_settings = json.load(f)
+        
+except FileNotFoundError:
+    raise FileNotFoundError("Missing settings.json or common.json file.")
+
+# Apply only keys that don't already exist in project settings
+for key, value in _common_settings.items():
+    _proj_settings.setdefault(key, value)
+
+with open(project_settings_path, "w") as f:
+    json.dump(_proj_settings, f, indent=4)
+
+print("✅ Common settings applied!", color=Color.GREEN)
 
 # we have to also copy the scripts
 cp -r @(template_folder)/../scripts/check-deps.xsh @(new_project_path)/.conf/
@@ -253,7 +301,9 @@ _proj_metadata_json = {
     "projectName": project_name,
     "templateName": template,
     "containerName": container_name,
-    "torizonOSMajor": _metadata["TorizonOSMajor"]
+    "torizonOSMajor": _metadata["TorizonOSMajor"],
+    "hasCustomFields": _has_custom_fields,
+    "customFields": _custom_fields
 }
 
 # save the metadata json file
@@ -290,17 +340,27 @@ for item in Path('.').rglob('*'):
                 with open(item, 'r') as file:
                     content = file.read()
                 content = content.replace("__change__", project_name)
-                content = content.replace("__container__", container_name)
+
+                if not _has_custom_fields:
+                    content = content.replace("__container__", container_name)
+                else:
+                    # also check for ids from the custom fields
+                    for _field in _custom_fields:
+                        content = content.replace(f"__{_field['id']}__", _field['value'])
+
                 content = content.replace("__home__", os.environ['HOME'])
                 content = content.replace("__templateFolder__", template)
+
                 with open(item, 'w') as file:
                     file.write(content)
+
             elif "id_rsa.pub" not in str(item):
                 os.chmod(item, 0o400)
 
 
-# the project updater does not need to change the contents
+# remove-dangling-images and project-updater don't require changing contents
 cp -r @(template_folder)/../scripts/project-updater.xsh @(new_project_path)/.conf/
+cp -r @(template_folder)/../scripts/remove-dangling-images.xsh @(new_project_path)/.conf/
 
 # if from vs code we need to replace the inputs
 if vscode != False:

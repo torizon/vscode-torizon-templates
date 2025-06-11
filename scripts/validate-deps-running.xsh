@@ -123,19 +123,27 @@ if "enabled" not in _cmd_ret_reg.out:
 # check if the binfmt is registered
 # FIXME: we check for arm64 and arm32 for now, if a new arch is introduced
 # we need to add the check here
-_cmd_ret_reg = !(bash -c 'ls /proc/sys/fs/binfmt_misc/qemu-aarch64')
-if "qemu-aarch64" not in _cmd_ret_reg.out:
-    Error_Out(
-        "❌ binfmt for arm64 is not registered!\n",
-        Error.ENOCONF
-    )
+def _retry_enable_binfmt(_arch: str):
+    docker run --rm -it --privileged torizon/binfmt:latest
 
-_cmd_ret_reg = !(bash -c 'ls /proc/sys/fs/binfmt_misc/qemu-arm')
-if "qemu-arm" not in _cmd_ret_reg.out:
-    Error_Out(
-        "❌ binfmt for arm32 is not registered!\n",
-        Error.ENOCONF
-    )
 
+def _check_binfmt(_arch: str, _attp: int = 1) -> bool :
+    _cmd_ret_reg = !(bash -c f'cat /proc/sys/fs/binfmt_misc/{_arch}')
+    if "enabled" not in _cmd_ret_reg.out:
+        if _attp == 1:
+            print(f"⚠️  binfmt for {_arch} is not enabled, trying to enable it ...")
+            _retry_enable_binfmt(_arch)
+            return _check_binfmt(_arch, 2)
+        else:
+            Error_Out(
+                f"❌ binfmt for {_arch} is not enabled!\n",
+                Error.ENOCONF
+            )
+
+    return True
+
+
+_check_binfmt("qemu-aarch64")
+_check_binfmt("qemu-arm")
 
 print("\n✅ Environment is valid!\n", color=Color.GREEN)

@@ -779,16 +779,10 @@
         },
         {
             "label": "remove-dangling-images",
-            "detail": "",
-            "hide": true,
-            "command": "DOCKER_HOST=${config:torizon_ip}:2375",
-            "type": "shell",
+            "type": "process",
+            "command": "${workspaceFolder}/.conf/remove-dangling-images.xsh",
             "args": [
-                "docker",
-                "image",
-                "prune",
-                "-f",
-                "--filter=dangling=true"
+                "${config:torizon_ip}:2375"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

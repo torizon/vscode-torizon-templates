@@ -282,10 +282,53 @@
             "debugPort": "",
             "debugSSHPort": "",
             "multiContainer": false,
-            "mergeCommon": false,
+            "mergeCommon": {
+                "tasks": [
+                    "check-deps",
+                    "fetch-templates-repo",
+                    "try-update-template",
+                    "try-update-template-accepting-all",
+                    "run-docker-registry",
+                    "run-docker-registry-wsl",
+                    "run-torizon-binfmt",
+                    "run-share-wsl-ports",
+                    "platform-update-fleet",
+                    "fill-pipeline-settings",
+                    "validate-pipeline-settings",
+                    "validate-json-files",
+                    "show-project-documentation"
+                ],
+                "inputs": [
+                    "archList"
+                ]
+            },
+            "tests": {
+                "tasks": {
+                    "run-tcb-in-terminal": "Setting up TorizonCore Builder",
+                    "tcb-build": "Build command successfully executed",
+                    "tcb-deploy": "Deploying successfully finished",
+                    "tcb-isolate": "Changes in /etc successfully isolated",
+                    "tcb-platform-push-ostree": "Signed and pushed OSTree package",
+                    "tcb-dto-status": "Enabled overlays over unknown device tree",
+                    "tcb-platform-provisioning-data-local": "successfully generated",
+                    "tcb-platform-provisioning-data-online": "Online provisioning data:"
+                }
+            },
             "support": "Toradex",
-            "status": "incomplete",
-            "customMessage": "Version 3.12.0 of TCB has a known issue with Lockboxes: https://developer-archives.toradex.com/software/torizon/release-details?view=all&key=TOR-3662"
+            "status": "ok",
+            "customMessage": "",
+            "customFields": [
+                {
+                    "id": "branch",
+                    "label": "OSTree Branch Name",
+                    "placeHolder": "myos/custom",
+                    "default": "",
+                    "type": "text",
+                    "validRegex": "^(?!.*(?:^|\\/)(\\.\\.)(?:\\/|$))([A-Za-z0-9._-]+\\/)*[A-Za-z0-9._-]+$",
+                    "errorMessage": "Invalid branch name. Must not start with /, accepts alphanumeric characters, accepts -, _, ., and /",
+                    "description": "OSTree branch name to be used to commit the changes from the TCB project."
+                }
+            ]
         },
         {
             "img": "slint-cpp.png",

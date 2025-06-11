@@ -41,7 +41,7 @@
                 "engineLogging": true
             },
             "sourceFileMap": {
-                "${config:torizon_app_root}": "${workspaceFolder}"
+                "/home/torizon/app": "${workspaceFolder}"
             },
             "pipeTransport": {
                 "debuggerPath": "/usr/bin/gdb",
@@ -90,7 +90,7 @@
                 "engineLogging": true
             },
             "sourceFileMap": {
-                "${config:torizon_app_root}": "${workspaceFolder}"
+                "/home/torizon/app": "${workspaceFolder}"
             },
             "pipeTransport": {
                 "debuggerPath": "/usr/bin/gdb",
@@ -137,7 +137,7 @@
                 "engineLogging": true
             },
             "sourceFileMap": {
-                "${config:torizon_app_root}": "${workspaceFolder}"
+                "/home/torizon/app": "${workspaceFolder}"
             },
             "pipeTransport": {
                 "debuggerPath": "/usr/bin/gdb",

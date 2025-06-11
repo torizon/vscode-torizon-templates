@@ -397,17 +397,55 @@ def get_tasks_json(file_path: str) -> TaskConfiguration:
 
 
 def get_settings_json(
-        file_path: str,
-        custom_file: str | None = None
+    file_path: str,
+    custom_file: str | None = None
 ) -> TorizonSettings:
     _file = custom_file if custom_file else "settings.json"
+    local_settings_path = Path(file_path) / ".vscode" / _file
 
-    with open(f"{file_path}/.vscode/{_file}", 'r') as file:
-        _tor_settings = _cast_from_json(json.load(file), TorizonSettings)
+    try:
+        with open(local_settings_path, 'r') as file:
+            local_settings = json.load(file)
+    except FileNotFoundError:
+        print(f"No local settings file found at {local_settings_path}")
+        local_settings = {}
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON in settings file: {e}")
 
+    workspace_settings = {}
+    parent_dir = Path(file_path).parent
+    # First check for .code-workspace files directly inside the parent
+    for child in parent_dir.glob("*.code-workspace"):
+        try:
+            with open(child, "r") as ws_file:
+                data = json.load(ws_file)
+                if "settings" in data:
+                    print(f"Merging settings from: {child}")
+                    workspace_settings = data["settings"]
+                    break
+        except Exception as e:
+            print(f"Error reading {child}: {e}")
 
+    # If not found, scan folders in parent_dir
+    if not workspace_settings:
+        for sub in parent_dir.iterdir():
+            if sub.is_dir():
+                for child in sub.glob("*.code-workspace"):
+                    try:
+                        with open(child, "r") as ws_file:
+                            data = json.load(ws_file)
+                            if "settings" in data:
+                                print(f"Merging settings from: {child}")
+                                workspace_settings = data["settings"]
+                                break
+                    except Exception as e:
+                        print(f"Error reading {child}: {e}")
+                if workspace_settings:
+                    break
 
-        return _tor_settings
+    # Merge with local settings taking precedence
+    combined = {**workspace_settings, **local_settings}
+    return _cast_from_json(combined, TorizonSettings)
 
 
 class TaskRunner:

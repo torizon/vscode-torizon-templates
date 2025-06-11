@@ -25,6 +25,11 @@ ARG APP_ROOT=
 ARG DEBUG_SSH_PORT=
 
 ##
+# Board GPU vendor prefix
+##
+ARG GPU=
+
+##
 # Run as
 ##
 ARG SSHUSERNAME=
@@ -33,8 +38,8 @@ ARG SSHUSERNAME=
 ##
 # Deploy Step
 ##
-
-FROM crossware.app:5050/public-repos/flutter:${BASE_VERSION} AS debug
+FROM --platform=linux/${IMAGE_ARCH} \
+    crossware.app:5050/public-repos/flutter:${BASE_VERSION}${GPU} AS debug
 
 ARG IMAGE_ARCH
 ARG SSHUSERNAME
@@ -48,6 +53,15 @@ EXPOSE ${DEBUG_SSH_PORT}
 ENV DEBIAN_FRONTEND="noninteractive"
 
 WORKDIR ${APP_ROOT}
+
+# TODO: When the next version of the base containers, with this package added,
+# is released, this libwayland-cursor0 package install can be removed from here
+RUN apt-get -q -y update && \
+    apt-get -q -y install \
+    libwayland-cursor0 \
+    && \
+    apt-get clean && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install debug required packages
 RUN apt-get -q -y update && \

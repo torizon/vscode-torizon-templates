@@ -24,5 +24,5 @@ output:
   easy-installer:
     local: __change__-TCB-CUSTOM
   ostree:
-    branch: __container__
+    branch: __branch__
     commit-subject: __change__

@@ -20,14 +20,19 @@ ARG IMAGE_ARCH=
 ARG APP_ROOT=
 
 ##
+# Board GPU vendor prefix
+##
+ARG GPU=
+
+##
 # Build/Deploy Step
 ##
 
 # BUILD ------------------------------------------------------------------------
-FROM crossware.app:5050/public-repos/flutter:${SDK_BASE_VERSION} AS build
+FROM --platform=linux/${IMAGE_ARCH} \
+    crossware.app:5050/public-repos/flutter:${SDK_BASE_VERSION} AS build
 
 ARG IMAGE_ARCH
-ARG GPU
 ARG APP_ROOT
 
 COPY . ${APP_ROOT}
@@ -39,13 +44,23 @@ RUN flutter-elinux clean; flutter-elinux pub get; flutter-elinux build elinux --
 
 
 # DEPLOY -----------------------------------------------------------------------
+FROM --platform=linux/${IMAGE_ARCH} \
+    crossware.app:5050/public-repos/flutter:${BASE_VERSION}${GPU} AS final
 
-FROM crossware.app:5050/public-repos/flutter:${BASE_VERSION} AS final
-
+ARG GPU
 ARG APP_ROOT
 ARG SSHUSERNAME
 
 WORKDIR ${APP_ROOT}
+
+# TODO: When the next version of the base containers, with this package added,
+# is released, this libwayland-cursor0 package install can be removed from here
+RUN apt-get -q -y update && \
+    apt-get -q -y install \
+    libwayland-cursor0 \
+    && \
+    apt-get clean && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --chown=$SSHUSERNAME:$SSHUSERNAME run-release.sh ${APP_ROOT}/
 RUN chmod +x ${APP_ROOT}/run-release.sh

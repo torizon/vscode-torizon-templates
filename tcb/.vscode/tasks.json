@@ -2,216 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "check-deps",
-            "detail": "This task will check if the dependencies needed to run\nthe project are installed in the host machine.",
-            "command": "xonsh",
-            "type": "process",
-            "args": [
-                "${workspaceFolder}/.conf/check-deps.xsh"
-            ],
-            "dependsOrder": "sequence",
-            "icon": {
-                "id": "layers",
-                "color": "terminal.ansiCyan"
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "fetch-templates-repo",
-            "detail": "",
-            "hide": true,
-            "command": "echo",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "args": [
-                "echo",
-                "${command:torizon.fetchTemplates}"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "git-branch",
-                "color": "terminal.ansiGreen"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "update-template"
-            }
-        },
-        {
-            "label": "try-update-template",
-            "detail": "This task has automation steps to update the project\nbased on the template used to create it.",
-            "command": "xonsh",
-            "type": "process",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "args": [
-                "${workspaceFolder}/.conf/project-updater.xsh",
-                "${workspaceFolder}",
-                "${workspaceFolderBasename}",
-                "False"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "fetch-templates-repo"
-            ],
-            "icon": {
-                "id": "repo-sync",
-                "color": "terminal.ansiGreen"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "update-template"
-            }
-        },
-        {
-            "label": "try-update-template-accepting-all",
-            "detail": "This task has automation steps to update the project\nbased on the template used to create it.",
-            "command": "xonsh",
-            "type": "process",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "args": [
-                "${workspaceFolder}/.conf/project-updater.xsh",
-                "${workspaceFolder}",
-                "${workspaceFolderBasename}",
-                "True"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "fetch-templates-repo"
-            ],
-            "icon": {
-                "id": "repo-sync",
-                "color": "terminal.ansiGreen"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "update-template"
-            }
-        },
-        {
-            "label": "run-docker-registry",
-            "detail": "",
-            "hide": true,
-            "command": "xonsh",
-            "type": "process",
-            "args": [
-                "${workspaceFolder}/.conf/run-container-if-not-exists.xsh",
-                "--container-runtime",
-                "docker",
-                "--run-arguments",
-                "\"-d -p 5002:5000 --restart=always registry:2\"",
-                "--container-name",
-                "registry"
-            ],
-            "dependsOrder": "sequence",
-            "icon": {
-                "id": "layers",
-                "color": "terminal.ansiCyan"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "run-docker-registry-wsl",
-            "detail": "",
-            "hide": true,
-            "command": "xonsh",
-            "type": "process",
-            "args": [
-                "${workspaceFolder}/.vscode/tasks.xsh",
-                "run",
-                "run-docker-registry"
-            ],
-            "dependsOrder": "sequence",
-            "icon": {
-                "id": "layers",
-                "color": "terminal.ansiCyan"
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "run-torizon-binfmt",
-            "detail": "",
-            "hide": true,
-            "command": "xonsh",
-            "type": "process",
-            "args": [
-                "${workspaceFolder}/.conf/run-container-if-not-exists.xsh",
-                "--container-runtime",
-                "docker",
-                "--run-arguments",
-                "\"--rm --privileged torizon/binfmt:latest\"",
-                "--container-name",
-                "binfmt"
-            ],
-            "dependsOrder": "sequence",
-            "icon": {
-                "id": "layers",
-                "color": "terminal.ansiCyan"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "run-share-wsl-ports",
-            "detail": "",
-            "hide": true,
-            "command": "xonsh",
-            "type": "process",
-            "args": [
-                "${workspaceFolder}/.conf/share-wsl-ports.xsh",
-                "${workspaceFolder}"
-            ],
-            "dependsOrder": "sequence",
-            "icon": {
-                "id": "layers",
-                "color": "terminal.ansiCyan"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "dedicated"
-            }
-        },
-        {
             "label": "create-storage-dir",
             "detail": "",
             "hide": true,
@@ -229,8 +19,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "note",
                 "color": "terminal.ansiYellow"
@@ -308,8 +97,7 @@
                 "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
                 "id": "tools",
                 "color": "terminal.ansiYellow"
@@ -321,117 +109,6 @@
                 "focus": true,
                 "panel": "dedicated",
                 "group": "tcb-build"
-            }
-        },
-        {
-            "label": "tcb-bundle",
-            "detail": "Run the torizoncore-builder bundle command",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "VSCODE_CMD": "--verbose bundle ${command:tcb.listDockerComposeFiles}"
-                }
-            },
-            "args": [
-                "source",
-                "./.conf/tcb-env-setup.sh",
-                "-s",
-                "${workspaceFolder}/storage",
-                "-t",
-                "${config:tcb.version}"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "wrench",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "group": "tcb-bundle"
-            }
-        },
-        {
-            "label": "tcb-bundle-platform",
-            "detail": "Run the torizoncore-builder bundle command with --platform argument",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "VSCODE_CMD": "--verbose bundle ${command:tcb.listDockerComposeFiles} --platform ${input:archList}"
-                }
-            },
-            "args": [
-                "source",
-                "./.conf/tcb-env-setup.sh",
-                "-s",
-                "${workspaceFolder}/storage",
-                "-t",
-                "${config:tcb.version}"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "wrench",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "group": "tcb-bundle"
-            }
-        },
-        {
-            "label": "tcb-bundle-platform-dind-param",
-            "detail": "Run the torizoncore-builder bundle command with --platform and --dind-param arguments",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "VSCODE_CMD": "--verbose bundle ${command:tcb.listDockerComposeFiles} --platform ${input:archList} --dind-param=\"${input:dindParam}\""
-                }
-            },
-            "args": [
-                "source",
-                "./.conf/tcb-env-setup.sh",
-                "-s",
-                "${workspaceFolder}/storage",
-                "-t",
-                "${config:tcb.version}"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "wrench",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "group": "tcb-bundle"
             }
         },
         {
@@ -455,21 +132,20 @@
                 "${config:tcb.version}"
             ],
             "problemMatcher": [
-                "$tsc"
+              "$tsc"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
+            "dependsOn": [],
             "icon": {
-                "id": "package",
-                "color": "terminal.ansiYellow"
+              "id": "package",
+              "color": "terminal.ansiYellow"
             },
             "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "tcb-deploy"
+              "echo": true,
+              "reveal": "always",
+              "focus": true,
+              "panel": "shared",
+              "group": "tcb-deploy"
             }
         },
         {
@@ -511,6 +187,43 @@
             }
         },
         {
+            "label": "tcb-isolate",
+            "detail": "Run the torizoncore-builder isolate command to the default target device",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "VSCODE_CMD": "--verbose isolate --remote-host ${config:torizon_ip} --remote-username ${config:torizon_login} --remote-password '${config:torizon_psswd}' --changes-directory isolated-changes"
+                }
+            },
+            "args": [
+                "source",
+                "./.conf/tcb-env-setup.sh",
+                "-s",
+                "${workspaceFolder}/storage",
+                "-t",
+                "${config:tcb.version}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "icon": {
+                "id": "export",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "group": "tcb-build"
+            }
+        },
+        {
             "label": "tcb-platform-push-ostree",
             "detail": "Run the torizoncore-builder platform push command to torizon.io cloud",
             "command": "DOCKER_HOST=",
@@ -518,7 +231,44 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "VSCODE_CMD": "--verbose platform push --credentials credentials.zip --package-name __change__ --package-version ${command:tcb.getNextPackageVersion} __container__"
+                    "VSCODE_CMD": "--verbose platform push --credentials credentials.zip --package-name __change__ --package-version ${command:tcb.getNextPackageVersion} __branch__"
+                }
+            },
+            "args": [
+                "source",
+                "./.conf/tcb-env-setup.sh",
+                "-s",
+                "${workspaceFolder}/storage",
+                "-t",
+                "${config:tcb.version}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "icon": {
+                "id": "cloud-upload",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "group": "cloud-related"
+            }
+        },
+        {
+            "label": "tcb-dto-status",
+            "detail": "Run the torizoncore-builder command to show the applied device tree overlays that will be deployed.",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "VSCODE_CMD": "--verbose dto status"
                 }
             },
             "args": [
@@ -546,170 +296,6 @@
                 "focus": true,
                 "panel": "dedicated",
                 "group": "cloud-related"
-            }
-        },
-        {
-            "label": "platform-update-fleet",
-            "detail": "This task will trigger the update of the fleet in the\nTorizon Platform with the latest version\nof the application published to the platform.",
-            "command": "DOCKER_HOST=",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "PLATFORM_CLIENT_ID": "${command:tcb.clientId}",
-                    "PLATFORM_CLIENT_SECRET": "${command:tcb.clientSecret}"
-                }
-            },
-            "args": [
-                "xonsh",
-                "./.conf/torizon-io.xsh",
-                "update",
-                "fleet",
-                "latest",
-                "__change__",
-                "${command:tcb.fleetName}"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "cloud-upload",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "group": "cloud-related"
-            }
-        },
-        {
-            "label": "fill-pipeline-settings",
-            "detail": "This task will fill the properties that are needed to be\nset in the .vscode/settings.json to correctly\nrun the GitHub Actions or GitLab CI pipelines.",
-            "command": "echo",
-            "type": "shell",
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "DOCKER_REGISTRY": "${command:docker_registry}",
-                    "DOCKER_LOGIN": "${command:docker_login}",
-                    "DOCKER_PSSWD": "${command:docker_password}",
-                    "DOCKER_TAG": "${command:docker_tag}",
-                    "TCB_CLIENTID": "${command:tcb.clientId}",
-                    "TCB_CLIENTSECRET": "${command:tcb.clientSecret}",
-                    "TCB_PACKAGE": "__change__",
-                    "TCB_FLEET": "${command:tcb.fleetName}",
-                    "TORIZON_ARCH": "${command:torizon_arch}"
-                }
-            },
-            "args": [
-                "-e",
-                "\"✅ github-actions-settings done\n",
-                "\n",
-                "'⚠️  ENV VARIABLES NEED TO BE SET IN CI/CD PLATFORM'\n",
-                "\tDOCKER_PSSWD\n",
-                "\tPLATFORM_CLIENT_ID\n",
-                "\tPLATFORM_CLIENT_SECRET\n",
-                "\tPLATFORM_CREDENTIALS\n\""
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "notebook",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": false,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated",
-                "group": "cloud-related"
-            }
-        },
-        {
-            "label": "validate-pipeline-settings",
-            "detail": "",
-            "hide": true,
-            "command": "xonsh",
-            "type": "process",
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "DOCKER_REGISTRY": "${command:docker_registry}",
-                    "DOCKER_LOGIN": "${command:docker_login}",
-                    "DOCKER_PSSWD": "${command:docker_password}",
-                    "DOCKER_TAG": "${command:docker_tag}",
-                    "TCB_CLIENTID": "${command:tcb.clientId}",
-                    "TCB_CLIENTSECRET": "${command:tcb.clientSecret}",
-                    "TCB_PACKAGE": "__change__",
-                    "TCB_FLEET": "${command:tcb.fleetName}",
-                    "TORIZON_CI_SETTINGS_FILE": ".vscode/settings.json"
-                }
-            },
-            "args": [
-                ".conf/check-ci-env.xsh"
-            ],
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-            ],
-            "icon": {
-                "id": "notebook",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "validate-json-files",
-            "detail": "Validate the JSON files formatting on the workspace",
-            "command": "xonsh",
-            "type": "shell",
-            "args": [
-                "${workspaceFolder}/scripts/validate-json.xsh"
-            ],
-            "dependsOrder": "sequence",
-            "icon": {
-                "id": "notebook",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": true,
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "show-project-documentation",
-            "detail": "This task will open the project specific documentation\nin a new tab.",
-            "command": "${command:torizon.openTemplateDocumentation}",
-            "type": "process",
-            "dependsOrder": "sequence",
-            "problemMatcher": "$msCompile",
-            "icon": {
-                "id": "book",
-                "color": "terminal.ansiCyan"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "dedicated"
             }
         },
         {
@@ -745,22 +331,80 @@
                 "panel": "shared",
                 "group": "tcb-setup"
             }
-        }
-    ],
-    "inputs": [
-        {
-            "id": "archList",
-            "type": "pickString",
-            "description": "Container architecture",
-            "options": [
-                "linux/arm/v7",
-                "linux/arm64"
-            ]
         },
         {
-            "id": "dindParam",
-            "type": "promptString",
-            "description": "--dind-param arguments"
+            "label": "tcb-platform-provisioning-data-local",
+            "detail": "Run the torizoncore-builder command to get the data required for offline secure updates.",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "VSCODE_CMD": "--verbose platform provisioning-data --credentials credentials.zip --shared-data shared-data.tar.gz"
+                }
+            },
+            "args": [
+                "source",
+                "./.conf/tcb-env-setup.sh",
+                "-s",
+                "${workspaceFolder}/storage",
+                "-t",
+                "${config:tcb.version}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "icon": {
+                "id": "cloud-upload",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "group": "cloud-related"
+            }
+        },
+        {
+            "label": "tcb-platform-provisioning-data-online",
+            "detail": "Run the torizoncore-builder command to get the data required for online secure updates.",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "VSCODE_CMD": "--verbose platform provisioning-data --credentials credentials.zip --online-data DEFAULT"
+                }
+            },
+            "args": [
+                "source",
+                "./.conf/tcb-env-setup.sh",
+                "-s",
+                "${workspaceFolder}/storage",
+                "-t",
+                "${config:tcb.version}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "icon": {
+                "id": "cloud-upload",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "group": "cloud-related"
+            }
         }
-    ]
+    ],
+    "inputs": []
 }
+
