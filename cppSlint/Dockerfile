@@ -23,7 +23,7 @@ ARG GPU=
 ##
 # Slint Version
 ##
-ARG SLINT_VERSION=1.9.2
+ARG SLINT_VERSION=1.12.1
 
 # BUILD ------------------------------------------------------------------------
 FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
@@ -55,6 +55,11 @@ RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         dpkg-divert --divert /usr/bin/cmake.real --rename /usr/bin/cmake; \
         printf '#!/bin/sh\nexport CMAKE_TOOLCHAIN_FILE=/armhf-toolchain.cmake\nexec /usr/bin/cmake.real $*\n' > /usr/bin/cmake; \
         chmod 755 /usr/bin/cmake ;\
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        echo armhf > /cross-toolchain-arch.txt; \
+        dpkg-divert --divert /usr/bin/cmake.real --rename /usr/bin/cmake; \
+        printf '#!/bin/sh\nexport CMAKE_TOOLCHAIN_FILE=/armhf-toolchain.cmake\nexec /usr/bin/cmake.real $*\n' > /usr/bin/cmake; \
+        chmod 755 /usr/bin/cmake ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         echo amd64 > /cross-toolchain-arch.txt; \
     fi

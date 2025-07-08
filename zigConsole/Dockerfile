@@ -57,6 +57,8 @@ RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         zig build -Doptimize=ReleaseSmall -Dtarget=aarch64-linux-gnu --summary all -freference-trace ; \
     elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         zig build -Doptimize=ReleaseSmall -Dtarget=arm-linux-gnu --summary all -freference-trace ; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        zig build -Doptimize=ReleaseSmall -Dtarget=arm-linux-gnu --summary all -freference-trace ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         zig build -Doptimize=ReleaseSmall -Dtarget=x86_64-linux-gnu --summary all -freference-trace ; \
     fi

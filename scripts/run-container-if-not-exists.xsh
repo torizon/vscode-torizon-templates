@@ -56,8 +56,8 @@ run_arguments = args.run_arguments.replace("\"", "")
 run_arguments = run_arguments.replace("'", "")
 container_name = args.container_name.replace("\"", "")
 
-if "GITLAB_CI" in os.environ:
-    print("ℹ️ :: GITLAB_CI :: ℹ️")
+if "GITLAB_CI" in os.environ and os.path.exists("/.dockerenv"):
+    print("ℹ️ :: GITLAB_CI using docker executor :: ℹ️")
     $DOCKER_HOST = "tcp://docker:2375"
 
 # debug

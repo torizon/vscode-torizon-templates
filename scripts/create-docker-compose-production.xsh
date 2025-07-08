@@ -31,8 +31,8 @@ from torizon_templates_utils.colors import Color,BgColor,print
 
 $DOCKER_HOST = ""
 
-if "GITLAB_CI" in os.environ:
-    print("ℹ️ :: GITLAB_CI :: ℹ️")
+if "GITLAB_CI" in os.environ and os.path.exists("/.dockerenv"):
+    print("ℹ️ :: GITLAB_CI using docker executor :: ℹ️")
     $DOCKER_HOST = "tcp://docker:2375"
 
 _iterative = False

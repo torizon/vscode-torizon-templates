@@ -36,6 +36,9 @@ RUN if [ "$IMAGE_ARCH" = "arm64" ] ; then \
     elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         echo armv7-unknown-linux-gnueabihf > /rust-toolchain-arch.txt; \
         echo armhf > /cross-toolchain-arch.txt; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        echo armv7-unknown-linux-gnueabihf > /rust-toolchain-arch.txt; \
+        echo armhf > /cross-toolchain-arch.txt; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         echo x86_64-unknown-linux-gnu > /rust-toolchain-arch.txt; \
         echo amd64 > /cross-toolchain-arch.txt; \

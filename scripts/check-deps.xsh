@@ -27,8 +27,8 @@ from torizon_templates_utils.colors import Color,BgColor,print
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""
 
-if "GITLAB_CI" in os.environ:
-    print("ℹ️ :: GITLAB_CI :: ℹ️")
+if "GITLAB_CI" in os.environ and os.path.exists("/.dockerenv"):
+    print("ℹ️ :: GITLAB_CI using docker executor :: ℹ️")
     $DOCKER_HOST = "tcp://docker:2375"
 
 # docker and docker-compose are special cases

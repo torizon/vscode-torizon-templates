@@ -36,9 +36,13 @@ if len(sys.argv) < 4:
     print(
 """
 Usage:
-    project-updater.xsh <project_folder> <accept_all> <vscode> <second_run>
+    project-updater.xsh <project_folder> <project_name> <container_name> <accept_all> <vscode> <second_run>
 
         <project_folder>    The folder path where the project that will be updated is located.
+
+        <project_name>      The name of the project that will be updated.
+
+        <container_name>    The name of the container of the project that will be updated.
 
         <accept_all>        This is a bool like argument (True or False).
                             This signals if the updater should accept all the new
@@ -61,10 +65,11 @@ Usage:
 
 project_folder = get_arg_not_empty(1)
 project_name = get_arg_not_empty(2)
+container_name = get_arg_not_empty(3)
 # Check if it's True or 1
-accept_all = get_arg_not_empty(3) in ("True", "1")
-vscode = get_optional_arg(4, True)
-second_run = get_optional_arg(5, False)
+accept_all = get_arg_not_empty(4) in ("True", "1")
+vscode = get_optional_arg(5, True)
+second_run = get_optional_arg(6, False)
 
 ##
 # even tough the vscode arg is true, if the TORIZON_TEMPLATES_NON_VSCODE
@@ -209,6 +214,7 @@ if not _check_if_file_content_is_equal(
         @(f"{project_folder}/.conf/project-updater.xsh") \
         @(project_folder) \
         @(project_name) \
+        @(container_name) \
         @(accept_all) \
         @(vscode) \
         True

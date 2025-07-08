@@ -36,6 +36,8 @@ RUN dotnet restore __change__.csproj && \
         export ARCH=${IMAGE_ARCH} ; \
     elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         export ARCH="arm" ; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        export ARCH="arm" ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         export ARCH="x64" ; \
     fi && \

@@ -43,6 +43,7 @@
                 "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
                 "${workspaceFolderBasename}",
+                "__container__",
                 "False"
             ],
             "dependsOrder": "sequence",
@@ -73,6 +74,7 @@
                 "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
                 "${workspaceFolderBasename}",
+                "__container__",
                 "True"
             ],
             "dependsOrder": "sequence",

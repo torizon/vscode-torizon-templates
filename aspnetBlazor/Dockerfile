@@ -34,6 +34,8 @@ RUN dotnet restore __change__.csproj && \
         export ARCH="arm" ; \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         export ARCH="x64" ; \
+    elif [ "$IMAGE_ARCH" = "arm" ] ; then \
+        export ARCH="arm" ; \
     fi && \
     dotnet publish __change__.csproj -c Release -r linux-${ARCH} --no-self-contained && \
     if [ "./bin/Release/net8.0/linux-${ARCH}" != "./bin/Release/net8.0/linux-${IMAGE_ARCH}" ]; then \
