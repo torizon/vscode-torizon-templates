@@ -69,7 +69,8 @@ jobs:
                   @(os.environ['GITHUB_WORKSPACE']) \
                   @(os.environ['PROJECT_FOLDER']) \
                   "false" \
-                  "false"
+                  "false" \
+                  --customFields @(f'[{{"id":"qt_license_login","value":"","type":"text"}},{{"id":"qt_license_password","value":"","type":"password"}},{{"id":"container","value":"{os.environ["PROJECT_CONTAINER"]}-ci-test","type":"text"}}]')
 
           cp "abs-path" @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
           os.chdir(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")

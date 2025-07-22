@@ -97,7 +97,6 @@ services:
     profiles:
       - release
       - debug
-    command: -- --shell=kiosk
     healthcheck:
         test: ["CMD", "test", "-S", "/tmp/1000-runtime-dir/wayland-0"]
         interval: 5s
