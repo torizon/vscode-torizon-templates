@@ -19,7 +19,7 @@ import os
 from xonsh.procs.pipelines import CommandPipeline
 from torizon_templates_utils.network import is_in_gitlab_ci_container
 from torizon_templates_utils.errors import Error,Error_Out
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color,BgColor,printcb
 
 $DOCKER_HOST = ""
 

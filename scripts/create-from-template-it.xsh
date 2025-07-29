@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+create-from-template-it.xsh: interactive project creation from a template.
+"""
+# pylint: disable=invalid-name
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -17,10 +21,9 @@ $XONSH_SHOW_TRACEBACK = True
 $RAISE_SUBPROC_ERROR = True
 
 import os
-import sys
 import json
-from torizon_templates_utils.errors import Error,Error_Out
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.errors import Error, Error_Out  # pylint: disable=import-error,no-name-in-module
+from torizon_templates_utils.colors import Color, BgColor  # pylint: disable=import-error
 
 # 1. list the templates
 # 2. choose a template
@@ -31,7 +34,7 @@ from torizon_templates_utils.colors import Color,BgColor,print
 
 # .1
 _templates = []
-with open(f"{os.environ['HOME']}/.apollox/templates.json", "r") as f:
+with open(f"{os.environ['HOME']}/.apollox/templates.json", "r", encoding="utf-8") as f:
     _templates = json.load(f)["Templates"]
 
 print("📦 :: TEMPLATES :: 📦")
@@ -107,6 +110,7 @@ if not os.path.exists(_project_path):
 
 if os.path.exists(f"{_project_path}/{_project_name}"):
     Error_Out(
+        #pylint: disable=line-too-long
         f"❌ :: Project path with project name [{_project_path}/{_project_name}] already exists :: ❌",
         Error.EINVAL
     )
@@ -125,3 +129,4 @@ xonsh ./create-from-template.xsh \
     @(False)
 
 print(f"✅ Project [{_project_name}] created!", color=Color.GREEN)
+

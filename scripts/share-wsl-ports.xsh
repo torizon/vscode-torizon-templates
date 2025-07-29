@@ -19,7 +19,7 @@ import os
 import sys
 from xonsh.procs.pipelines import CommandPipeline
 from torizon_templates_utils.errors import Error,Error_Out,last_return_code
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color,BgColor,printcb
 
 # this only make sense for WSL
 if "WSL_DISTRO_NAME" in os.environ and os.environ["WSL_DISTRO_NAME"] != "":
@@ -73,3 +73,4 @@ if "WSL_DISTRO_NAME" in os.environ and os.environ["WSL_DISTRO_NAME"] != "":
     else:
         # run it
         powershell.exe -NoProfile -C @(f"start-process powershell -verb runas -ArgumentList '-NoProfile -C \"{super_script} echo done\"'")
+

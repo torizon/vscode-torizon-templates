@@ -1,12 +1,21 @@
+"""Tiny wait-animation wrapper to run a callable and show a spinner."""
+
 import sys
 import time
 import threading
 from itertools import cycle
+from typing import Any, Callable, Optional
 
-def run_command_with_wait_animation(call, *args):
+
+def run_command_with_wait_animation(call: Callable[..., Any], *args: Any) -> Any:
+    """Run `call(*args)` while showing a spinner. Re-raises any exception from `call`."""
     anima_frames = ["🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"]
 
-    def animate():
+    running = [True, False]  # [0]=running, [1]=failed
+    output: Any = None
+    exc: Optional[BaseException] = None
+
+    def animate() -> None:
         for frame in cycle(anima_frames):
             if not running[0]:
                 break
@@ -14,49 +23,34 @@ def run_command_with_wait_animation(call, *args):
             sys.stdout.flush()
             time.sleep(0.1)
 
-        # Clear the line
-        sys.stdout.write("\r                             ")
+        # clear line and print final status
+        sys.stdout.write("\r" + " " * 80)
+        sys.stdout.flush()
+        sys.stdout.write(
+            "\r❌ ::    TASK FAILED    :: ❌\n"
+            if running[1]
+            else "\r✅ ::    TASK COMPLETED    :: ✅\n"
+        )
+        sys.stdout.flush()
 
-        if running[1]:
-            sys.stdout.write("\r❌ ::    TASK FAILED    :: ❌\n")
-        else:
-            sys.stdout.write("\r✅ ::    TASK COMPLETED    :: ✅\n")
-
-    def target():
-        nonlocal output
+    def target() -> None:
+        nonlocal output, exc
         try:
             output = call(*args)
-        except Exception as e:
-            output = e
+        except BaseException as e:  # pylint: disable=broad-exception-caught
+            exc = e
             running[1] = True
         finally:
             running[0] = False
 
-    # [0] is if it's running [1] if it has failed
-    running = [True, False]
-    output = None
+    t_anim = threading.Thread(target=animate)
+    t_call = threading.Thread(target=target)
+    t_anim.start()
+    t_call.start()
+    t_call.join()
+    t_anim.join()
 
-    animation_thread = threading.Thread(target=animate)
-    command_thread = threading.Thread(target=target)
-
-    animation_thread.start()
-    command_thread.start()
-
-    command_thread.join()
-    animation_thread.join()
-
-    if isinstance(output, Exception):
-        raise output
-
+    if exc is not None:
+        raise exc
     return output
 
-
-# # Example usage
-# def example_script(duration):
-#     time.sleep(duration)
-#     return "Task finished"
-
-# if __name__ == "__main__":
-#     print("LET'S RUN A SCRIPT THAT TAKES 5 SECONDS TO FINISH")
-#     result = run_command_in_background_with_wait_animation(example_script, 5)
-#     print(result)

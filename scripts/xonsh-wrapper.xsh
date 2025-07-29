@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+# pylint: disable=invalid-name
+"""
+xonsh-wrapper.xsh: read xonsh commands from STDIN and execute them line by line.
+"""
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -16,19 +20,20 @@ $RAISE_SUBPROC_ERROR = True
 
 import os
 import sys
-
+from xonsh.built_ins import XSH  # provides access to execx via XSH.builtins.execx
 
 try:
-    with open(sys.stdin.fileno(), 'r') as f:
+    # Open stdin with explicit encoding for linting compliance
+    with os.fdopen(sys.stdin.fileno(), "r", encoding="utf-8", errors="replace") as f:
         for line in f:
             line = line.strip()
             if line:
                 try:
-                    execx(line)
-                except Exception as e:
+                    XSH.builtins.execx(line)  # execute xonsh code
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     print(f"Error executing line: {line}", file=sys.stderr)
                     raise e
-
-except Exception as e:
+except Exception as e:  # pylint: disable=broad-exception-caught
     print(e, file=sys.stderr)
     os._exit(69)
+

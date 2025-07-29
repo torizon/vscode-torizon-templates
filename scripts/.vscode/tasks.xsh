@@ -20,7 +20,7 @@ import traceback
 import torizon_templates_utils.tasks as vscode_tasks
 from torizon_templates_utils import debug
 from torizon_templates_utils.errors import Error,Error_Out,last_return_code
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color,BgColor,printcb
 
 ## In case of fire break glass
 # debug.vscode_prepare()

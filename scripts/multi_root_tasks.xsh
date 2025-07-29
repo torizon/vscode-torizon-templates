@@ -1,4 +1,7 @@
 #!/usr/bin/env xonsh
+"""
+multi_root_tasks.xsh: run one or more VS Code tasks across all workspaces.
+"""
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -10,14 +13,20 @@ $XONSH_SHOW_TRACEBACK = True
 $RAISE_SUBPROC_ERROR = True
 
 import os
+import sys
 import subprocess
 from pathlib import Path
 
+# Resolve Xonsh $ARGS in a pylint-friendly way
+try:
+    args = __xonsh__.ctx.get("ARGS", [])
+except NameError:  # when linting
+    args = []
+
 # Validate arguments
-args = $ARGS
 if len(args) < 2:
     print("Usage: xonsh multi-root-tasks.xsh [<task1> <task2> ...]")
-    exit(1)
+    sys.exit(1)
 
 task_names = args[1:]
 
@@ -40,7 +49,7 @@ for workspace in top_level.iterdir():
             os.chdir(workspace)
             subprocess.run(
                 ["xonsh", ".vscode/tasks.xsh", "run", task_name],
-                check=True
+                check=True,
             )
         except subprocess.CalledProcessError as e:
             print(f"[Task '{task_name}' failed in {workspace.name} with exit code {e.returncode}]")

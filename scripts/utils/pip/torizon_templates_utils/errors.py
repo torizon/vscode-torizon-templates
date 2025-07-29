@@ -1,58 +1,47 @@
+"""Error utilities and exit codes used by Torizon templates."""
 
 import sys
 from enum import Enum
-from torizon_templates_utils.colors import Color, BgColor, print
+from dataclasses import dataclass
 
-class _error_struct:
+from .colors import Color, cprint
+
+
+@dataclass  # pylint: disable=too-few-public-methods
+class ErrorStruct:
+    """Holds an error code and message."""
+
     code: int
     message: str
 
-    def __init__(self, code: int, message: str):
-        self.code = code
-        self.message = message
 
-# Standard Unix errors. There may be other standard error codes also:
-# https://github.com/kaushalparikh/nuttx/blob/master/include/errno.h
 class Error(Enum):
-    ENOCONF = _error_struct(
-        1, "Not configured"
-    )
-    EINVAL = _error_struct(
-        22, "Invalid argument"
-    )
-    ENOPKG = _error_struct(
-        65, "Package not installed"
-    )
-    EUSER = _error_struct(
-        69, "User fault"
-    )
-    EABORT = _error_struct(
-        170, "Abort"
-    )
-    ETASKEXEC = _error_struct(
-        310, "Task execution error"
-    )
-    ENOFOUND = _error_struct(
-        404, "Not found"
-    )
-    EFAIL = _error_struct(
-        500, "Failed"
-    )
-    EUNKNOWN = _error_struct(
-        666, "Unknown error"
-    )
-    ETOMCRUISE = _error_struct(
-        999, "Impossible condition"
-    )
+    """Error codes and messages."""
+
+    ENOCONF = ErrorStruct(1, "Not configured")
+    EINVAL = ErrorStruct(22, "Invalid argument")
+    ENOPKG = ErrorStruct(65, "Package not installed")
+    EUSER = ErrorStruct(69, "User fault")
+    EABORT = ErrorStruct(170, "Abort")
+    ETASKEXEC = ErrorStruct(310, "Task execution error")
+    ENOFOUND = ErrorStruct(404, "Not found")
+    EFAIL = ErrorStruct(500, "Failed")
+    EUNKNOWN = ErrorStruct(666, "Unknown error")
+    ETOMCRUISE = ErrorStruct(999, "Impossible condition")
 
 
-def Error_Out(msg: str, error: Error) -> None:
-    print(f"\n{msg}", color=Color.RED)
-    print(f"Error cause: {error.value.message}\n", color=Color.RED)
+def error_out(msg: str, error: Error) -> None:
+    """Print an error message and exit the program with the error code."""
+    cprint(f"\n{msg}", color=Color.RED)
+    cprint(f"Error cause: {error.value.message}\n", color=Color.RED)
     sys.exit(error.value.code)
 
 
 def last_return_code() -> int:
-    # we are ignoring the type here because this will get the current
-    # xonsh shell instance
-    return __xonsh__.last.returncode # type: ignore
+    """Get the last return code from xonsh if present; otherwise 0."""
+    try:
+        # type: ignore[name-defined] – __xonsh__ exists only inside xonsh
+        return __xonsh__.last.returncode  # noqa: F821
+    except NameError:
+        return 0
+

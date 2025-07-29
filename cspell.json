@@ -41,7 +41,8 @@
         "TEZI",
         "TORIZONPACKAGES",
         "workdir",
-        "xonsh"
+        "xonsh",
+        "pylint"
     ],
     "ignoreWords": [
         "torizon",

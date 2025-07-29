@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+update-qt-creator-ini.xsh: update target device settings for Qt Creator.
+"""
+# pylint: disable=invalid-name
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -15,7 +19,6 @@ $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
 $RAISE_SUBPROC_ERROR = True
 
-import os
 import sys
 import configparser
 
@@ -33,7 +36,7 @@ config = configparser.ConfigParser(
 # maintain the case of the keys
 config.optionxform = lambda option: option
 
-config.read(f"{_path}/.qt/QtProject/QtCreator.ini")
+config.read(f"{_path}/.qt/QtProject/QtCreator.ini", encoding="utf-8")
 
 # debug
 print(config["DebugMode"]["StartApplication\\2\\LastServerAddress"])
@@ -41,10 +44,17 @@ print("to")
 print(_deviceHostname)
 
 # replace
-config["DebugMode"]["StartApplication\\2\\LastServerAddress"] = f"{_deviceHostname}"
-config["DebugMode"]["StartApplication\\2\\LastExternalExecutable"] = f"{_path}/build-{_deviceArch}/bin/{_projectName}"
-config["DebugMode"]["StartApplication\\2\\LastExternalWorkingDirectory"] = f"{_path}/build-{_deviceArch}/bin"
+config["DebugMode"][
+    "StartApplication\\2\\LastServerAddress"
+] = f"{_deviceHostname}"
+config["DebugMode"][
+    "StartApplication\\2\\LastExternalExecutable"
+] = f"{_path}/build-{_deviceArch}/bin/{_projectName}"
+config[
+    "DebugMode"]["StartApplication\\2\\LastExternalWorkingDirectory"
+] = f"{_path}/build-{_deviceArch}/bin"
 
 # write
-with open(f"{_path}/.qt/QtProject/QtCreator.ini", "w") as configfile:
+with open(f"{_path}/.qt/QtProject/QtCreator.ini", "w", encoding="utf-8") as configfile:
     config.write(configfile)
+

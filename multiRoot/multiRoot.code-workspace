@@ -8,17 +8,17 @@
 	"launch": {
 		"configurations": [],
 		"compounds": [
-            {
-                "name": "Launch Project arm64",
-                "configurations": [],
-                "preLaunchTask": "check-single-projects-conflicts"
-            },
-            {
-                "name": "Launch Project arm32",
-                "configurations": [],
-                "preLaunchTask": "check-single-projects-conflicts"
-            }
-        ]
+			{
+				"name": "Launch Project arm64",
+				"configurations": [],
+				"preLaunchTask": "check-single-projects-conflicts"
+			},
+			{
+				"name": "Launch Project arm32",
+				"configurations": [],
+				"preLaunchTask": "check-single-projects-conflicts"
+			}
+		]
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -51,7 +51,7 @@
 				"type": "shell",
 				"command": "xonsh",
 				"args": [
-					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"${workspaceFolder}/.conf/multi_root_tasks.xsh",
 					"check-deps"
 				],
 				"presentation": {
@@ -67,7 +67,7 @@
 				"type": "shell",
 				"command": "xonsh",
 				"args": [
-					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"${workspaceFolder}/.conf/multi_root_tasks.xsh",
 					"create-production-image"
 				],
 				"options": {
@@ -114,8 +114,8 @@
 				"command": "sshpass",
 				"type": "process",
 				"options": {
-                    "cwd": "${workspaceFolder}"
-                },
+					"cwd": "${workspaceFolder}"
+				},
 				"args": [
 					"-p",
 					"${config:torizon_psswd}",
@@ -168,7 +168,7 @@
 				"type": "shell",
 				"command": "xonsh",
 				"args": [
-					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"${workspaceFolder}/.conf/multi_root_tasks.xsh",
 					"validate-settings",
 					"validate-arch-arm",
 					"pre-cleanup",
@@ -191,7 +191,7 @@
 				"type": "shell",
 				"command": "xonsh",
 				"args": [
-					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"${workspaceFolder}/.conf/multi_root_tasks.xsh",
 					"validate-settings",
 					"validate-arch-arm64",
 					"pre-cleanup",
@@ -214,8 +214,8 @@
 				"command": "DOCKER_HOST=${config:torizon_ip}:2375",
 				"type": "shell",
 				"options": {
-                    "cwd": "${workspaceFolder}"
-                },
+					"cwd": "${workspaceFolder}"
+				},
 				"args": [
 					"DOCKER_LOGIN=${config:host_ip}:5002",
 					"TAG=${config:docker_tag}",
@@ -252,8 +252,8 @@
 				"command": "DOCKER_HOST=${config:torizon_ip}:2375",
 				"type": "shell",
 				"options": {
-                    "cwd": "${workspaceFolder}"
-                },
+					"cwd": "${workspaceFolder}"
+				},
 				"args": [
 					"DOCKER_LOGIN=${config:host_ip}:5002",
 					"TAG=${config:docker_tag}",
@@ -315,4 +315,3 @@
 		]
 	}
 }
-

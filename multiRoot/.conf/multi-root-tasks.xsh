@@ -16,7 +16,7 @@ from pathlib import Path
 # Validate arguments
 args = $ARGS
 if len(args) < 2:
-    print("Usage: xonsh multi-root-tasks.xsh [<task1> <task2> ...]")
+    print("Usage: xonsh multi_root_tasks.xsh [<task1> <task2> ...]")
     exit(1)
 
 task_names = args[1:]

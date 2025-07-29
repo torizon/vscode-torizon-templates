@@ -1,44 +1,40 @@
+"""Network utilities for Torizon Templates."""
 
 import os
 import re
 import subprocess
 
-
-def get_host_ip():
-    if 'WSL_DISTRO_NAME' in os.environ and os.environ['WSL_DISTRO_NAME'] != '':
-        command = ["/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe", "-c", '(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias (Get-NetRoute -DestinationPrefix "0.0.0.0/0").InterfaceAlias).IPAddress']
-
-        # if inside a container we need to run the command in the host
+def get_host_ip() -> str:
+    """Gets the host IP address."""
+    if "WSL_DISTRO_NAME" in os.environ and os.environ["WSL_DISTRO_NAME"]:
+        command = [
+            "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+            "-c",
+            # pylint:disable=line-too-long
+            '(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias (Get-NetRoute -DestinationPrefix "0.0.0.0/0").InterfaceAlias).IPAddress',
+        ]
         if "APOLLOX_CONTAINER" in os.environ:
             command = [
-                "sudo", "nsenter", "-t", "1", "-m", "-u", "-n", "-i",
-                "--",
-                "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe", "-c", '(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias (Get-NetRoute -DestinationPrefix "0.0.0.0/0").InterfaceAlias).IPAddress'
+                "sudo","nsenter","-t","1","-m","-u","-n","-i","--",
+                "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe","-c",
+                # pylint: disable=line-too-long
+                '(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias (Get-NetRoute -DestinationPrefix "0.0.0.0/0").InterfaceAlias).IPAddress',
             ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        m = re.search(r"((1?\d\d?|2[0-4]\d|25[0-5])\.){3}(1?\d\d?|2[0-4]\d|25[0-5])", result.stdout)
+        return m.group(0) if m else ""
+    command = ["hostname", "-I"]
+    if "APOLLOX_CONTAINER" in os.environ:
+        command = ["sudo","nsenter","-t","1","-m","-u","-n","-i","--","hostname","-I"]
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    parts = result.stdout.split()
+    return parts[0] if parts else ""
 
-        result = subprocess.run(command, capture_output=True, text=True)
-        ip_address = re.search(r'((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])', result.stdout)
-        if ip_address:
-            return ip_address.group(0)
-    else:
-        command = ["hostname", "-I"]
-
-        # if inside a container we need to run the command in the host
-        if "APOLLOX_CONTAINER" in os.environ:
-            command = [
-                "sudo", "nsenter", "-t", "1", "-m", "-u", "-n", "-i",
-                "--",
-                "hostname", "-I"
-            ]
-
-        result = subprocess.run(command, capture_output=True, text=True)
-        return result.stdout.split()[0]
-
-
-def is_in_docker_container():
+def is_in_docker_container() -> bool:
+    """Checks if the current environment is a Docker container."""
     return os.path.exists("/.dockerenv")
 
-
-def is_in_gitlab_ci_container():
+def is_in_gitlab_ci_container() -> bool:
+    """Checks if the current environment is a GitLab CI container."""
     return "GITLAB_CI" in os.environ and is_in_docker_container()
 

@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+build-internal-containers.xsh: Script to build the internal containers in the right order.
+"""
+# pylint: disable=invalid-name
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -17,10 +21,8 @@ $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
 $RAISE_SUBPROC_ERROR = True
 
-import os
 import sys
-from torizon_templates_utils.errors import Error,Error_Out,last_return_code
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color
 
 if len(sys.argv) != 2:
     print(f"Usage: {sys.argv[0]} <branch>")
@@ -30,7 +32,7 @@ $__TCD_BRANCH = sys.argv[1]
 $__TCD_SHA_DIR = 0
 
 # # run the build command
-print(f"🔨 :: XONSH :: 🔨", color=Color.GREEN)
+print("🔨 :: XONSH :: 🔨", color=Color.GREEN)
 docker compose \
     -f ./container/docker-compose.yml \
     build \
@@ -39,7 +41,7 @@ docker compose \
     xonsh
 
 # # run the build command
-print(f"🔨 :: TASKS :: 🔨", color=Color.GREEN)
+print("🔨 :: TASKS :: 🔨", color=Color.GREEN)
 docker compose \
     -f ./container/docker-compose.yml \
     build \
@@ -48,7 +50,7 @@ docker compose \
     tasks
 
 # # run the build command
-print(f"🔨 :: XONSH-WRAPPER :: 🔨", color=Color.GREEN)
+print("🔨 :: XONSH-WRAPPER :: 🔨", color=Color.GREEN)
 docker compose \
     -f ./container/docker-compose.yml \
     build \
@@ -57,10 +59,11 @@ docker compose \
     xonsh-wrapper
 
 # run the build command
-print(f"🔨 :: TORIZON-DEV :: 🔨", color=Color.GREEN)
+print("🔨 :: TORIZON-DEV :: 🔨", color=Color.GREEN)
 docker compose \
     -f ./container/docker-compose.yml \
     build \
     --no-cache \
     --push \
     torizon-dev
+

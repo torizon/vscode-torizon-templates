@@ -21,7 +21,9 @@
             "language": "None",
             "multiContainer": true,
             "mergeCommon": {
-                "tasks": ["wait-a-bit"],
+                "tasks": [
+                    "wait-a-bit"
+                ],
                 "inputs": []
             },
             "codeWorkspace": true,
@@ -30,7 +32,7 @@
                 "check-single-projects-conflicts.xsh",
                 "create-multi-root-docker-compose.xsh",
                 "merge-docker-compose.xsh",
-                "multi-root-tasks.xsh"
+                "multi_root_tasks.xsh"
             ],
             "ignoreTorizonPackages": true,
             "support": "Toradex",
@@ -137,15 +139,20 @@
             "customMessage": "To learn more about Qt Enterprise and get a free evaluation license, please go to https://www.qt.io/qt-and-toradex",
             "tests": {
                 "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
+                    "local": [
+                        "Local AMD64"
+                    ],
+                    "arm": [
+                        "Torizon arm32"
+                    ],
+                    "arm64": [
+                        "Torizon arm64"
+                    ]
                 },
                 "debuggerConsole": "cppdbg",
                 "mainFile": "main.cpp",
                 "mainFileBreakpointLine": 19,
                 "successDebugMessage": "Hello Torizon!"
-
             },
             "customFields": [
                 {

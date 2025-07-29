@@ -67,3 +67,16 @@ jobs:
 
         run: |
           xonsh ./scripts/test-duplicates.xsh
+
+  lint-xonsh:
+    name: Lint Xonsh Scripts
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install xonsh and pylint-xonsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pylint-xonsh
+          pylint ./scripts/**/*.py ./scripts/**/*.xsh

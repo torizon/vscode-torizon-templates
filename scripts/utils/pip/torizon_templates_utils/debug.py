@@ -1,22 +1,35 @@
-# pylint: disable=missing-function-docstring
-# pylint: disable=missing-module-docstring
-import debugpy # type: ignore[import-untyped]
+"""Small helpers for optional debugpy integration."""
 
-DEBUG_INITIALIZED = False
+# pylint: disable=missing-function-docstring, missing-module-docstring
+
+from __future__ import annotations
+
+try:
+    import debugpy  # type: ignore[import-untyped]
+except ImportError:  # pragma: no cover
+    DEBUGPY = None  # type: ignore[assignment]
+else:
+    DEBUGPY = debugpy  # type: ignore[assignment]
+
+# simple internal state without using `global`
+_STATE = {"initialized": False}
+
 
 def vscode_prepare(port: int = 5679) -> None:
-    global DEBUG_INITIALIZED
-
-    if DEBUG_INITIALIZED:
+    """Start debugpy server (no-op if already started or not installed)."""
+    if _STATE["initialized"] or DEBUGPY is None:
         return
 
-    print("__debugpy__")
-    debugpy.listen(("0.0.0.0", port))
-    print("__debugpy__ go")
-    debugpy.wait_for_client()
-    print(f"__debugpy__ is connected [{debugpy.is_client_connected()}]")
+    print("Starting debugpy…")
+    DEBUGPY.listen(("0.0.0.0", port))
+    print(f"Waiting for VS Code to attach on port {port}…")
+    DEBUGPY.wait_for_client()
+    print(f"Attached: {DEBUGPY.is_client_connected()}")
+    _STATE["initialized"] = True
 
-    DEBUG_INITIALIZED = True
 
-def breakpoint() -> None:
-    debugpy.breakpoint()
+def debug_breakpoint() -> None:
+    """Trigger a breakpoint if debugpy is available."""
+    if DEBUGPY is not None:
+        DEBUGPY.breakpoint()
+

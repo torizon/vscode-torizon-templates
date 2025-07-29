@@ -1,8 +1,12 @@
+"""Color + colored printing utilities for terminal output."""
 
 import builtins
 import enum
 
+
 class Color(enum.IntEnum):
+    """Text colors for terminal output."""
+
     NONE = 0
     BLACK = 30
     RED = 31
@@ -13,7 +17,10 @@ class Color(enum.IntEnum):
     CYAN = 36
     WHITE = 37
 
+
 class BgColor(enum.IntEnum):
+    """Background colors for terminal output."""
+
     NONE = 0
     BLACK = 40
     RED = 41
@@ -31,26 +38,27 @@ class BgColor(enum.IntEnum):
     WHITE = 47
     BRIGTH_WHITE = 107
 
-# override print to have color and background color
-def print(
-        *args,
-        color: Color = Color.NONE,
-        bg_color: BgColor = BgColor.NONE,
-        **kwargs
-) -> None:
-    _color: int = color.value
-    _bg_color: int = bg_color.value
 
-    start_escape = ""
+def cprint(*args, color: Color = Color.NONE, bg_color: BgColor = BgColor.NONE, **kwargs) -> None:
+    """Print like builtins.print, with optional foreground/background colors."""
+    # If no colors requested, just delegate
+    if color == Color.NONE and bg_color == BgColor.NONE:
+        builtins.print(*args, **kwargs)
+        return
 
-    if _color != 0 and _bg_color != 0:
-        start_escape += f"\033[{_color};{_bg_color}m"
-    elif _color != 0:
-        start_escape += f"\033[{_color}m"
-    elif _bg_color != 0:
-        start_escape += f"\033[{_bg_color}m"
+    start = ""
+    if color != Color.NONE and bg_color != BgColor.NONE:
+        start = f"\033[{color.value};{bg_color.value}m"
+    elif color != Color.NONE:
+        start = f"\033[{color.value}m"
+    elif bg_color != BgColor.NONE:
+        start = f"\033[{bg_color.value}m"
 
-    end_escape = "\033[0m"
+    end = "\033[0m"
+    text = " ".join(map(str, args))
+    builtins.print(f"{start}{text}{end}", **kwargs)
 
-    text = ' '.join(map(str, args))
-    builtins.print(f'{start_escape}{text}{end_escape}', **kwargs)
+
+# Back-compat alias if other code expects this name
+printcb = cprint
+

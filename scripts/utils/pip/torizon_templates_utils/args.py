@@ -1,83 +1,43 @@
+"""Helpers to read CLI args or interactively prompt the user."""
 
 import sys
-from typing import TypeVar, Type
-from torizon_templates_utils.errors import Error, Error_Out
+from typing import Optional, Any
 
-T = TypeVar('T')
+from .errors import Error, error_out
 
-def get_arg_not_empty(index: int) -> str:
+
+def _to_bool(val: str) -> bool:
+    return val.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def get_arg(
+    index: int,
+    prompt: str,
+    default: Optional[str] = None,
+    default_type: type = str,
+    iterative: bool = False,
+) -> Any:
     """
-    Get an argument from the command line.
-    If the argument is an empty string, an error is raised.
+    Return argv[index] if present; otherwise use `default` or prompt if `iterative=True`.
+    Coerces to bool when default_type is bool.
     """
-    _arg = sys.argv[index]
-
-    if _arg == "":
-        Error_Out(
-            "Error: Argument cannot be empty",
-            Error.EUSER
-        )
-
-    return _arg
-
-
-def get_optional_arg(index: int, default: T) -> T | bool | str:
-    """
-    Get an optional argument from the command line.
-    If the argument is not provided, the default value is returned.
-    """
+    # From CLI
     if len(sys.argv) > index:
-        # sys.argv return string
-        # we need to return T
-        # FIXME: this only convert string to bool for now
-        if type(default) is bool:
-            if sys.argv[index] == "True" or sys.argv[index] == "true" or sys.argv[index] == "1":
-                return True
-            else:
-                return False
+        val = sys.argv[index]
+        return _to_bool(val) if default_type is bool else val
 
-        return sys.argv[index]
+    # Use default when provided and not prompting
+    if default is not None and not iterative:
+        return _to_bool(str(default)) if default_type is bool else default
 
-    return default
-
-
-def get_arg_iterative(
-        index: int, prompt: str, default_type: Type, default: T | None = None, iterative: bool = False
-    ) -> T | None | bool | str:
-    """
-    Get an argument from the command line.
-    If the argument is not provided, an error is raised.
-    """
-    if len(sys.argv) > index:
-        if default_type is bool:
-            if sys.argv[index] == "True":
-                return True
-            else:
-                return False
-
-        return sys.argv[index]
-    elif default != None:
-        return default
-    elif iterative:
+    # Prompt if allowed
+    if iterative:
         _input = input(prompt)
         if _input == "":
-            Error_Out(
-                "Error: Argument cannot be empty",
-                Error.EUSER
-            )
-        else:
-            if default_type is bool:
-                if _input == "True":
-                    return True
-                else:
-                    return False
+            error_out("Error: Argument cannot be empty", Error.EUSER)
+        return _to_bool(_input) if default_type is bool else _input
 
-            return _input
+    # Otherwise it's an error
+    error_out(f"Error: Argument for prompt [{prompt}] not provided", Error.EUSER)
+    return None  # unreachable, keeps pylint satisfied
 
-    else:
-        Error_Out(
-            f"Error: Argument for prompt [{prompt}] not provided",
-            Error.EUSER
-        )
-
-    return default

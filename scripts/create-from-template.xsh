@@ -24,7 +24,7 @@ from xonsh.procs.pipelines import CommandPipeline
 from torizon_templates_utils.tasks import replace_tasks_input
 from torizon_templates_utils.args import get_arg_not_empty,get_optional_arg
 from torizon_templates_utils.errors import Error,Error_Out
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color,BgColor,printcb
 
 
 if len(sys.argv) < 5:

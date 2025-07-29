@@ -1,4 +1,9 @@
 #!/usr/bin/env xonsh
+"""
+Create production docker-compose from a project and push image to registry.
+This is a xonsh script used by tasks.
+"""
+# pylint: disable=invalid-name, duplicate-code
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -16,17 +21,16 @@ $XONSH_SHOW_TRACEBACK = True
 $RAISE_SUBPROC_ERROR = True
 
 import os
-import sys
 import json
 import yaml
 import xonsh.environ as xenv
 from torizon_templates_utils.network import is_in_gitlab_ci_container
-from torizon_templates_utils import debug
-from torizon_templates_utils.args import get_optional_arg,get_arg_iterative
-from torizon_templates_utils.errors import Error,Error_Out
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.args import get_optional_arg, get_arg_iterative  # pylint: disable=no-name-in-module
+from torizon_templates_utils.errors import Error, Error_Out  # pylint: disable=no-name-in-module
+from torizon_templates_utils.colors import Color
 
 ## In case of fire break glass
+# from torizon_templates_utils import debug
 # debug.vscode_prepare()
 # debug.breakpoint()
 
@@ -46,65 +50,55 @@ _compo_file_path = get_arg_iterative(
     prompt="docker-compose.yml root file path: ",
     default_type=str,
     default=None,
-    iterative=_iterative
+    iterative=_iterative,
 )
 _tag = get_arg_iterative(
     index=2,
     prompt="Image tag: ",
     default_type=str,
     default=None,
-    iterative=_iterative
+    iterative=_iterative,
 )
 _image_name = get_arg_iterative(
     index=3,
     prompt="Image name: ",
     default_type=str,
     default=None,
-    iterative=_iterative
+    iterative=_iterative,
 )
 
 # optional
 _gpu = get_optional_arg(4, "")
 
+# pre-init so pylint won’t warn about “possibly used before assignment”
+_docker_psswd = ""
+_docker_login = ""
+_docker_registry = ""
+_torizon_arch = ""
+
 # check env vars
 if "DOCKER_PSSWD" not in os.environ:
-    Error_Out(
-        "❌ DOCKER_PSSWD not set",
-        Error.ENOCONF
-    )
+    Error_Out("❌ DOCKER_PSSWD not set", Error.ENOCONF)
 else:
     _docker_psswd = os.environ["DOCKER_PSSWD"]
 
 if "DOCKER_LOGIN" not in os.environ:
-    Error_Out(
-        "❌ DOCKER_LOGIN not set",
-        Error.ENOCONF
-    )
+    Error_Out("❌ DOCKER_LOGIN not set", Error.ENOCONF)
 else:
     _docker_login = os.environ["DOCKER_LOGIN"]
 
 if "DOCKER_REGISTRY" not in os.environ:
-    Error_Out(
-        "❌ DOCKER_REGISTRY not set",
-        Error.ENOCONF
-    )
+    Error_Out("❌ DOCKER_REGISTRY not set", Error.ENOCONF)
 else:
     _docker_registry = os.environ["DOCKER_REGISTRY"]
 
-
 if "TORIZON_ARCH" not in os.environ:
-    Error_Out(
-        "❌ TORIZON_ARCH not set",
-        Error.ENOCONF
-    )
+    Error_Out("❌ TORIZON_ARCH not set", Error.ENOCONF)
 else:
     _torizon_arch = os.environ["TORIZON_ARCH"]
 
 if "APP_ROOT" not in os.environ:
-    Error_Out(
-        "❌ APP_ROOT not set",
-        Error.ENOCONF
-    )
+    Error_Out("❌ APP_ROOT not set", Error.ENOCONF)
 else:
     _app_root = os.environ["APP_ROOT"]
 
@@ -135,13 +129,10 @@ _obj_settings = {}
 
 try:
     _settings_path = os.path.join(_compo_file_path, ".vscode", _tasks_settings_json)
-    with open(_settings_path, "r") as f:
+    with open(_settings_path, "r", encoding="utf-8") as f:
         _settings = json.load(f)
 except FileNotFoundError as fex:
-    Error_Out(
-        f"❌ Error: {fex.strerror} :: {fex.filename} :: {_settings_path}",
-        Error.ENOFOUND
-    )
+    Error_Out(f"❌ Error: {fex.strerror} :: {fex.filename} :: {_settings_path}", Error.ENOFOUND)
 
 _local_registry = _settings["host_ip"]
 
@@ -149,7 +140,8 @@ _local_registry = _settings["host_ip"]
 os.environ["LOCAL_REGISTRY"] = f"{_local_registry}:5002"
 os.environ["TAG"] = _tag
 
-if _docker_registry == "registry-1.docker.io" or _docker_registry == "":
+# For DockerHub it can be empty
+if _docker_registry in {"registry-1.docker.io", ""}:
     os.environ["DOCKER_LOGIN"] = _docker_login
 else:
     os.environ["DOCKER_LOGIN"] = f"{_docker_registry}/{_docker_login}"
@@ -163,7 +155,7 @@ print(f"Rebuilding {os.environ['DOCKER_LOGIN']}/{_image_name}:{_tag} ...")
 
 # xonsh env works in a very weird way, so we need to merge the envs
 xos = xenv.Env(os.environ)
-__xonsh__.env = xos
+__xonsh__.env = xos  # pylint: disable=undefined-variable
 
 # run the build-container-torizon-release-<arch> but without override the env
 $TASKS_OVERRIDE_ENV = False
@@ -190,13 +182,10 @@ _compose_obj = {}
 
 try:
     _compose_file_path_full = os.path.join(_compo_file_path, "docker-compose.yml")
-    with open(_compose_file_path_full, "r") as f:
+    with open(_compose_file_path_full, "r", encoding="utf-8") as f:
         _compose_obj = yaml.safe_load(f)
 except FileNotFoundError as fex:
-    Error_Out(
-        f"❌ Error: {fex.strerror} :: {fex.filename}",
-        Error.ENOFOUND
-    )
+    Error_Out(f"❌ Error: {fex.strerror} :: {fex.filename}", Error.ENOFOUND)
 
 print("✅ docker-compose.yml loaded", color=Color.GREEN)
 
@@ -209,12 +198,10 @@ _prod_keys = []
 
 for service in _compose_services:
     _service = _compose_services[service]
-
     if "debug" in service:
         _remove_keys.append(service)
     else:
         _prod_keys.append(service)
-
 
 # remove the debug services
 for key in _remove_keys:
@@ -222,7 +209,7 @@ for key in _remove_keys:
 
 print("✅ Services cleaned", color=Color.GREEN)
 
-# replace the env  variables
+# replace the env variables
 print("Replacing variables ...")
 
 for service in _prod_keys:
@@ -238,12 +225,8 @@ for service in _prod_keys:
 print("✅ Variables replaced", color=Color.GREEN)
 
 # write the object back to a file
-_f_ref = open(f"{_compo_file_path}/docker-compose.prod.yml", "w")
-yaml.dump(
-    _compose_obj,
-    _f_ref,
-    indent=2
-)
-_f_ref.close()
+with open(f"{_compo_file_path}/docker-compose.prod.yml", "w", encoding="utf-8") as _f_ref:
+    yaml.dump(_compose_obj, _f_ref, indent=2)
 
 print("✅ docker-compose.prod.yml generated", color=Color.GREEN)
+

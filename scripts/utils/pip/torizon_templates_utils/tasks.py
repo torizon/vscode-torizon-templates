@@ -1,377 +1,466 @@
+"""Task utilities for VS Code tasks.json handling."""
 
+import inspect
+import json
+import mimetypes
 import os
 import re
-import yaml # type: ignore[import-untyped]
-import json
-import inspect
-import mimetypes
 import subprocess
 from pathlib import Path
-from typing import List, Dict, Type, TypeVar, Union, Tuple, Optional, Literal
-from torizon_templates_utils.network import is_in_docker_container
-from torizon_templates_utils.colors import print, Color
+from typing import Dict, List, Literal, Optional, Type, TypeVar, Union
 
-T = TypeVar('T')
+import yaml  # type: ignore[import-untyped]
+
+from .colors import Color, cprint
+from .network import is_in_docker_container
+
+print = cprint  # pylint: disable=redefined-builtin
+
+T = TypeVar("T")
+
 
 def replace_tasks_input():
-    for file in Path('.').rglob('*.json'):
+    """Replaces deprecated input keys in tasks with their new command equivalents."""
+    for file in Path(".").rglob("*.json"):
         print(file, flush=True)
         mime_type, _ = mimetypes.guess_type(file)
 
         if mime_type is None or mime_type.startswith("application/octet-stream"):
             if "id_rsa" not in str(file):
-                with open(file, 'r') as f:
+                with open(file, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 content = content.replace("input:dockerLogin", "command:docker_login")
                 content = content.replace("input:dockerImageRegistry", "command:docker_registry")
                 content = content.replace("input:dockerPsswd", "command:docker_password")
 
-                with open(file, 'w') as f:
+                with open(file, "w", encoding="utf-8") as f:
                     f.write(content)
 
 
 def _cast_from_json(json_data, cls: Type[T]) -> T:
-    # check on json_data if there is some key with . like "name.prop"
-    # if so, we need change the key to something like "name_prop"
-    keys = list(json_data.keys())
-    for key in keys:
-        if '.' in key:
-            new_key = key.replace('.', '_')
-            json_data[new_key] = json_data.pop(key)
+    # work on a copy
+    data = dict(json_data)
 
-    expected_args = inspect.signature(cls.__init__).parameters
-    filtered_data = {k: v for k, v in json_data.items() if k in expected_args}
+    # normalize keys like "name.prop" -> "name_prop"
+    for k in list(data.keys()):
+        if "." in k:
+            data[k.replace(".", "_")] = data.pop(k)
 
-    # check if the cls type has the any attribute
-    # the any attribute is a Dict[str, str]
-    # and it store the non expected args
-    if 'any' in expected_args:
-        non_expected_args = {k: v for k, v in json_data.items() if k not in expected_args}
-        filtered_data['any'] = non_expected_args
+    # alias common JSON keys to our constructor parameter names
+    sig = inspect.signature(cls.__init__).parameters
+    if "task_type" in sig and "type" in data:
+        data["task_type"] = data.pop("type")
+    if "input_id" in sig and "id" in data:
+        data["input_id"] = data.pop("id")
+    if "icon_id" in sig and "id" in data:
+        data["icon_id"] = data.pop("id")
 
-    return cls(**filtered_data)
+    expected_args = sig.keys()
+    filtered = {k: v for k, v in data.items() if k in expected_args}
+
+    # capture non-expected args into extra_settings when available
+    if "extra_settings" in expected_args:
+        extra = {k: v for k, v in data.items() if k not in expected_args}
+        filtered["extra_settings"] = extra
+
+    return cls(**filtered)
 
 
 # For Settings interface we are mapping only the Torizon specific settings
-class TorizonSettings:
+class TorizonSettings:  # pylint: disable=too-few-public-methods
     """
-    TorizonSettings is a interface to map specific VS Code settings defined
+    TorizonSettings is an interface to map specific VS Code settings defined
     by the Torizon extension.
     """
-    def __init__(
-            self,
-            torizon_psswd: Optional[str] = None,
-            torizon_login: Optional[str] = None,
-            torizon_ip: Optional[str] = None,
-            torizon_ssh_port: Optional[str] = None,
-            host_ip: Optional[str] = None,
-            torizon_workspace: Optional[str] = None,
-            torizon_debug_ssh_port: Optional[str] = None,
-            torizon_debug_port1: Optional[str] = None,
-            torizon_debug_port2: Optional[str] = None,
-            torizon_debug_port3: Optional[str] = None,
-            torizon_gpu: Optional[str] = None,
-            torizon_arch: Optional[str] = None,
-            wait_sync: Optional[str] = None,
-            torizon_run_as: Optional[str] = None,
-            torizon_app_root: Optional[str] = None,
-            docker_tag: Optional[str] = None,
-            tcb_packageName: Optional[str] = None,
-            tcb_version: Optional[str] = None,
-            torizon_gpuPrefixRC: Optional[str] = None,
-            any: Optional[Dict[str, str]] = None
-        ):
 
-        self.torizon_psswd = torizon_psswd
-        self.torizon_login = torizon_login
-        self.torizon_ip = torizon_ip
-        self.torizon_ssh_port = torizon_ssh_port
-        self.host_ip = host_ip
-        self.torizon_workspace = torizon_workspace
-        self.torizon_debug_ssh_port = torizon_debug_ssh_port
-        self.torizon_debug_port1 = torizon_debug_port1
-        self.torizon_debug_port2 = torizon_debug_port2
-        self.torizon_debug_port3 = torizon_debug_port3
-        self.torizon_gpu = torizon_gpu
-        self.torizon_arch = torizon_arch
-        self.wait_sync = wait_sync
-        self.torizon_run_as = torizon_run_as
-        self.torizon_app_root = torizon_app_root
-        self.docker_tag = docker_tag
-        self.tcb_packageName = tcb_packageName
-        self.tcb_version = tcb_version
-        self.torizon_gpuPrefixRC = torizon_gpuPrefixRC
-        self.any = any
+    _ATTRS = [
+        "torizon_psswd", "torizon_login", "torizon_ip", "torizon_ssh_port", "host_ip",
+        "torizon_workspace", "torizon_debug_ssh_port", "torizon_debug_ports", "torizon_gpu",
+        "torizon_arch", "wait_sync", "torizon_run_as", "torizon_app_root", "docker_tag",
+        "tcb_package_name", "tcb_version", "torizon_gpu_prefix_rc"
+    ]
+
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments, too-many-locals
+        self,
+        torizon_psswd: Optional[str] = None,
+        torizon_login: Optional[str] = None,
+        torizon_ip: Optional[str] = None,
+        torizon_ssh_port: Optional[str] = None,
+        host_ip: Optional[str] = None,
+        torizon_workspace: Optional[str] = None,
+        torizon_debug_ssh_port: Optional[str] = None,
+        torizon_debug_ports: Optional[List[str]] = None,
+        torizon_gpu: Optional[str] = None,
+        torizon_arch: Optional[str] = None,
+        wait_sync: Optional[str] = None,
+        torizon_run_as: Optional[str] = None,
+        torizon_app_root: Optional[str] = None,
+        docker_tag: Optional[str] = None,
+        tcb_package_name: Optional[str] = None,
+        tcb_version: Optional[str] = None,
+        torizon_gpu_prefix_rc: Optional[str] = None,
+        extra_settings: Optional[Dict[str, str]] = None,
+    ):
+        self._settings = {
+            "torizon_psswd": torizon_psswd,
+            "torizon_login": torizon_login,
+            "torizon_ip": torizon_ip,
+            "torizon_ssh_port": torizon_ssh_port,
+            "host_ip": host_ip,
+            "torizon_workspace": torizon_workspace,
+            "torizon_debug_ssh_port": torizon_debug_ssh_port,
+            "torizon_debug_ports": torizon_debug_ports or [],
+            "torizon_gpu": torizon_gpu,
+            "torizon_arch": torizon_arch,
+            "wait_sync": wait_sync,
+            "torizon_run_as": torizon_run_as,
+            "torizon_app_root": torizon_app_root,
+            "docker_tag": docker_tag,
+            "tcb_package_name": tcb_package_name,
+            "tcb_version": tcb_version,
+            "torizon_gpu_prefix_rc": torizon_gpu_prefix_rc,
+        }
+        self.extra_settings = extra_settings
+
+    def get_setting(self, key: str) -> Optional[str]:
+        """Get a setting value by key."""
+        return self._settings.get(key, None)
+
+    def to_dict(self) -> Dict[str, Optional[str]]:
+        """Return settings as a dictionary."""
+        result = dict(self._settings)
+        if self.extra_settings:
+            result["extra_settings"] = self.extra_settings
+        return result
+
+    def update_setting(self, key: str, value: Optional[str]) -> None:
+        """Update a setting value by key."""
+        if key in self._settings:
+            self._settings[key] = value
+
+    def list_settings(self) -> List[str]:
+        """List all available setting keys."""
+        return list(self._settings.keys())
 
 
 # These are from:
-# https://code.visualstudio.com/docs/editor/tasks-appendix
+class ShellConfiguration:  # pylint: disable=too-few-public-methods
+    """ShellConfiguration defines the shell configuration for a task."""
 
-class ShellConfiguration:
     def __init__(self, executable: str, args: Optional[List[str]]):
         self.executable = executable
         self.args = args
 
-class CommandOptions:
-    def __init__(
-            self,
-            cwd: Optional[str] = None,
-            env: Optional[Dict[str, str]] = None,
-            shell: Optional[ShellConfiguration] = None
-        ):
+    def get_executable(self) -> str:
+        """Return the shell executable."""
+        return self.executable
 
+
+class CommandOptions:  # pylint: disable=too-few-public-methods
+    """CommandOptions defines the command options for a task."""
+
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        cwd: Optional[str] = None,
+        env: Optional[Dict[str, str]] = None,
+        shell: Optional[ShellConfiguration] = None,
+    ):
         self.cwd = cwd
         self.env = env
-        self.shell = shell
+        self.shell = _cast_from_json(shell, ShellConfiguration) if shell else None
 
-        # we are getting this data from json
-        # so we need to cast the classes dependencies
-        if shell:
-            self.shell = _cast_from_json(shell, ShellConfiguration)
+    def get_cwd(self) -> Optional[str]:
+        """Return the working directory."""
+        return self.cwd
+
+    def get_env(self) -> Optional[Dict[str, str]]:
+        """Return the environment variables."""
+        return self.env
 
 
-class PresentationOptions:
-    def __init__(
-            self,
-            reveal: Optional[Literal['never', 'silent', 'always']] = None,
-            echo: Optional[bool] = None,
-            focus: Optional[bool] = None,
-            panel: Optional[Literal['shared', 'dedicated', 'new']] = None,
-            showReuseMessage: Optional[bool] = None,
-            clear: Optional[bool] = None,
-            group: Optional[str] = None
-        ):
+class PresentationOptions:  # pylint: disable=too-few-public-methods
+    """PresentationOptions defines the presentation options for a task."""
 
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        reveal: Optional[Literal["never", "silent", "always"]] = None,
+        echo: Optional[bool] = None,
+        focus: Optional[bool] = None,
+        panel: Optional[Literal["shared", "dedicated", "new"]] = None,
+        show_reuse_message: Optional[bool] = None,
+        clear: Optional[bool] = None,
+        group: Optional[str] = None,
+    ):
         self.reveal = reveal
         self.echo = echo
         self.focus = focus
         self.panel = panel
-        self.showReuseMessage = showReuseMessage
+        self.show_reuse_message = show_reuse_message
         self.clear = clear
         self.group = group
 
+    def to_dict(self) -> Dict[str, Optional[str]]:
+        """Return presentation options as a dictionary."""
+        return {
+            "reveal": self.reveal,
+            "echo": self.echo,
+            "focus": self.focus,
+            "panel": self.panel,
+            "show_reuse_message": self.show_reuse_message,
+            "clear": self.clear,
+            "group": self.group,
+        }
 
-class ProblemPattern:
-    def __init__(
-            self,
-            regexp: str,
-            kind: Optional[Literal['file', 'location']] = None,
-            file: Union[int, float] = 0,
-            location: Optional[Union[int, float]] = None,
-            line: Optional[Union[int, float]] =None,
-            column: Optional[Union[int, float]] = None,
-            endLine: Optional[Union[int, float]] = None,
-            endColumn: Optional[Union[int, float]] = None,
-            severity: Optional[Union[int, float]] = None,
-            code: Optional[Union[int, float]] = None,
-            message: Union[int, float] = 0,
-            loop: Optional[bool] = False
-        ):
 
+class ProblemPattern:  # pylint: disable=too-few-public-methods, too-many-instance-attributes
+    """ProblemPattern defines the problem pattern for a task."""
+
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        regexp: str,
+        kind: Optional[Literal["file", "location"]] = None,
+        file: Union[int, float] = 0,
+        location: Optional[Union[int, float]] = None,
+        line: Optional[Union[int, float]] = None,
+        column: Optional[Union[int, float]] = None,
+        end_line: Optional[Union[int, float]] = None,
+        end_column: Optional[Union[int, float]] = None,
+        severity: Optional[Union[int, float]] = None,
+        code: Optional[Union[int, float]] = None,
+        message: Union[int, float] = 0,
+        loop: Optional[bool] = False,
+    ):
         self.regexp = regexp
         self.kind = kind
         self.file = file
         self.location = location
         self.line = line
         self.column = column
-        self.endLine = endLine
-        self.endColumn = endColumn
+        self.end_line = end_line
+        self.end_column = end_column
         self.severity = severity
         self.code = code
         self.message = message
         self.loop = loop
 
+    def to_dict(self) -> Dict[str, Union[str, int, float, bool, None]]:
+        """Return problem pattern as a dictionary."""
+        return {
+            "regexp": self.regexp,
+            "kind": self.kind,
+            "file": self.file,
+            "location": self.location,
+            "line": self.line,
+            "column": self.column,
+            "end_line": self.end_line,
+            "end_column": self.end_column,
+            "severity": self.severity,
+            "code": self.code,
+            "message": self.message,
+            "loop": self.loop,
+        }
 
-class BackgroundMatcher:
+
+class BackgroundMatcher:  # pylint: disable=too-few-public-methods
+    """BackgroundMatcher defines the background matcher for a task."""
     def __init__(
-            self,
-            activeOnStart: Optional[bool] = False,
-            beginsPattern: Optional[str] = None,
-            endsPattern: Optional[str] = None
-        ):
+        self,
+        active_on_start: Optional[bool] = False,
+        begins_pattern: Optional[str] = None,
+        ends_pattern: Optional[str] = None,
+    ):
+        self.active_on_start = active_on_start
+        self.begins_pattern = begins_pattern
+        self.ends_pattern = ends_pattern
 
-        self.activeOnStart = activeOnStart
-        self.beginsPattern = beginsPattern
-        self.endsPattern = endsPattern
+
+    def is_active(self) -> bool:
+        """Return whether the matcher is active on start."""
+        return bool(self.active_on_start)
 
 
 class ProblemMatcher:
-    def __init__(
-            self,
-            base: Optional[str] = None,
-            owner: Optional[str] = 'external',
-            source: Optional[str] = None,
-            severity: Optional[Literal['error', 'warning', 'info']] = 'error',
-            fileLocation: Optional[str | List[str] | List[
-                Union[
-                    Literal['search'],
-                    Dict[str, Optional[List[str]]]
-                ]
-            ]] = None,
-            pattern: Optional[str | ProblemPattern | List[ProblemPattern]] = None,
-            background: Optional[BackgroundMatcher] = None
-        ):
-
+    """ProblemMatcher defines the problem matcher for a task."""
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        base: Optional[str] = None,
+        owner: Optional[str] = "external",
+        source: Optional[str] = None,
+        severity: Optional[Literal["error", "warning", "info"]] = "error",
+        file_location: Optional[
+            str | List[str] | List[Union[Literal["search"], Dict[str, Optional[List[str]]]]]
+        ] = None,
+        pattern: Optional[str | ProblemPattern | List[ProblemPattern]] = None,
+        background: Optional[BackgroundMatcher] = None,
+    ):
         self.base = base
         self.owner = owner
         self.source = source
         self.severity = severity
-        self.fileLocation = fileLocation
-        self.pattern = pattern
-        self.background = background
-
-        # we are getting this data from json
-        # so we need to cast the classes dependencies
-        if pattern:
-            self.pattern = _cast_from_json(pattern, ProblemPattern)
-
-        if background:
-            self.background = _cast_from_json(background, BackgroundMatcher)
+        self.file_location = file_location
+        self.pattern = _cast_from_json(pattern, ProblemPattern) if pattern else None
+        self.background = _cast_from_json(background, BackgroundMatcher) if background else None
 
 
-class RunOptions:
+    def to_dict(self) -> Dict[str, object]:
+        """Return a JSON-serializable dict."""
+        def _maybe_dict(x):
+            if isinstance(x, list):
+                return [i.__dict__ if hasattr(i, "__dict__") else i for i in x]
+            return x.__dict__ if hasattr(x, "__dict__") else x
+
+        return {
+            "base": self.base,
+            "owner": self.owner,
+            "source": self.source,
+            "severity": self.severity,
+            "file_location": self.file_location,
+            "pattern": _maybe_dict(self.pattern),
+            "background": _maybe_dict(self.background),
+        }
+
+    def get_severity(self) -> str:
+        """Return the severity level."""
+        return self.severity or "error"
+
+
+class RunOptions:  # pylint: disable=too-few-public-methods
+    """RunOptions is a class to define the run options for a task"""
+
     def __init__(
-            self,
-            reevaluateOnRerun: Optional[bool] = True,
-            runOn: Optional[Literal['default', 'folderOpen']] = 'default'
-        ):
+        self,
+        reevaluate_on_rerun: Optional[bool] = True,
+        run_on: Optional[Literal["default", "folderOpen"]] = "default",
+    ):
 
-        self.reevaluateOnRerun = reevaluateOnRerun
-        self.runOn = runOn
+        self.reevaluate_on_rerun = reevaluate_on_rerun
+        self.run_on = run_on
 
 
-class IconOptions:
-    def __init__(
-            self,
-            id: str,
-            color: Optional[str]
-        ):
-
-        self.id = id
+class IconOptions:  # pylint: disable=too-few-public-methods
+    """IconOptions is a class to define the icon options for a task"""
+    def __init__(self, icon_id: str, color: Optional[str]):
+        self.id = icon_id
         self.color = color
 
 
-class InputOptions:
-    def __init__(
-            self,
-            id: str,
-            description: str,
-            default: Optional[str] = None,
-            type: Optional[Literal['promptString', 'pickString']] = 'promptString',
-            options: Optional[List[str]] = None
-        ):
+class InputOptions:  # pylint: disable=too-few-public-methods
+    """InputOptions is a class to define an input in tasks.json"""
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        input_id: str,
+        description: str,
+        default: Optional[str] = None,
+        input_type: Optional[Literal["promptString", "pickString"]] = "promptString",
+        options: Optional[List[str]] = None,
+    ):
 
-        self.id = id
+        self.id = input_id
         self.description = description
         self.default = default
-        self.type = type
+        self.type = input_type
         self.options = options
 
 
-class TaskDescription:
-    def __init__(
-            self,
-            label: str,
-            type: Literal['shell', 'process'],
-            command: str,
-            hide: Optional[bool] = None,
-            isBackground: Optional[bool] = None,
-            args: Optional[List[str]] = None,
-            options: Optional[CommandOptions] = None,
-            group: Optional[Literal['build', 'test']] = None,
-            presentation: Optional[PresentationOptions] = None,
-            problemMatcher: Optional[str | ProblemMatcher | List[str] | List[ProblemMatcher]] = None,
-            runOptions: Optional[RunOptions] = None,
-            dependsOrder: Optional[Literal['sequence', 'parallel']] = None,
-            dependsOn: Optional[List[str]] = None,
-            icon: Optional[IconOptions] = None
-        ):
-
+class TaskDescription:  # pylint: disable=too-few-public-methods, too-many-instance-attributes
+    """TaskDescription is a class to define a task in tasks.json"""
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        label: str,
+        task_type: Literal["shell", "process"],
+        command: str,
+        hide: Optional[bool] = None,
+        is_background: Optional[bool] = None,
+        args: Optional[List[str]] = None,
+        options: Optional[CommandOptions] = None,
+        group: Optional[Literal["build", "test"]] = None,
+        presentation: Optional[PresentationOptions] = None,
+        problem_matcher: Optional[str | ProblemMatcher | List[str] | List[ProblemMatcher]] = None,
+        run_options: Optional[RunOptions] = None,
+        depends_order: Optional[Literal["sequence", "parallel"]] = None,
+        depends_on: Optional[List[str]] = None,
+        icon: Optional[IconOptions] = None,
+    ):
         self.label = label
-        self.type = type
+        self.task_type = task_type  # Avoid shadowing built-in 'type'
         self.command = command
-        self.hide: bool = (hide if hide is not None else False)
-        self.isBackground = isBackground
+        self.hide: bool = hide if hide is not None else False
+        self.is_background = is_background
         self.options = options
         self.args = args
         self.group = group
         self.presentation = presentation
-        self.problemMatcher = problemMatcher
-        self.runOptions = runOptions
-        self.dependsOrder = dependsOrder
-        self.dependsOn = dependsOn
+        self.problem_matcher = problem_matcher
+        self.run_options = run_options
+        self.depends_order = depends_order
+        self.depends_on = depends_on
         self.icon = icon
 
-        # we are getting this data from json
-        # so we need to cast the classes dependencies
         if options:
             self.options = _cast_from_json(options, CommandOptions)
-
         if presentation:
             self.presentation = _cast_from_json(presentation, PresentationOptions)
-
-        if runOptions:
-            self.runOptions = _cast_from_json(runOptions, RunOptions)
-
+        if run_options:
+            self.run_options = _cast_from_json(run_options, RunOptions)
         if icon:
             self.icon = _cast_from_json(icon, IconOptions)
 
     def to_dict(self):
+        """Converts the task description to a dictionary."""
         return {
-            'label': self.label,
-            'type': self.type,
-            'command': self.command,
-            'isBackground': self.isBackground,
-            'args': self.args,
-            'options': self.options.__dict__ if self.options else None,
-            'group': self.group,
-            'presentation': self.presentation.__dict__ if self.presentation else None,
-            'problemMatcher': self.problemMatcher,
-            'runOptions': self.runOptions.__dict__ if self.runOptions else None,
-            'dependsOrder': self.dependsOrder,
-            'dependsOn': self.dependsOn,
-            'icon': self.icon.__dict__ if self.icon else None
+            "label": self.label,
+            "type": self.task_type,
+            "command": self.command,
+            "is_background": self.is_background,
+            "args": self.args,
+            "options": self.options.__dict__ if self.options else None,
+            "group": self.group,
+            "presentation": self.presentation.__dict__ if self.presentation else None,
+            "problem_matcher": self.problem_matcher,
+            "run_options": self.run_options.__dict__ if self.run_options else None,
+            "depends_order": self.depends_order,
+            "depends_on": self.depends_on,
+            "icon": self.icon.__dict__ if self.icon else None,
         }
 
 
-class BaseTaskConfiguration:
-    def __init__(
-            self,
-            type: str,
-            command: str,
-            isBackground: Optional[bool] = None,
-            options: Optional[CommandOptions] = None,
-            args: Optional[str] = None,
-            presentation: Optional[PresentationOptions] = None,
-            problemMatcher: Optional[str | ProblemMatcher | List[str] | List[ProblemMatcher]] = None,
-            tasks: Optional[List[TaskDescription]] = None
-        ):
-
-        self.type = type
+class BaseTaskConfiguration:  # already has: pylint: disable=too-many-instance-attributes, too-few-public-methods
+    """BaseTaskConfiguration is a base class to define the OS specific task configuration"""
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        task_type: str,
+        command: str,
+        is_background: Optional[bool] = None,
+        options: Optional[CommandOptions] = None,
+        args: Optional[str] = None,
+        presentation: Optional[PresentationOptions] = None,
+        problem_matcher: Optional[str | ProblemMatcher | List[str] | List[ProblemMatcher]] = None,
+        tasks: Optional[List[TaskDescription]] = None,
+    ):
+        self.task_type = task_type
         self.command = command
-        self.isBackground = isBackground
+        self.is_background = is_background
         self.options = options
         self.args = args
         self.presentation = presentation
-        self.problemMatcher = problemMatcher
+        self.problem_matcher = problem_matcher
         self.tasks = tasks
 
 
-class TaskConfiguration:
+class TaskConfiguration:  # pylint: disable=too-few-public-methods
     """
     TorizonConfiguration is a interface to map tasks.json file
     """
-
-    def __init__(
-            self,
-            version: Literal['2.0.0'] = '2.0.0',
-            tasks: Optional[List[TaskDescription]] = None,
-            inputs: Optional[List[InputOptions]] = None,
-            windows: Optional[BaseTaskConfiguration] = None,
-            osx: Optional[BaseTaskConfiguration] = None,
-            linux: Optional[BaseTaskConfiguration] = None
-        ):
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
+        self,
+        version: Literal["2.0.0"] = "2.0.0",
+        tasks: Optional[List[TaskDescription]] = None,
+        inputs: Optional[List[InputOptions]] = None,
+        windows: Optional[BaseTaskConfiguration] = None,
+        osx: Optional[BaseTaskConfiguration] = None,
+        linux: Optional[BaseTaskConfiguration] = None,
+    ):
 
         self.version = version
         self.tasks = tasks
@@ -387,44 +476,44 @@ class TaskConfiguration:
         if inputs:
             self.inputs = [_cast_from_json(_input, InputOptions) for _input in inputs]
 
+        # pylint: disable-next=fixme
         # TODO:
         # for now we are not casting the other configurations
         # as them are not used in the templates
 
 
 def get_tasks_json(file_path: str) -> TaskConfiguration:
-    with open(f"{file_path}/.vscode/tasks.json", 'r') as file:
+    """Gets the tasks.json file for the given file path."""
+    with open(f"{file_path}/.vscode/tasks.json", "r", encoding="utf-8") as file:
         return _cast_from_json(json.load(file), TaskConfiguration)
 
 
-def get_settings_json(
-    file_path: str,
-    custom_file: str | None = None
-) -> TorizonSettings:
+def get_settings_json(file_path: str, custom_file: str | None = None) -> TorizonSettings:
+    """Gets the settings.json file for the given file path."""
     _file = custom_file if custom_file else "settings.json"
     local_settings_path = Path(file_path) / ".vscode" / _file
 
     try:
-        with open(local_settings_path, 'r') as file:
-            local_settings = json.load(file)
+        with open(local_settings_path, "r", encoding="utf-8") as settings_file:
+            local_settings = json.load(settings_file)
     except FileNotFoundError:
         print(f"No local settings file found at {local_settings_path}")
         local_settings = {}
     except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON in settings file: {e}")
+        raise ValueError(f"Invalid JSON in settings file: {e}") from e
 
     workspace_settings = {}
     parent_dir = Path(file_path).parent
     # First check for .code-workspace files directly inside the parent
     for child in parent_dir.glob("*.code-workspace"):
         try:
-            with open(child, "r") as ws_file:
+            with open(child, "r", encoding="utf-8") as ws_file:
                 data = json.load(ws_file)
                 if "settings" in data:
                     print(f"Merging settings from: {child}")
                     workspace_settings = data["settings"]
                     break
-        except Exception as e:
+        except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error reading {child}: {e}")
 
     # If not found, scan folders in parent_dir
@@ -433,13 +522,13 @@ def get_settings_json(
             if sub.is_dir():
                 for child in sub.glob("*.code-workspace"):
                     try:
-                        with open(child, "r") as ws_file:
+                        with open(child, "r", encoding="utf-8") as ws_file:
                             data = json.load(ws_file)
                             if "settings" in data:
                                 print(f"Merging settings from: {child}")
                                 workspace_settings = data["settings"]
                                 break
-                    except Exception as e:
+                    except (FileNotFoundError, json.JSONDecodeError) as e:
                         print(f"Error reading {child}: {e}")
                 if workspace_settings:
                     break
@@ -455,12 +544,12 @@ class TaskRunner:
     """
 
     def __init__(
-            self,
-            tasks: List[TaskDescription],
-            inputs: List[InputOptions],
-            settings: TorizonSettings,
-            debug: bool = False
-        ):
+        self,
+        tasks: List[TaskDescription],
+        inputs: List[InputOptions],
+        settings: TorizonSettings,
+        debug: bool = False,
+    ):
 
         self.__tasks = tasks
         self.__inputs = inputs
@@ -469,11 +558,12 @@ class TaskRunner:
         self.__gitlab_ci = False
         self.__tasks_override_env = False
         self.__cli_inputs: Dict[str, str] = {}
-        self.__can_receive_interactive_input = False
-
         # check if we have stdin
-        if os.isatty(0) and (("TASKS_DISABLE_INTERACTIVE_INPUT" not in os.environ) or (os.environ["TASKS_DISABLE_INTERACTIVE_INPUT"] != "True")):
-            self.__can_receive_interactive_input = True
+        if os.isatty(0) and (
+            ("TASKS_DISABLE_INTERACTIVE_INPUT" not in os.environ)
+            or (os.environ["TASKS_DISABLE_INTERACTIVE_INPUT"] != "True")
+        ):
+            pass
 
         # environment configs
         if "DOCKER_PSSWD" in os.environ:
@@ -490,23 +580,26 @@ class TaskRunner:
 
         self.__settings_to_env()
 
+    def __settings_to_env(self) -> None:
+        """Export settings into env as config:<key>=<value>."""
+        # Prefer public API, fall back to attrs if ever needed
+        data = self.__settings.to_dict() if hasattr(
+            self.__settings, "to_dict") else dict(self.__settings.__dict__
+        )
 
-    def __settings_to_env(self):
-        # for keys in settings, we are adding to env
-        for key, value in self.__settings.__dict__.items():
+        extras = data.pop("extra_settings", None)
+
+        for key, value in data.items():
             if value is not None:
-                os.environ[f"config:{key}"] = f"{value}"
-
-        # also for non Torizon ones
-        for key, value in self.__settings.any.items():
-            if isinstance(value, str) or \
-                isinstance(value, int) or \
-                isinstance(value, float):
-
                 os.environ[f"config:{key}"] = str(value)
 
+        if isinstance(extras, dict):
+            for k, v in extras.items():
+                if isinstance(v, (str, int, float)):
+                    os.environ[f"config:{k}"] = str(v)
 
     def list_labels(self, show_hidden=False, no_index: bool = False):
+        """Lists the labels of all tasks."""
         i = 0
 
         for task in self.__tasks:
@@ -519,17 +612,17 @@ class TaskRunner:
 
             i += 1
 
-
-    def desc_input(self, id: str):
+    def desc_input(self, input_id: str):
+        """Describes an input with the given id."""
         for _input in self.__inputs:
-            if _input.id == id:
+            if _input.id == input_id:
                 print(json.dumps(_input.__dict__, indent=4))
                 return
 
-        raise ReferenceError(f"Input with id [{id}] not found")
-
+        raise ReferenceError(f"Input with id [{input_id}] not found")
 
     def desc_task(self, label: int | str):
+        """Describes a task with the given label."""
         task = None
 
         if isinstance(label, int):
@@ -546,11 +639,11 @@ class TaskRunner:
         else:
             raise ReferenceError(f"Task with index [{label}] not found")
 
-
-    def __replace_env_var(self, var: str, env: str):
-        if f"${{{var}}}" in env:
-            return env.replace(f"${{{var}}}", os.environ[var])
-
+    def __replace_env_var(self, var: str, env: str) -> str:
+        token = f"${{{var}}}"
+        if token in env and var in os.environ:
+            return env.replace(token, os.environ[var])
+        return env
 
     def __check_workspace_folder(self, env: List[str]) -> List[str]:
         ret: List[str] = []
@@ -564,7 +657,6 @@ class TaskRunner:
 
         return ret
 
-
     def __check_torizon_inputs(self, env: List[str]) -> List[str]:
         ret: List[str] = []
 
@@ -574,7 +666,6 @@ class TaskRunner:
             ret.append(value)
 
         return ret
-
 
     def __check_docker_inputs(self, env: List[str]) -> List[str]:
         ret: List[str] = []
@@ -586,8 +677,7 @@ class TaskRunner:
 
         return ret
 
-
-    def __check_tcb_inputs(self, env: List[str]) -> List[str]:
+    def __check_tcb_inputs(self, env: List[str]) -> List[str]:  # pylint: disable=too-many-locals
         ret: List[str] = []
 
         for value in env:
@@ -598,48 +688,55 @@ class TaskRunner:
                         [
                             "xonsh",
                             "./.conf/torizon-io.xsh",
-                            "package", "latest", "version",
-                            os.environ["config:tcb_packageName"]
+                            "package",
+                            "latest",
+                            "version",
+                            os.environ["config:tcb_package_name"],
                         ],
                         capture_output=True,
                         text=True,
-                        env=os.environ
+                        env=os.environ,
+                        check=False,
                     )
 
                     if _p_ret.returncode != 0:
                         # Sometimes the error is presented on stdout and not stderr
                         raise RuntimeError(f"Error running torizon-io.xsh: {_p_ret}")
 
-                    # TODO: Maybe not use this and instead disable colors on the terminal
-                    # Remove ANSI escape sequences. Regex from this thread:
-                    # https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
-                    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-                    _latest_ver = ansi_escape.sub('', _p_ret.stdout.strip())
+                    # Remove ANSI escape sequences.
+                    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+                    _latest_ver = ansi_escape.sub("", _p_ret.stdout.strip())
 
-                    _latest_ver_number = _latest_ver.rsplit('-', 1)[-1]
-                    _latest_ver_last_number = _latest_ver_number.rsplit('.', 1)[-1]
+                    # Extract the last number from the version string
+                    _latest_ver_last_number = _latest_ver.split(".")[-1]
                     try:
-                        _next = int(_latest_ver_last_number) +1
-                    except:
-                        raise ValueError(f"Package version should be in one of the following formats: <int>, <string-int>, <major.minor.patch>, or <string-major.minor.patch>. Depending on format, int or patch value will be incremented")
+                        _next = int(_latest_ver_last_number) + 1
+                    except ValueError as exc:
+                        raise ValueError(
+                            "Invalid package version format. Expected <int>, <str-int>, "
+                            "<major.minor.patch>, or <str-major.minor.patch>."
+                        ) from exc
 
                     if self.__debug:
                         print(f"Next package version: {_next}", flush=True)
 
-                    value = value.replace(f"${{command:tcb.getNextPackageVersion}}", f"{_next}")
+                    value = value.replace("${command:tcb.getNextPackageVersion}", str(_next))
 
                 elif "tcb.outputTEZIFolder" in value:
                     # load the tcbuild.yaml
-                    with open("tcbuild.yaml", 'r') as file:
+                    with open("tcbuild.yaml", "r", encoding="utf-8") as file:
                         _tcbuild = yaml.load(file, Loader=yaml.FullLoader)
 
-                        _tezi_folder = None
                         try:
                             _tezi_folder = _tcbuild["output"]["easy-installer"]["local"]
-                        except KeyError:
-                            raise RuntimeError("Error replacing variable tcb.outputTEZIFolder, make sure the tcbuild.yaml has the output.easy-installer.local property")
+                        except KeyError as exc:
+                            raise RuntimeError(
+                                "Error replacing variable tcb.outputTEZIFolder, "
+                                #pylint: disable=line-too-long
+                                "make sure the tcbuild.yaml has the output.easy-installer.local property"
+                            ) from exc
 
-                        value = value.replace(f"${{command:tcb.outputTEZIFolder}}", _tezi_folder)
+                        value = value.replace("${command:tcb.outputTEZIFolder}", _tezi_folder)
 
                 # for all the items we need to replace ${command:tcb. with ${config:tcb.
                 _pattern = r"(?<=\$\{command:tcb\.).*?(?=\s*})"
@@ -651,56 +748,6 @@ class TaskRunner:
             ret.append(value)
 
         return ret
-
-
-    def __contains_special_chars(self, str: str) -> bool:
-        _pattern = r"[^a-zA-Z0-9\.\-_|>\/=+&_]"
-        return re.search(_pattern, str) is not None
-
-
-    def __scape_args(self, args: List[str]) -> List[str]:
-        ret: List[str] = []
-
-        for arg in args:
-            if "\"" in arg:
-                arg = arg.replace("\"", "\\\"")
-
-            ret.append(arg)
-
-        return ret
-
-
-    def __check_config(self, args: List[str]) -> List[str]:
-        """
-        This method will make the config replacement in the args
-        """
-        ret: List[str] = []
-
-        for arg in args:
-            if "${config:" in arg:
-                _pattern = r"(?<=\$\{config:).*?(?=\s*})"
-                _matches = re.findall(_pattern, arg)
-
-                for match in _matches:
-                    if "." in match:
-                        _match = match.replace(".", "_")
-                    else:
-                        _match = match
-
-                    # first check if the config exists
-                    if f"config:{_match}" not in os.environ:
-                        raise ReferenceError(f"Config with id [{match}] not found. Check your settings.json")
-
-                    # edge case for docker_registry
-                    if _match == "docker_registry" and os.environ[f"config:{_match}"] == "":
-                        os.environ[f"config:{_match}"] = "registry-1.docker.io"
-
-                    arg = arg.replace(f"${{config:{match}}}", os.environ[f"config:{_match}"])
-
-            ret.append(arg)
-
-        return ret
-
 
     def __check_vscode_env(self, args: List[str]) -> List[str]:
         """
@@ -723,133 +770,43 @@ class TaskRunner:
 
         return ret
 
-
-    def __check_long_args(self, args: List[str]) -> List[str]:
-        ret: List[str] = []
-
-        for arg in args:
-            if " " in arg:
-                arg = f"'{arg}'"
-
-            ret.append(arg)
-
-        return ret
-
-
-    def __quoting_special_chars(self, args: List[str]) -> List[str]:
-        ret: List[str] = []
-
-        for arg in args:
-            _has_special_chars = self.__contains_special_chars(arg)
-            _hash_space = " " in arg
-
-            if _has_special_chars and not _hash_space:
-                arg = f"'{arg}'"
-
-            ret.append(arg)
-
-        return ret
-
-
-    def __check_input(self, args: List[str]) -> List[str]:
-        ret: List[str] = []
-
-        for arg in args:
-            if "${input:" in arg:
-                _pattern = r"(?<=\$\{input:).*?(?=\s*})"
-                _matches = re.findall(_pattern, arg)
-
-                for match in _matches:
-                    _input = None
-                    _input_value = "None"
-
-                    for inp in self.__inputs:
-                        if inp.id == match:
-                            _input = inp
-                            break
-
-                    if _input is None:
-                        raise ReferenceError(f"Input with id [{match}] not found")
-
-                    # first check if the input was set by cli
-                    if match in self.__cli_inputs:
-                        _input_value = self.__cli_inputs[match]
-                    elif _input.default:
-                        _input_value = _input.default
-                    else:
-                        if not self.__can_receive_interactive_input:
-                            raise RuntimeError("CLI inputs not set and interactive input is disabled")
-
-                        if _input.type == "promptString":
-                            _input_value = input(f"{_input.description}: ")
-                        elif _input.type == "pickString":
-                            for _inp in self.__inputs:
-                                if _inp.id == match:
-                                    # print options
-                                    assert _inp.options is not None, "pickString option has a valid id but options is empty. Check your tasks.json"
-                                    print(f"Options for [{match}]:")
-                                    _i = 0
-                                    _indexed_options = {}
-
-                                    for _opt in _inp.options:
-                                        _indexed_options[str(_i)] = _opt
-                                        print(f"{_i}. {_opt}")
-                                        _i += 1
-
-                                    _input_value = input(f"{_input.description} (option index): ")
-
-                                    # check if the input is in the options
-                                    if _input_value not in _indexed_options:
-                                        raise ValueError(f"Input value for [{match}] is not in the possible options")
-                                    else:
-                                        _input_value = _indexed_options[_input_value]
-
-                        if _input_value is None:
-                            raise ValueError(f"Input value for [{match}] could not be None")
-
-                    arg = arg.replace(f"${{input:{match}}}", _input_value)
-
-            ret.append(arg)
-
-        return ret
-
-
-    def __parse_envs(self, env: str, task: TaskDescription) -> str | None :
+    def __parse_envs(self, env: str, task: TaskDescription) -> str | None:
         """
         It's christmas time 🎅
         """
+        _env_value: Optional[str] = None
+
         if task.options:
-            value = task.options.env
+            value = task.options.env or {}
 
             # get the env from the task
-            if value:
-                _env_value = value.get(env)
+            _env_value = value.get(env)
 
-            if _env_value:
-                expvalue = [_env_value]
-                expvalue = self.__check_workspace_folder(expvalue)
-                expvalue = self.__check_torizon_inputs(expvalue)
-                expvalue = self.__check_docker_inputs(expvalue)
-                expvalue = self.__check_tcb_inputs(expvalue)
-                expvalue = self.__check_input(expvalue)
-                expvalue = self.__check_config(expvalue)
-                exp_value_str = " ".join(expvalue)
+        if _env_value:
+            expvalue = [_env_value]
+            expvalue = self.__check_workspace_folder(expvalue)
+            expvalue = self.__check_torizon_inputs(expvalue)
+            expvalue = self.__check_docker_inputs(expvalue)
+            expvalue = self.__check_tcb_inputs(expvalue)
+            expvalue = self.__check_config(expvalue)
+            exp_value_str = " ".join(expvalue)
+            if self.__debug:
+                print(f"Env: {env}={_env_value}", color=Color.YELLOW, flush=True)
+                print(
+                    f"Parsed Env: {env}={exp_value_str}",
+                    color=Color.YELLOW,
+                    flush=True,
+                )
 
-                if self.__debug:
-                    print(f"Env: {env}={_env_value}", color=Color.YELLOW, flush=True)
-                    print(f"Parsed Env: {env}={exp_value_str}", color=Color.YELLOW, flush=True)
-
-                return exp_value_str
+            return exp_value_str
 
         return None
-
 
     def __replace_docker_host(self, arg: str) -> str:
         if "DOCKER_HOST" in arg and is_in_docker_container():
             arg = arg.replace("DOCKER_HOST=", "DOCKER_HOST=tcp://docker:2375")
 
         return arg
-
 
     def set_cli_inputs(self, cli_inputs: Dict[str, str]) -> None:
         """
@@ -865,8 +822,8 @@ class TaskRunner:
 
             self.__cli_inputs[key] = value
 
-
-    def run_task(self, label: str) -> None:
+    def run_task(self, label: str) -> None:  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+        """Runs a task with the given label."""
         # query the task
         _task = None
         _task = next((task for task in self.__tasks if task.label == label), None)
@@ -875,8 +832,8 @@ class TaskRunner:
             raise ReferenceError(f"Task with label [{label}] not found")
 
         _depends = []
-        if _task.dependsOn is not None:
-            _depends = _task.dependsOn
+        if _task.depends_on is not None:
+            _depends = _task.depends_on
 
         # first we need to run the dependencies
         for dep in _depends:
@@ -892,11 +849,10 @@ class TaskRunner:
         _cmd = self.__check_torizon_inputs([_cmd])[0]
         _cmd = self.__check_docker_inputs([_cmd])[0]
         _cmd = self.__check_tcb_inputs([_cmd])[0]
-        _cmd = self.__check_input([_cmd])[0]
         _cmd = self.__check_vscode_env([_cmd])[0]
         _cmd = self.__check_config([_cmd])[0]
 
-        _args = []
+        _args: List[str] = []
         if _task.args is not None:
             _args = _task.args
 
@@ -908,26 +864,25 @@ class TaskRunner:
             _cwd = _task.options.cwd
 
         _is_background = ""
-        if _task.isBackground:
+        if _task.is_background:
             _is_background = " &"
 
-        _shell = _task.type == "shell"
+        _shell = _task.task_type == "shell"
 
+        # pylint: disable-next=fixme
         # FIXME:    The scape args was in the powershell implementation
         #           but when used on Python it generates weird behavior
-        # _args = self.__scape_args(_args)
         _args = self.__check_workspace_folder(_args)
         _args = self.__check_torizon_inputs(_args)
         _args = self.__check_docker_inputs(_args)
         _args = self.__check_tcb_inputs(_args)
-        _args = self.__check_input(_args)
         _args = self.__check_vscode_env(_args)
         _args = self.__check_config(_args)
         _args = self.__check_workspace_folder(_args)
+        # pylint: disable-next=fixme
         # FIXME:    These was in the powershell implementation
         #           but when used on Python it generates weird behavior
         # _args = self.__check_long_args(_args)
-        # _args = self.__quoting_special_chars(_args)
 
         # if in gitlab ci env we need to replace the DOCKER_HOST
         if self.__gitlab_ci:
@@ -939,7 +894,7 @@ class TaskRunner:
         # present on the task that doesn't already exist on the env var
         if _env is not None:
             for env, _ in _env.items():
-                if self.__tasks_override_env == True or env not in os.environ:
+                if self.__tasks_override_env or env not in os.environ:
                     __parsed_env_value = self.__parse_envs(env, _task)
                     task_env[env] = __parsed_env_value
 
@@ -969,12 +924,35 @@ class TaskRunner:
             stderr=None,
             env=task_env,
             shell=_shell,
-            executable="/bin/bash" if _shell else None
+            executable="/bin/bash" if _shell else None,
+            check=False,
         )
 
         # go back to the last cwd
         os.chdir(_last_cwd)
 
         if _ret.returncode != 0:
-            print(f"> TASK [{label}] exited with error code [{_ret.returncode}] <", color=Color.RED, flush=True)
+            print(
+                f"> TASK [{label}] exited with error code [{_ret.returncode}] <",
+                color=Color.RED,
+                flush=True,
+            )
             raise RuntimeError(f"Error running task: {label}")
+
+    def __check_config(self, args: List[str]) -> List[str]:
+        """Replace VS Code-style ${config:...} tokens with setting-derived env values."""
+        ret: List[str] = []
+        pattern = re.compile(r"\$\{config:([^}]+)\}")
+
+        for arg in args:
+
+            def _sub(match: re.Match[str]) -> str:
+                key = match.group(1)
+                full = f"config:{key}"
+                if full not in os.environ:
+                    raise ReferenceError(f"Config variable with id [{key}] not found")
+                return os.environ[full]
+
+            ret.append(pattern.sub(_sub, arg))
+        return ret
+

@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+update-settings-fields.xsh: Ensure every settings.json contains required keys and preserve order.
+"""
+# pylint: disable=invalid-name,missing-module-docstring
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -15,9 +19,7 @@ $XONSH_SHOW_TRACEBACK = True
 $RAISE_SUBPROC_ERROR = True
 
 import os
-import sys
 import json
-
 
 settingsTemplate = {
     "torizon_psswd": "",
@@ -49,7 +51,7 @@ for root, dirs, files in os.walk(".."):
             file_path = os.path.join(root, file)
             print(file_path)
 
-            with open(file_path, 'r') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 old = json.load(f)
 
             old_fields = old.keys()
@@ -66,5 +68,6 @@ for root, dirs, files in os.walk(".."):
                 if prop not in new_old:
                     new_old[prop] = old[prop]
 
-            with open(file_path, 'w') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(new_old, f, indent=4)
+

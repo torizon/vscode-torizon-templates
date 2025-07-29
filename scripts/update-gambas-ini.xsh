@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+# pylint: disable=invalid-name
+"""
+update-gambas-ini.xsh: update target device settings in a Gambas project's .settings file.
+"""
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -15,7 +19,6 @@ $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
 $RAISE_SUBPROC_ERROR = True
 
-import os
 import sys
 import configparser
 
@@ -30,14 +33,15 @@ config = configparser.ConfigParser()
 config.read(f"{_path}/{_projectName}/.settings")
 
 # debug
-print(config['Debug']['RemoteServer'])
+print(config["Debug"]["RemoteServer"])
 print("to")
 print(_deviceHostname)
 
 # replace
-config['Debug']['RemoteServer'] = _deviceHostname
-config['Debug']['RemotePort'] = _devicePort
+config["Debug"]["RemoteServer"] = _deviceHostname
+config["Debug"]["RemotePort"] = _devicePort
 
 # write the ini file
-with open(f"{_path}/{_projectName}/.settings", 'w') as configfile:
+with open(f"{_path}/{_projectName}/.settings", "w", encoding="utf-8") as configfile:
     config.write(configfile)
+

@@ -21,7 +21,7 @@ import distro
 import shtab
 import argparse
 from torizon_templates_utils.errors import Error,Error_Out
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color,BgColor,printcb
 from torizon_templates_utils.animations import run_command_with_wait_animation
 
 

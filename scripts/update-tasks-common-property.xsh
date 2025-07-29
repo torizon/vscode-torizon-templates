@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+Update a common property on every tasks.json/common.json found under the repo.
+"""
+# pylint: disable=invalid-name
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -15,9 +19,7 @@ $XONSH_SHOW_TRACEBACK = True
 $RAISE_SUBPROC_ERROR = True
 
 import os
-import sys
 import json
-
 
 property_to_update = {}
 
@@ -28,8 +30,9 @@ for root, dirs, files in os.walk(".."):
         if file in ["tasks.json", "common.json"]:
             file_path = os.path.join(root, file)
             print(file_path)
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 old = json.load(f)
+
             tasks = old.get("tasks", [])
 
             for task in tasks:
@@ -37,5 +40,6 @@ for root, dirs, files in os.walk(".."):
                     if field not in task:
                         task[field] = value
 
-            with open(file_path, "w") as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(old, f, indent=4)
+

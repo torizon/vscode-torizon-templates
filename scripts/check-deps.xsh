@@ -23,7 +23,7 @@ import shutil
 from pathlib import Path
 from torizon_templates_utils.network import is_in_gitlab_ci_container
 from torizon_templates_utils.errors import Error,Error_Out,last_return_code
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.colors import Color,BgColor,printcb
 
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""

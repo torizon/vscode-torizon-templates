@@ -1,4 +1,9 @@
 #!/usr/bin/env xonsh
+# pylint: disable=invalid-name
+"""
+torizon-packages.xsh: apply Debian packages from torizonPackages.json into
+Dockerfile(s) for the selected target architecture.
+"""
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -18,40 +23,43 @@ $RAISE_SUBPROC_ERROR = True
 
 import os
 import json
-from torizon_templates_utils.args import get_arg_not_empty
-from torizon_templates_utils.colors import Color,BgColor,print
-from torizon_templates_utils.errors import Error,Error_Out
+from torizon_templates_utils.args import get_arg_not_empty  # pylint: disable=no-name-in-module
+from torizon_templates_utils.colors import Color
+from torizon_templates_utils.errors import Error, Error_Out  # pylint: disable=no-name-in-module
 
 _TORIZON_ARCHS = [
     "arm64",
     "armhf",
     "amd64",
-    "riscv"
+    "riscv",
 ]
 
-_torizon_arch = get_arg_not_empty(1)
+TORIZON_ARCH = get_arg_not_empty(1)
 
-if _torizon_arch not in _TORIZON_ARCHS:
+if TORIZON_ARCH not in _TORIZON_ARCHS:
     Error_Out(
-        f"Undefined target architecture: {_torizon_arch}.",
-        Error.EUSER
+        f"Undefined target architecture: {TORIZON_ARCH}.",
+        Error.EUSER,
     )
 
 
-def _add_dep_string(value):
-    # If the arch of the package has been explicitly specified, don't add the target arch in the end
+def _add_dep_string(value: str) -> str:
+    """Format a package entry with an explicit arch suffix when needed."""
+    # If the arch of the package has been explicitly specified, don't add the target arch
     if ":" in value:
         return f"    {value} \\\n"
-    else:
-        # There are certain packages which have "all" as architecture
-        value_arch = $(apt-cache show @(value) | sed -n '/^Architecture:/ {s/^Architecture: //; p; q}')
-        if value_arch.strip() == "all":
-            return f"    {value}:all \\\n"
-        else:
-            return f"    {value}:{_torizon_arch} \\\n"
+
+    # There are certain packages which have "all" as architecture
+    # pylint: disable=line-too-long
+    value_arch_out = $(apt-cache show @(value) | sed -n '/^Architecture:/ {s/^Architecture: //; p; q}')
+    value_arch = value_arch_out.strip()
+    if value_arch == "all":
+        return f"    {value}:all \\\n"
+    return f"    {value}:{TORIZON_ARCH} \\\n"
 
 
-def _replace_section(file_lines, section):
+def _replace_section(file_lines, section):  # pylint: disable=too-many-branches
+    """Replace the __<section> markers block with packages according to JSON."""
     start_ix = None
     end_ix = None
     new_file_content = []
@@ -69,7 +77,7 @@ def _replace_section(file_lines, section):
             new_file_content.append(line)
             stop_add = True
 
-            with open("torizonPackages.json") as f:
+            with open("torizonPackages.json", "r", encoding="utf-8") as f:
                 json_data = json.load(f)
 
             build_packs = json_data.get("buildDeps", [])
@@ -102,25 +110,24 @@ def _replace_section(file_lines, section):
 
     return new_file_content
 
+
 print("Applying torizonPackages.json: ")
 
 # Dockerfile.debug
 if os.path.exists("Dockerfile.debug"):
     print("Applying to Dockerfile.debug ...")
 
-    _dockerfile_debug = open("Dockerfile.debug", "r")
-    _dockerfile_debug_lines = _dockerfile_debug.readlines()
-    _dockerfile_debug.close()
+    with open("Dockerfile.debug", "r", encoding="utf-8") as _dockerfile_debug:
+        _dockerfile_debug_lines = _dockerfile_debug.readlines()
 
     _dockerfile_debug_lines = _replace_section(
         _dockerfile_debug_lines,
-        "torizon_packages_dev"
+        "torizon_packages_dev",
     )
 
     # write back to the file
-    _dockerfile_debug = open("Dockerfile.debug", "w")
-    _dockerfile_debug.write("".join(_dockerfile_debug_lines))
-    _dockerfile_debug.close()
+    with open("Dockerfile.debug", "w", encoding="utf-8") as _dockerfile_debug_w:
+        _dockerfile_debug_w.write("".join(_dockerfile_debug_lines))
 
     print("✅ Dockerfile.debug", color=Color.GREEN)
 
@@ -128,46 +135,42 @@ if os.path.exists("Dockerfile.debug"):
 if os.path.exists("Dockerfile.sdk"):
     print("Applying to Dockerfile.sdk ...")
 
-    _dockerfile_sdk = open("Dockerfile.sdk", "r")
-    _dockerfile_sdk_lines = _dockerfile_sdk.readlines()
-    _dockerfile_sdk.close()
+    with open("Dockerfile.sdk", "r", encoding="utf-8") as _dockerfile_sdk:
+        _dockerfile_sdk_lines = _dockerfile_sdk.readlines()
 
     _dockerfile_sdk_lines = _replace_section(
         _dockerfile_sdk_lines,
-        "torizon_packages_build"
+        "torizon_packages_build",
     )
 
     # write back to the file
-    _dockerfile_sdk = open("Dockerfile.sdk", "w")
-    _dockerfile_sdk.write("".join(_dockerfile_sdk_lines))
-    _dockerfile_sdk.close()
+    with open("Dockerfile.sdk", "w", encoding="utf-8") as _dockerfile_sdk_w:
+        _dockerfile_sdk_w.write("".join(_dockerfile_sdk_lines))
 
     print("✅ Dockerfile.sdk", color=Color.GREEN)
 
-# Dockerfile
-# All project templates has a Dockerfile
+# Dockerfile (all templates have it)
 print("Applying to Dockerfile ...")
 
-_dockerfile_ = open("Dockerfile", "r")
-_dockerfile_lines = _dockerfile_.readlines()
-_dockerfile_.close()
+with open("Dockerfile", "r", encoding="utf-8") as _dockerfile_r:
+    _dockerfile_lines = _dockerfile_r.readlines()
 
 # Dockerfile can have multi-stage for build
 _dockerfile_lines = _replace_section(
     _dockerfile_lines,
-    "torizon_packages_prod"
+    "torizon_packages_prod",
 )
 
 _dockerfile_lines = _replace_section(
     _dockerfile_lines,
-    "torizon_packages_build"
+    "torizon_packages_build",
 )
 
 # write back to the file
-_dockerfile_ = open("Dockerfile", "w")
-_dockerfile_.write("".join(_dockerfile_lines))
-_dockerfile_.close()
+with open("Dockerfile", "w", encoding="utf-8") as _dockerfile_w:
+    _dockerfile_w.write("".join(_dockerfile_lines))
 
 print("✅ Dockerfile", color=Color.GREEN)
 
 print("torizonPackages.json applied")
+

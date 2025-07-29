@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+run-container-if-not-exists.xsh: run a container only if it isn't already running.
+"""
+# pylint: disable=invalid-name
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -18,16 +22,14 @@ $RAISE_SUBPROC_ERROR = False
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""
 
-import os
 import argparse
 import time
+import subprocess
 from json import loads
 from hashlib import sha256
 from pathlib import Path
-from xonsh.procs.pipelines import CommandPipeline
 from torizon_templates_utils.network import is_in_gitlab_ci_container
-from torizon_templates_utils.errors import Error, Error_Out, last_return_code
-from torizon_templates_utils.colors import Color, BgColor, print
+from torizon_templates_utils.colors import Color
 
 arg_parser = argparse.ArgumentParser()
 
@@ -78,16 +80,20 @@ while lockfile_path.exists():
     elapsed_time = time.time() - start_time
     if elapsed_time > max_wait_time:
         print(f"Timeout while waiting for lock on container '{container_name}'", color=Color.RED)
+        #pylint: disable=line-too-long
         raise TimeoutError(f"Failed to acquire lock for container '{container_name}' within {max_wait_time} seconds.")
     print(f"Waiting for lock on container '{container_name}'", color=Color.YELLOW)
     time.sleep(0.5)
 
+# --- PREDECLARES FOR PYLINT ---
+_exec_container_info = None
+start_result = None
+# ------------------------------
+
 try:
     lockfile_path.touch(exist_ok=False)
 
-    # this is the way to attribute a type to a variable using xonsh
-    # only receiving the object from !() is not enough for pylsp
-    _exec_container_info: CommandPipeline = {}
+    # check if the container exists
     _exec_container_info = !(@(container_runtime) container inspect @(container_name))
 
     if _exec_container_info.returncode == 0:
@@ -97,23 +103,28 @@ try:
         state = container_info["State"]["Status"]
 
         if state != "running":
+            #pylint: disable=line-too-long
             print(f"Container {container_name} exists but is not running. Restarting it...", color=Color.YELLOW)
 
             start_result = !(@(container_runtime) start @(container_name))
 
             if start_result.returncode != 0:
+                #pylint: disable=line-too-long
                 print(f"Failed to start container {container_name}. Attempting to remove and recreate...", color=Color.RED)
                 !(@(container_runtime) rm -f @(container_name))
-                evalx(f"{container_runtime} run --name {container_name} {run_arguments}")
+                cmdline = f"{container_runtime} run --name {container_name} {run_arguments}"
+                subprocess.run(cmdline, shell=True, check=False)
             else:
                 print(f"Successfully started container {container_name}.", color=Color.GREEN)
         else:
             print(f"Container {container_name} is already running.", color=Color.GREEN)
     else:
-        if "No such container" in _exec_container_info.err:
+        # use getattr to keep pylint happy even before assignment/type inference
+        if "No such container" in getattr(_exec_container_info, "err", ""):
             print("Container does not exist. Starting ...", color=Color.YELLOW)
             print(f"Cmd: {container_runtime} run --name {container_name} {run_arguments}")
-            evalx(f"{container_runtime} run --name {container_name} {run_arguments}")
+            cmdline = f"{container_runtime} run --name {container_name} {run_arguments}"
+            subprocess.run(cmdline, shell=True, check=False)
 
 finally:
     lockfile_path.unlink(missing_ok=True)

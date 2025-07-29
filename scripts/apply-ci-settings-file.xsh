@@ -1,4 +1,8 @@
 #!/usr/bin/env xonsh
+"""
+apply-ci-settings-file.xsh: read a CI settings JSON and export env vars for CI systems.
+"""
+# pylint: disable=invalid-name,missing-module-docstring,no-name-in-module
 
 # Copyright (c) 2025 Toradex
 # SPDX-License-Identifier: MIT
@@ -20,20 +24,18 @@ $RAISE_SUBPROC_ERROR = True
 
 import os
 import json
-from torizon_templates_utils.errors import Error,Error_Out
-from torizon_templates_utils.colors import Color,BgColor,print
+from torizon_templates_utils.errors import Error, Error_Out
+from torizon_templates_utils.colors import Color
 
-
-def _goto_error(file_path):
+def _goto_error(path_):
     Error_Out(
-        f"\n❌ Problem in {file_path} file ...\n",
+        f"\n❌ Problem in {path_} file ...\n",
         Error.ENOCONF
     )
 
 file_path = os.environ["TORIZON_CI_SETTINGS_FILE"]
 
-with open(file_path) as f:
-
+with open(file_path, encoding="utf-8") as f:
     settings = json.load(f)
 
     if "torizon_arch" not in settings or settings["torizon_arch"] == "":
@@ -47,8 +49,9 @@ with open(file_path) as f:
         os.environ["TORIZON_ARCH"] = "arm"
 
     if "GITLAB_CI" in os.environ:
-            with open(os.environ["GITLAB_ENV"], "a") as f:
-                f.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")
+        with open(os.environ["GITLAB_ENV"], "a", encoding="utf-8") as f_gitlab:
+            f_gitlab.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")
     elif "CI" in os.environ:
-        with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")
+        with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as f_gh:
+            f_gh.write(f"TORIZON_ARCH={os.environ['TORIZON_ARCH']}\n")
+
