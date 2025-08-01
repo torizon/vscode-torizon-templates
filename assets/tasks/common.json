@@ -42,7 +42,6 @@
             "args": [
                 "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
-                "${workspaceFolderBasename}",
                 "__container__",
                 "False"
             ],
@@ -73,7 +72,6 @@
             "args": [
                 "${workspaceFolder}/.conf/project-updater.xsh",
                 "${workspaceFolder}",
-                "${workspaceFolderBasename}",
                 "__container__",
                 "True"
             ],

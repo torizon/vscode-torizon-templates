@@ -216,7 +216,6 @@ if ($_torizonOSMajor -ne $_templatesJsonTorizonMajor) {
         & "$env:HOME/.local/bin/xonsh" `
             $projectFolder/.conf/project-updater.xsh `
             $projectFolder `
-            $projectName `
             $containerName `
             "false" `
             "true" `

@@ -31,16 +31,82 @@ from torizon_templates_utils.args import get_arg_not_empty,get_optional_arg
 # debug.vscode_prepare()
 # debug.breakpoint()
 
+# Update the try-update-template tasks if they have changed
+def try_update_template_tasks_has_changed():
+    # Get the template name from metadata to locate the template tasks.json
+    metadata_path_for_task = f"{project_folder}/.conf/metadata.json"
+    with open(metadata_path_for_task) as f:
+        metadata_for_task = json.load(f)
+    template_name = metadata_for_task.get("templateName")
 
-if len(sys.argv) < 4:
+    template_path = f"{os.environ['HOME']}/.apollox/assets/tasks/common.json"
+    with open(template_path, "r") as f:
+        template_tasks_content = f.read()
+        template_tasks_content = template_tasks_content.replace("__change__", project_name)
+        template_tasks_content = template_tasks_content.replace("__container__", container_name)
+        template_tasks = json.loads(template_tasks_content)
+
+    # Load project tasks
+    project_tasks_path = f"{project_folder}/.vscode/tasks.json"
+    with open(project_tasks_path, "r") as f:
+        project_tasks = json.load(f)
+
+    target_labels = {"try-update-template", "try-update-template-accepting-all"}
+
+    # Create a dictionary of the new tasks from the template, keyed by label
+    new_tasks_map = {
+        task['label']: task
+        for task in template_tasks.get("tasks", [])
+        if task.get("label") in target_labels
+    }
+
+    # Iterate through the project's tasks and replace the ones that match
+    has_changed = False
+    if new_tasks_map:
+        project_task_list = project_tasks.get("tasks", [])
+        for i, task in enumerate(project_task_list):
+            label = task.get("label")
+            if label in new_tasks_map:
+                if project_task_list[i] != new_tasks_map[label]:
+                    has_changed = True
+
+                project_task_list[i] = new_tasks_map[label]
+
+        if has_changed:
+            print(f"Task try-update-template and/or try-update-template-accepting-all tasks have changed", color=Color.YELLOW)
+            _iam_sure = input(f"Want to apply changes? [y/n] ")
+            if _iam_sure == "y":
+                print(f"Task try-update-template and/or try-update-template-accepting-all tasks updated, please run the task again", color=Color.YELLOW)
+                with open(project_tasks_path, "w") as f:
+                    json.dump(project_tasks, f, indent=4)
+            else:
+                print(f"Keeping the old tasks, please update them manually and run the task again", color=Color.YELLOW)
+
+        return has_changed
+            
+
+
+# This is a transitional block to update the tasks.json file
+# If the script is called with 6 parameters (the old way) (sys.argv will have 7 elements, including the script name)
+# Old: <project_folder> <project_name> <container_name> <accept_all> <vscode> <second_run>
+# New: <project_folder> <container_name> <accept_all> <vscode> <second_run>
+if len(sys.argv) == 7:
+    print("Updating tasks.json to new argument format...", color=Color.YELLOW)
+    project_folder = get_arg_not_empty(1)
+    project_name = get_arg_not_empty(2)
+    container_name = get_arg_not_empty(3)
+
+    if try_update_template_tasks_has_changed():
+        exit()
+
+
+if len(sys.argv) < 3:
     print(
 """
 Usage:
-    project-updater.xsh <project_folder> <project_name> <container_name> <accept_all> <vscode> <second_run>
+    project-updater.xsh <project_folder> <container_name> <accept_all> <vscode> <second_run>
 
         <project_folder>    The folder path where the project that will be updated is located.
-
-        <project_name>      The name of the project that will be updated.
 
         <container_name>    The name of the container of the project that will be updated.
 
@@ -64,12 +130,17 @@ Usage:
 
 
 project_folder = get_arg_not_empty(1)
-project_name = get_arg_not_empty(2)
-container_name = get_arg_not_empty(3)
+container_name = get_arg_not_empty(2)
 # Check if it's True or 1
-accept_all = get_arg_not_empty(4) in ("True", "1")
-vscode = get_optional_arg(5, True)
-second_run = get_optional_arg(6, False)
+accept_all = get_arg_not_empty(3) in ("True", "1")
+vscode = get_optional_arg(4, True)
+second_run = get_optional_arg(5, False)
+
+# Get the project name from metadata.json
+metadata_path_for_task = f"{project_folder}/.conf/metadata.json"
+with open(metadata_path_for_task) as f:
+    metadata_for_task = json.load(f)
+project_name = metadata_for_task.get("projectName")
 
 ##
 # even tough the vscode arg is true, if the TORIZON_TEMPLATES_NON_VSCODE
@@ -207,19 +278,23 @@ if not _check_if_file_content_is_equal(
         @(f"{os.environ['HOME']}/.apollox/scripts/project-updater.xsh") \
         @(f"{project_folder}/.conf/project-updater.xsh")
 
-    print("⚠️  project updater updated, running it again", color=Color.YELLOW)
+    print("⚠️  project updater updated", color=Color.YELLOW)
 
-    # run the updater again
-    xonsh \
-        @(f"{project_folder}/.conf/project-updater.xsh") \
-        @(project_folder) \
-        @(project_name) \
-        @(container_name) \
-        @(accept_all) \
-        @(vscode) \
-        True
+    # If try-update-template tasks does not have changed, no need for running it again manually
+    if try_update_template_tasks_has_changed() == False:
+        print("Running it again", color=Color.YELLOW)
+        # run the updater again
+        xonsh \
+            @(f"{project_folder}/.conf/project-updater.xsh") \
+            @(project_folder) \
+            @(container_name) \
+            @(accept_all) \
+            @(vscode) \
+            True
 
-    sys.exit(__xonsh__.last.returncode)
+        sys.exit(__xonsh__.last.returncode)
+    else:
+        exit()
 
 
 # get the metadata from templates.json
