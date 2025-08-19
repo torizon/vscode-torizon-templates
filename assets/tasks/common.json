@@ -2000,7 +2000,7 @@
             "command": "xonsh",
             "type": "shell",
             "args": [
-                "${workspaceFolder}/scripts/validate-json.xsh"
+                "${workspaceFolder}/.conf/validate-json.xsh"
             ],
             "dependsOrder": "sequence",
             "icon": {
