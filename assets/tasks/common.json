@@ -1295,6 +1295,37 @@
             }
         },
         {
+            "label": "wait-a-bit-pull",
+            "detail": "Wait at least two seconds for arm32",
+            "hide": true,
+            "command": "if",
+            "type": "shell",
+            "args": [
+                "[", "${config:torizon_arch}", "==", "arm", "];" , "then",
+                "sleep",
+                "2",
+                ";",
+                "else",
+                "sleep",
+                "${config:wait_sync}",
+                ";",
+                "fi"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "gear",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
             "label": "pull-container-torizon-debug",
             "detail": "This is only a collection of dependencies",
             "hide": true,
@@ -1307,6 +1338,7 @@
             "dependsOn": [
                 "spin-down-tunnel",
                 "spin-up-tunnel",
+                "wait-a-bit-pull",
                 "pull-from-target-debug",
                 "spin-down-tunnel"
             ],
@@ -1561,6 +1593,7 @@
             "dependsOn": [
                 "spin-down-tunnel",
                 "spin-up-tunnel",
+                "wait-a-bit-pull",
                 "pull-from-target-release",
                 "spin-down-tunnel"
             ],
