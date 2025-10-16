@@ -157,13 +157,15 @@ else:
 # make sure to have binfmt
 xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
 
+# xonsh env works in a very weird way, so we need to merge the envs
+xos = xenv.Env(os.environ)
+__xonsh__.env = xos
+xonsh ./.vscode/tasks.xsh run template-specific-initial-task
+
 # start to build the image
 cd @(_compo_file_path)
 print(f"Rebuilding {os.environ['DOCKER_LOGIN']}/{_image_name}:{_tag} ...")
 
-# xonsh env works in a very weird way, so we need to merge the envs
-xos = xenv.Env(os.environ)
-__xonsh__.env = xos
 
 # run the build-container-torizon-release-<arch> but without override the env
 $TASKS_OVERRIDE_ENV = False
@@ -256,3 +258,10 @@ yaml.dump(
 _f_ref.close()
 
 print("✅ docker-compose.prod.yml generated", color=Color.GREEN)
+
+# run template-specific-final-task
+# xonsh env works in a very weird way, so we need to merge the envs
+$TASKS_OVERRIDE_ENV = True
+xos = xenv.Env(os.environ)
+__xonsh__.env = xos
+xonsh ./.vscode/tasks.xsh run template-specific-final-task
