@@ -77,7 +77,8 @@
 						"DOCKER_LOGIN": "${command:docker_login}",
 						"DOCKER_PASSWORD": "${command:docker_password}",
 						"TORIZON_ARCH": "${input:archList}",
-						"APP_ROOT": "${config:torizon_app_root}"
+						"APP_ROOT": "${config:torizon_app_root}",
+						"DOCKER_TAG": "${command:inputBoxDockerTag}"
 					}
 				},
 				"presentation": {

@@ -48,15 +48,8 @@ _compo_file_path = get_arg_iterative(
     default=None,
     iterative=_iterative
 )
-_tag = get_arg_iterative(
-    index=2,
-    prompt="Image tag: ",
-    default_type=str,
-    default=None,
-    iterative=_iterative
-)
 _image_name = get_arg_iterative(
-    index=3,
+    index=2,
     prompt="Image name: ",
     default_type=str,
     default=None,
@@ -64,7 +57,7 @@ _image_name = get_arg_iterative(
 )
 
 # optional
-_gpu = get_optional_arg(4, "")
+_gpu = get_optional_arg(3, "")
 
 # check env vars
 if "DOCKER_PASSWORD" not in os.environ:
@@ -107,6 +100,14 @@ if "APP_ROOT" not in os.environ:
     )
 else:
     _app_root = os.environ["APP_ROOT"]
+
+if "DOCKER_TAG" not in os.environ:
+    Error_Out(
+        "❌ DOCKER_TAG not set",
+        Error.ENOCONF
+    )
+else:
+    _tag = os.environ["DOCKER_TAG"]
 
 _tasks_settings_json = "settings.json"
 if "TASKS_CUSTOM_SETTINGS_JSON" in os.environ:

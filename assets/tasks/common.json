@@ -102,13 +102,13 @@
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
                     "DEBUG_PORT2": "${config:torizon_debug_port2}",
-                    "DEBUG_PORT3": "${config:torizon_debug_port3}"
+                    "DEBUG_PORT3": "${config:torizon_debug_port3}",
+                    "DOCKER_TAG": "${command:inputBoxDockerTag}"
                 }
             },
             "args": [
                 "${workspaceFolder}/.conf/create-docker-compose-production.xsh",
                 "${workspaceFolder}",
-                "${command:inputBoxDockerTag}",
                 "__container__",
                 "${config:torizon_gpu}"
             ],
