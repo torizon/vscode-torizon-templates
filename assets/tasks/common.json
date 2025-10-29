@@ -94,7 +94,7 @@
             "type": "process",
             "options": {
                 "env": {
-                    "DOCKER_REGISTRY": "${command:inputBoxDockerRegistry}",
+                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry}",
                     "DOCKER_LOGIN": "${command:docker_login}",
                     "DOCKER_PASSWORD": "${command:docker_password}",
                     "TORIZON_ARCH": "${input:archList}",
@@ -108,7 +108,7 @@
             "args": [
                 "${workspaceFolder}/.conf/create-docker-compose-production.xsh",
                 "${workspaceFolder}",
-                "${command:inputBoxDockerTag}",
+                "${command:inputBox-docker_tag}",
                 "__container__",
                 "${config:torizon_gpu}"
             ],
@@ -133,10 +133,10 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "DOCKER_REGISTRY": "${command:inputBoxDockerRegistry}",
+                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry}",
                     "DOCKER_LOGIN": "${command:docker_login}",
                     "DOCKER_PASSWORD": "${command:docker_password}",
-                    "DOCKER_TAG": "${command:inputBoxDockerTag}",
+                    "DOCKER_TAG": "${command:inputBox-docker_tag}",
                     "TCB_CLIENTID": "${command:tcb.clientId}",
                     "TCB_CLIENTSECRET": "${command:tcb.clientSecret}",
                     "TCB_PACKAGE": "__change__",
@@ -221,7 +221,7 @@
                 "env": {
                     "DOCKER_PASSWORD": "${command:docker_password}",
                     "DOCKER_LOGIN": "${command:docker_login}",
-                    "DOCKER_REGISTRY": "${command:inputBoxDockerRegistry}",
+                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry}",
                     "VSCODE_CMD": "--verbose platform push --credentials credentials.zip --package-name __change__ --package-version ${command:tcb.getNextPackageVersion} --login-to $DOCKER_REGISTRY $DOCKER_LOGIN $DOCKER_PASSWORD --force --canonicalize docker-compose.prod.yml"
                 }
             },
@@ -261,7 +261,7 @@
                 "env": {
                     "DOCKER_PASSWORD": "${command:docker_password}",
                     "DOCKER_LOGIN": "${command:docker_login}",
-                    "DOCKER_REGISTRY": "${command:inputBoxDockerRegistry}"
+                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry}"
                 }
             },
             "args": [
@@ -1864,10 +1864,10 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "DOCKER_REGISTRY": "${command:inputBoxDockerRegistry}",
+                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry}",
                     "DOCKER_LOGIN": "${command:docker_login}",
                     "DOCKER_PASSWORD": "${command:docker_password}",
-                    "DOCKER_TAG": "${command:inputBoxDockerTag}",
+                    "DOCKER_TAG": "${command:inputBox-docker_tag}",
                     "TCB_CLIENTID": "${command:tcb.clientId}",
                     "TCB_CLIENTSECRET": "${command:tcb.clientSecret}",
                     "TCB_PACKAGE": "__change__",

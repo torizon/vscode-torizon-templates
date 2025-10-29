@@ -24,7 +24,7 @@ def replace_tasks_input():
                     content = f.read()
 
                 content = content.replace("input:dockerLogin", "command:docker_login")
-                content = content.replace("input:dockerImageRegistry", "command:inputBoxDockerRegistry")
+                content = content.replace("input:dockerImageRegistry", "command:inputBox-docker_registry")
                 content = content.replace("input:dockerPsswd", "command:docker_password")
 
                 with open(file, 'w') as f:
@@ -575,6 +575,17 @@ class TaskRunner:
 
         return ret
 
+    # Replace command:inputBox- with config:
+    def __check_input_boxes(self, env: List[str]) -> List[str]:
+        ret: List[str] = []
+
+        for value in env:
+            if "${command:inputBox-" in value:
+                value = value.replace("${command:inputBox-", "${config:")
+            ret.append(value)
+
+        return ret
+
 
     def __check_docker_inputs(self, env: List[str]) -> List[str]:
         ret: List[str] = []
@@ -828,6 +839,7 @@ class TaskRunner:
             if _env_value:
                 expvalue = [_env_value]
                 expvalue = self.__check_workspace_folder(expvalue)
+                expvalue = self.__check_input_boxes(expvalue)
                 expvalue = self.__check_torizon_inputs(expvalue)
                 expvalue = self.__check_docker_inputs(expvalue)
                 expvalue = self.__check_tcb_inputs(expvalue)
