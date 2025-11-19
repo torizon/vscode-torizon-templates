@@ -112,6 +112,45 @@
             }
         },
         {
+            "label": "tcb-build-data-online",
+            "detail": "Build the tcbuild.yaml file and generate the custom image, passing the online-data secret as argument",
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "VSCODE_CMD": "--verbose build --set ONLINE_DATA=${command:tcb.onlineData}"
+                }
+            },
+            "args": [
+                "source",
+                "./.conf/tcb-env-setup.sh",
+                "-s",
+                "${workspaceFolder}/storage",
+                "-t",
+                "${config:tcb.version}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "tcb-platform-provisioning-data-online"
+            ],
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiYellow"
+            },
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "group": "tcb-build"
+            }
+        },
+        {
             "label": "tcb-unpack",
             "detail": "",
             "hide": true,

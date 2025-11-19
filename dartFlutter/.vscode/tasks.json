@@ -8,8 +8,10 @@
             "args": [
                 "-p", "${config:torizon_psswd}",
                 "ssh",
+                "-o",
+                "PubkeyAuthentication=no",
                 "-L", "42271:127.0.0.1:42271",
-                "torizon@${config:torizon_ip}"
+                "${config:torizon_login}@${config:torizon_ip}"
             ],
             "isBackground": true,
             "options": {
@@ -163,9 +165,10 @@
                 "flutter-build-debug-arm64",
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
-                "pull-container-torizon-debug-arm64",
-                "run-container-torizon-debug-arm64",
-                "pos-cleanup"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "pos-cleanup",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

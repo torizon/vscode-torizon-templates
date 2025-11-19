@@ -7,6 +7,8 @@ services:
     ports:
       - ${DEBUG_SSH_PORT}:${DEBUG_SSH_PORT}
       - 7001:7001
+    profiles:
+      - debug
 
   __container__:
     build:
@@ -15,30 +17,36 @@ services:
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     ports:
       - 7001:7001
+    profiles:
+      - release
 
   __container__-browser-debug:
     build:
-        context: .
-        dockerfile: Dockerfile.debug
+      context: .
+      dockerfile: Dockerfile.debug
     image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
     ports:
       - ${DEBUG_SSH_PORT}:${DEBUG_SSH_PORT}
       - 7001:7001
     depends_on:
       - cog
+    profiles:
+      - debug
 
-  blazor-browser:
+  __container__-browser:
     build:
-        context: .
-        dockerfile: Dockerfile.debug
-    image: ${LOCAL_REGISTRY}:5002/__container__:${TAG}
+      context: .
+      dockerfile: Dockerfile.debug
+    image: ${DOCKER_LOGIN}/__container__:${TAG}
     ports:
       - 7001:7001
     depends_on:
       - cog
+    profiles:
+      - release
 
   cog:
-    image: torizon/cog${GPU}:3.4.0
+    image: torizon/cog${GPU}:4
     command: http://localhost:7001 -w
     environment:
       - ACCEPT_FSL_EULA=1
@@ -67,6 +75,8 @@ services:
       - "c 226:* rmw"
     depends_on:
       - weston
+    profiles:
+      - release
 
   weston:
     image: torizon/weston${GPU}:4
@@ -98,3 +108,6 @@ services:
       - "c 226:* rmw"
       # ... for /dev/dma_heap device
       - "c 253:* rmw"
+    profiles:
+      - release
+      - debug

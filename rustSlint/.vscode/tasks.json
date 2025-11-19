@@ -190,8 +190,9 @@
                 "copy-debug-executable-arm64",
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
-                "pull-container-torizon-debug-arm64",
-                "run-container-torizon-debug-arm64"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -260,8 +261,8 @@
                 "copy-debug-executable-amd64",
                 "build-container-torizon-debug-amd64",
                 "push-container-torizon-debug-amd64",
-                "pull-container-torizon-debug-amd64",
-                "run-container-torizon-debug-amd64"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -379,8 +380,9 @@
                 "copy-debug-executable-arm",
                 "build-container-torizon-debug-arm",
                 "push-container-torizon-debug-arm",
-                "pull-container-torizon-debug-arm",
-                "run-container-torizon-debug-arm"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

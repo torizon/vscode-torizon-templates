@@ -2,9 +2,9 @@
 
 This repository maintains the templates used in conjunction with the [VS Code Torizon Integrated Development Environment Extension](https://developer.toradex.com/torizon/application-development/ide-extension/). Focusing in the VS Code for automation between the development environment for remote debug, remote deploy of containerized applications for Toradex TorizonCore easy-to-use Industrial Linux Software Platform.
 
-## Toradex Supported Templates
+## Torizon Supported Templates
 
-> ℹ️ **Toradex Supported Templates** are templates with development stacks commonly used by customers of the Torizon platform and are maintained by the Torizon team at Toradex.
+> ℹ️ **Torizon Supported Templates** are templates with development stacks commonly used by customers of the Torizon platform and are maintained by the Torizon team at Toradex.
 
 > ⚠️ Support for **x86-64** architectures are experimental.
 

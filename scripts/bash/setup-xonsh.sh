@@ -6,7 +6,30 @@ echo "🐚 SETUP XONSH"
 if [ -f "$HOME/.local/bin/xonsh" ]; then
     echo "xonsh is already installed, updating torizon-templates-utils ..."
     # force the install of the latest version of torizon-templates-utils
-    pipx runpip xonsh install --upgrade torizon-templates-utils
+
+    repo="${TEST_TEMPLATES_GIT_REPO:-https://github.com/toradex/torizon-templates.git}"
+    branch="${TEST_TEMPLATES_GIT_REPO_BRANCH:-main}"
+    tag_or_hash="${TEST_TEMPLATES_GIT_TAG}"
+
+    # Detect if repo is a local path
+    if [ -d "$repo" ] || [ -f "$repo" ]; then
+        repo="file://$(realpath "$repo")"
+    else
+        # Ensure repo ends with .git
+        case "$repo" in
+            *.git) ;;
+            *) repo="${repo}.git" ;;
+        esac
+    fi
+
+    if [ -n "$tag_or_hash" ]; then
+    ref="$tag_or_hash"
+    else
+    ref="$branch"
+    fi
+
+    pipx runpip xonsh install --force-reinstall "git+${repo}@${ref}#subdirectory=scripts/utils/pip"
+
     echo "all ok ✅"
     exit 0
 fi

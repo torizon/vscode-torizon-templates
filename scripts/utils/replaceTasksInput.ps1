@@ -16,21 +16,21 @@ function Replace-Tasks-Input () {
                     ForEach-Object {
                         $_ -replace `
                         "input:dockerLogin", `
-                        "command:docker_login"
+                        "command:docker_login.__change__"
                     } | Set-Content $a
 
                     ( Get-Content $a ) |
                     ForEach-Object {
                         $_ -replace `
                         "input:dockerImageRegistry", `
-                        "command:docker_registry"
+                        "command:inputBox-docker_registry.__change__"
                     } | Set-Content $a
 
                     ( Get-Content $a ) |
                     ForEach-Object {
                         $_ -replace `
                         "input:dockerPsswd", `
-                        "command:docker_password"
+                        "command:docker_password.__change__"
                     } | Set-Content $a
                 }
             }

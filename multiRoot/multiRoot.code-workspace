@@ -1,0 +1,325 @@
+{
+	"folders": [],
+	"settings": {
+		"torizon_workspace": "${workspaceFolder}",
+		"torizon.gpuPrefixRC": true,
+		"torizon.restartDocker": false,
+		"files.exclude": {}
+	},
+	"launch": {
+		"configurations": [],
+		"compounds": [
+            {
+                "name": "Launch Project arm64",
+                "configurations": [],
+                "preLaunchTask": "check-single-projects-conflicts"
+            },
+            {
+                "name": "Launch Project arm32",
+                "configurations": [],
+                "preLaunchTask": "check-single-projects-conflicts"
+            }
+        ]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "check-single-projects-conflicts",
+				"detail": "",
+				"command": "xonsh",
+				"type": "process",
+				"args": [
+					"${workspaceFolder}/.conf/check-single-projects-conflicts.xsh",
+					"${workspaceFolder}"
+				],
+				"dependsOrder": "sequence",
+				"icon": {
+					"id": "layers",
+					"color": "terminal.ansiMagenta"
+				},
+				"presentation": {
+					"echo": false,
+					"reveal": "always",
+					"focus": true,
+					"panel": "dedicated",
+					"showReuseMessage": true,
+					"clear": false
+				}
+			},
+			{
+				"label": "check-deps-all",
+				"type": "process",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"check-deps"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared"
+				}
+			},
+			{
+				"label": "create-image-production-all",
+				"hide": true,
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"create-production-image"
+				],
+				"options": {
+					"env": {
+						"DOCKER_REGISTRY": "${command:inputBox-docker_registry.__change__}",
+						"DOCKER_LOGIN": "${command:docker_login.__change__}",
+						"DOCKER_PASSWORD": "${command:docker_password.__change__}",
+						"TORIZON_ARCH": "${input:archList}",
+						"APP_ROOT": "${config:torizon_app_root}"
+					}
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "create-production-docker-compose",
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/create-multi-root-docker-compose.xsh",
+					"${workspaceFolder}"
+				],
+				"dependsOrder": "sequence",
+				"dependsOn": [
+					"create-image-production-all"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "copy-release-docker-compose",
+				"detail": "",
+				"hide": true,
+				"command": "sshpass",
+				"type": "process",
+				"options": {
+                    "cwd": "${workspaceFolder}"
+                },
+				"args": [
+					"-p",
+					"${config:torizon_psswd}",
+					"scp",
+					"-P",
+					"${config:torizon_ssh_port}",
+					"-o",
+					"UserKnownHostsFile=/dev/null",
+					"-o",
+					"StrictHostKeyChecking=no",
+					"-o",
+					"PubkeyAuthentication=no",
+					"${workspaceFolder}/docker-compose.yml",
+					"${config:torizon_login}@${config:torizon_ip}:~/"
+				],
+				"dependsOrder": "sequence",
+				"dependsOn": [
+					"wait-a-bit"
+				],
+				"problemMatcher": "$msCompile",
+				"icon": {
+					"id": "gear",
+					"color": "terminal.ansiYellow"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "merge-docker-compose",
+				"hide": true,
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/merge-docker-compose.xsh",
+					"${workspaceFolder}"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": false,
+					"panel": "shared"
+				}
+			},
+			{
+				"label": "run-containers-release-arm-deps",
+				"hide": true,
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"template-specific-initial-task",
+					"validate-settings",
+					"validate-arch-arm",
+					"pre-cleanup",
+					"build-container-torizon-release-arm",
+					"push-container-torizon-release",
+					"pull-container-torizon-release",
+					"template-specific-final-task",
+					"wait-a-bit"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "run-containers-release-arm64-deps",
+				"hide": true,
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"template-specific-initial-task",
+					"validate-settings",
+					"validate-arch-arm64",
+					"pre-cleanup",
+					"build-container-torizon-release-arm64",
+					"push-container-torizon-release",
+					"pull-container-torizon-release",
+					"template-specific-final-task",
+					"wait-a-bit"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "run-containers-release-arm",
+				"detail": "This task will build the application based in the production multi-root Dockerfile, push it to the local registry (localhost:5002), pull it on the board and run it on the board, showing the result in the VSCode terminal",
+				"command": "DOCKER_HOST=${config:torizon_ip}:2375",
+				"type": "shell",
+				"options": {
+                    "cwd": "${workspaceFolder}"
+                },
+				"args": [
+					"DOCKER_LOGIN=${config:host_ip}:5002",
+					"TAG=${config:docker_tag}",
+					"GPU=${config:torizon_gpu}",
+					"DEBUG_SSH_PORT=1",
+					"DEBUG_PORT1=1",
+					"DEBUG_PORT2=1",
+					"DEBUG_PORT3=1",
+					"docker",
+					"compose",
+					"-p",
+					"torizon",
+					"--profile",
+					"release",
+					"up"
+				],
+				"dependsOrder": "sequence",
+				"dependsOn": [
+					"run-containers-release-arm-deps",
+					"merge-docker-compose",
+					"copy-release-docker-compose"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "run-containers-release-arm64",
+				"detail": "This task will build the application based in the production multi-root Dockerfile, push it to the local registry, (localhost:5002), pull it on the board and run it on the board, showing the result in the VSCode terminal",
+				"command": "DOCKER_HOST=${config:torizon_ip}:2375",
+				"type": "shell",
+				"options": {
+                    "cwd": "${workspaceFolder}"
+                },
+				"args": [
+					"DOCKER_LOGIN=${config:host_ip}:5002",
+					"TAG=${config:docker_tag}",
+					"GPU=${config:torizon_gpu}",
+					"DEBUG_SSH_PORT=1",
+					"DEBUG_PORT1=1",
+					"DEBUG_PORT2=1",
+					"DEBUG_PORT3=1",
+					"docker",
+					"compose",
+					"-p",
+					"torizon",
+					"--profile",
+					"release",
+					"up"
+				],
+				"dependsOrder": "sequence",
+				"dependsOn": [
+					"run-containers-release-arm64-deps",
+					"merge-docker-compose",
+					"copy-release-docker-compose"
+				],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			}
+		],
+		"inputs": [
+			{
+				"id": "dockerLogin",
+				"type": "promptString",
+				"description": "Container Registry Login"
+			},
+			{
+				"id": "dockerImageRegistry",
+				"type": "promptString",
+				"description": "Image Registry"
+			},
+			{
+				"id": "dockerPsswd",
+				"type": "promptString",
+				"password": true,
+				"description": "Container Registry Password"
+			},
+			{
+				"id": "archList",
+				"type": "pickString",
+				"description": "Container architecture",
+				"options": [
+					"arm",
+					"arm64",
+					"amd64"
+				]
+			}
+		]
+	}
+}
+

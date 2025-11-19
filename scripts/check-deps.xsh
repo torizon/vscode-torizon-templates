@@ -21,13 +21,14 @@ import sys
 import json
 import shutil
 from pathlib import Path
+from torizon_templates_utils.network import is_in_gitlab_ci_container
 from torizon_templates_utils.errors import Error,Error_Out,last_return_code
 from torizon_templates_utils.colors import Color,BgColor,print
 
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""
 
-if "GITLAB_CI" in os.environ and os.path.exists("/.dockerenv"):
+if is_in_gitlab_ci_container():
     print("ℹ️ :: GITLAB_CI using docker executor :: ℹ️")
     $DOCKER_HOST = "tcp://docker:2375"
 

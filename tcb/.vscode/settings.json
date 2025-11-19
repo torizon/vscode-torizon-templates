@@ -3,5 +3,6 @@
     "torizon_debug_port1": "",
     "torizon_debug_port2": "",
     "torizon_debug_port3": "",
-    "tcb.fleetName": ""
+    "tcb.fleetName": "",
+    "tcb.onlineData": ""
 }

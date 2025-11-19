@@ -21,4 +21,4 @@ The source code of the template is inspired by the one created following the [in
 
 The Blazor is a web application that needs a browser to show the GUI. If you want to show the GUI in a screen connected to the board you can launch the `Torizon Browser ARMv8` debug session. This will run the Blazor application and also a [Cog](https://github.com/Igalia/cog) browser to open the GUI in the board connected screen.
 
-The Docker compose service to run for production that have the Cog browser is `__change__-browser`.
+The Docker compose service to run for production that has the Cog browser is `__change__-browser`.

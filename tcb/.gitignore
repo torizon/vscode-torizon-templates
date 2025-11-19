@@ -3,3 +3,6 @@ tuf/
 __change__-TCB-CUSTOM/
 credentials.zip
 *.lock.yml
+
+.conf/.depok
+.conf/.docok

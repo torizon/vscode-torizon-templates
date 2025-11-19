@@ -31,7 +31,7 @@ _env_vars_settings = [
 ]
 
 _env_vars_secrets = [
-    "DOCKER_PSSWD",
+    "DOCKER_PASSWORD",
     "PLATFORM_CLIENT_ID",
     "PLATFORM_CLIENT_SECRET",
     "PLATFORM_CREDENTIALS"

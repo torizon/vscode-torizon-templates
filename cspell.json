@@ -94,7 +94,8 @@
         "Devs",
         "wbem",
         "depok",
-        "repr"
+        "repr",
+        "torizonextras"
     ],
     "import": [],
     "languageSettings": [

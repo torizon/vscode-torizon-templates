@@ -64,3 +64,12 @@ docker compose \
     --no-cache \
     --push \
     torizon-dev
+
+# run the build command
+print(f"🔨 :: SSH-TUNNEL :: 🔨", color=Color.GREEN)
+docker compose \
+    -f ./container/docker-compose.yml \
+    build \
+    --no-cache \
+    --push \
+    ssh

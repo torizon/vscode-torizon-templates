@@ -1,6 +1,13 @@
 services:
 
 
+  ssh:
+    build:
+      context: ../
+      dockerfile: container/Containerfile.ssh
+    image: torizonextras/ide-port-tunnel:0.0.0
+
+
   xonsh:
     build:
       context: ../

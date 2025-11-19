@@ -59,7 +59,7 @@ Environment variables:
     TASKS_OVERRIDE_ENV                  enable the override of the environment variables
                                         values with the ones set in the tasks.json file
 
-    DOCKER_PSSWD                        to set the docker password in CI/CD pipelines
+    DOCKER_PASSWORD                        to set the docker password in CI/CD pipelines
 
 
 Copyrigth (c) 2025 Toradex and contributors

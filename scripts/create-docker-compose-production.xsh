@@ -20,6 +20,7 @@ import sys
 import json
 import yaml
 import xonsh.environ as xenv
+from torizon_templates_utils.network import is_in_gitlab_ci_container
 from torizon_templates_utils import debug
 from torizon_templates_utils.args import get_optional_arg,get_arg_iterative
 from torizon_templates_utils.errors import Error,Error_Out
@@ -31,7 +32,7 @@ from torizon_templates_utils.colors import Color,BgColor,print
 
 $DOCKER_HOST = ""
 
-if "GITLAB_CI" in os.environ and os.path.exists("/.dockerenv"):
+if is_in_gitlab_ci_container():
     print("ℹ️ :: GITLAB_CI using docker executor :: ℹ️")
     $DOCKER_HOST = "tcp://docker:2375"
 
@@ -66,13 +67,13 @@ _image_name = get_arg_iterative(
 _gpu = get_optional_arg(4, "")
 
 # check env vars
-if "DOCKER_PSSWD" not in os.environ:
+if "DOCKER_PASSWORD" not in os.environ:
     Error_Out(
-        "❌ DOCKER_PSSWD not set",
+        "❌ DOCKER_PASSWORD not set",
         Error.ENOCONF
     )
 else:
-    _docker_psswd = os.environ["DOCKER_PSSWD"]
+    _docker_password = os.environ["DOCKER_PASSWORD"]
 
 if "DOCKER_LOGIN" not in os.environ:
     Error_Out(
@@ -118,7 +119,7 @@ if _torizon_arch == "aarch64":
     _torizon_arch = "arm64"
 elif _torizon_arch == "armv7":
     _torizon_arch = "arm"
-elif _torizon_arch == "arm":
+elif _torizon_arch == "armv7l":
     _torizon_arch = "arm"
 elif _torizon_arch == "armhf":
     _torizon_arch = "arm"
@@ -156,13 +157,15 @@ else:
 # make sure to have binfmt
 xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
 
+# xonsh env works in a very weird way, so we need to merge the envs
+xos = xenv.Env(os.environ)
+__xonsh__.env = xos
+xonsh ./.vscode/tasks.xsh run template-specific-initial-task
+
 # start to build the image
 cd @(_compo_file_path)
 print(f"Rebuilding {os.environ['DOCKER_LOGIN']}/{_image_name}:{_tag} ...")
 
-# xonsh env works in a very weird way, so we need to merge the envs
-xos = xenv.Env(os.environ)
-__xonsh__.env = xos
 
 # run the build-container-torizon-release-<arch> but without override the env
 $TASKS_OVERRIDE_ENV = False
@@ -221,6 +224,15 @@ for key in _remove_keys:
 
 print("✅ Services cleaned", color=Color.GREEN)
 
+print("Removing profiles ...")
+
+for service in _prod_keys:
+    _service = _compose_services[service]
+    if "profiles" in _service:
+        _service.pop("profiles")
+
+print("✅ Profiles removed", color=Color.GREEN)
+
 # replace the env  variables
 print("Replacing variables ...")
 
@@ -246,3 +258,10 @@ yaml.dump(
 _f_ref.close()
 
 print("✅ docker-compose.prod.yml generated", color=Color.GREEN)
+
+# run template-specific-final-task
+# xonsh env works in a very weird way, so we need to merge the envs
+$TASKS_OVERRIDE_ENV = True
+xos = xenv.Env(os.environ)
+__xonsh__.env = xos
+xonsh ./.vscode/tasks.xsh run template-specific-final-task

@@ -31,12 +31,12 @@ static void lv_linux_disp_init(void)
 
 static void lv_linux_run_loop(void)
 {
-    uint32_t time_till_next;
+    uint32_t time_till_next_ms;
 
     /*Handle LVGL tasks*/
     while(1) {
-        time_till_next = lv_timer_handler();
-        usleep(time_till_next);
+        time_till_next_ms = lv_timer_handler();
+        usleep(time_till_next_ms * 1000);
     }
 }
 

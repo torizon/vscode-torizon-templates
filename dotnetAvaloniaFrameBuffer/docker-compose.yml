@@ -1,9 +1,9 @@
 services:
   __container__-debug:
     build:
-        context: .
-        dockerfile: Dockerfile.debug
-    image: ${LOCAL_REGISTRY}:5002/__container__:${TAG}
+      context: .
+      dockerfile: Dockerfile.debug
+    image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
     # Required to get udev events from host udevd via netlink
     network_mode: host
     volumes:
@@ -29,11 +29,13 @@ services:
       - "c 199:* rmw"
       # ... for /dev/fb0
       - "c 29:* rmw"
-
+    profiles:
+      - debug
+      
   __container__:
     build:
-        context: .
-        dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     # Required to get udev events from host udevd via netlink
     network_mode: host
@@ -60,3 +62,5 @@ services:
       - "c 199:* rmw"
       # ... for /dev/fb0
       - "c 29:* rmw"
+    profiles:
+      - release

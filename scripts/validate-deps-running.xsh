@@ -17,12 +17,13 @@ $RAISE_SUBPROC_ERROR = False
 
 import os
 from xonsh.procs.pipelines import CommandPipeline
+from torizon_templates_utils.network import is_in_gitlab_ci_container
 from torizon_templates_utils.errors import Error,Error_Out
 from torizon_templates_utils.colors import Color,BgColor,print
 
 $DOCKER_HOST = ""
 
-if "GITLAB_CI" in os.environ and os.path.exists("/.dockerenv"):
+if is_in_gitlab_ci_container():
     print("ℹ️ :: GITLAB_CI using docker executor :: ℹ️")
     $DOCKER_HOST = "tcp://docker:2375"
 

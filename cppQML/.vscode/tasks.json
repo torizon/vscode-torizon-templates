@@ -387,6 +387,49 @@
             }
         },
         {
+            "label": "build-container-image-sdk-arm64-with-auth-conf",
+            "detail": "",
+            "hide": true,
+            "command": "DOCKER_HOST=",
+            "type": "shell",
+            "args": [
+                "docker",
+                "build",
+                "--pull",
+                "--secret",
+                "id=qt-feed-auth,src=./.conf/qt6-enterprise/qt-feed-auth.conf",
+                "-f",
+                "${workspaceFolder}/Dockerfile.sdk",
+                "${workspaceFolder}",
+                "-t",
+                "cross-toolchain-arm64-__container__",
+                "--build-arg",
+                "IMAGE_ARCH=arm64",
+                "--build-arg",
+                "GPU=${config:torizon_gpu}",
+                "--build-arg",
+                "APP_ROOT=${config:torizon_app_root}"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "apply-torizon-packages-arm64"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
             "label": "build-configure-arm64",
             "hide": true,
             "command": "DOCKER_HOST=",
@@ -398,7 +441,7 @@
                 "-v",
                 "${workspaceFolder}:${config:torizon_app_root}",
                 "cross-toolchain-arm64-__container__",
-                "cmake",
+                "/usr/local/bin/qt-cmake",
                 "-DCMAKE_BUILD_TYPE=Debug",
                 "-DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++",
                 "-DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc",
@@ -409,7 +452,7 @@
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
-                "build-container-image-sdk-arm64"
+                "build-container-image-sdk-arm64-with-auth-conf"
             ],
             "icon": {
                 "id": "tools",
@@ -514,11 +557,14 @@
                 "validate-arch-arm64",
                 "copy-docker-compose",
                 "pre-cleanup",
+                "qt-enterprise-generate-auth-conf",
                 "build-debug-arm64",
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
-                "pull-container-torizon-debug-arm64",
-                "run-container-torizon-debug-arm64"
+                "pull-container-torizon-debug",
+                "qt-enterprise-remove-auth-conf",
+                "run-container-torizon-debug",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -662,11 +708,14 @@
                 "validate-arch-arm",
                 "copy-docker-compose",
                 "pre-cleanup",
+                "qt-enterprise-generate-auth-conf",
                 "build-debug-arm",
                 "build-container-torizon-debug-arm",
                 "push-container-torizon-debug-arm",
-                "pull-container-torizon-debug-arm",
-                "run-container-torizon-debug-arm"
+                "pull-container-torizon-debug",
+                "qt-enterprise-remove-auth-conf",
+                "run-container-torizon-debug",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -785,6 +834,155 @@
             },
             "presentation": {
                 "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "qt-enterprise-fill-license-login-password",
+            "detail": "Generate qt-feed-auth.conf from login and password stored in settings",
+            "command": "echo",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "QT_LICENSE_LOGIN": "${command:qt_license_login.__change__}",
+                    "QT_LICENSE_PASSWORD": "${command:qt_license_password.__change__}"
+                }
+            },
+            "args": [
+                "'qt_license_login and qt_license_password set'"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "icon": {
+                "id": "notebook",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "qt-enterprise-generate-auth-conf",
+            "detail": "Generate qt-feed-auth.conf from login and password stored in settings",
+            "command": "xonsh",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "QT_LICENSE_LOGIN": "${config:qt_license_login}",
+                    "QT_LICENSE_PASSWORD": "${command:qt_license_password.__change__}"
+                }
+            },
+            "args": [
+                "${workspaceFolder}/.conf/qt-enterprise-generate-auth-conf.xsh"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "icon": {
+                "id": "gear",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "qt-enterprise-remove-auth-conf",
+            "detail": "Remove qt-feed-auth.conf",
+            "command": "rm",
+            "type": "shell",
+            "args": [
+                "-f",
+                "${workspaceFolder}/.conf/qt6-enterprise/qt-feed-auth.conf"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "template-specific-initial-task",
+            "detail": "",
+            "hide": true,
+            "command": "sleep",
+            "type": "shell",
+            "args": [
+                "0.5"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "qt-enterprise-generate-auth-conf"
+            ],
+            "icon": {
+                "id": "notebook",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "template-specific-final-task",
+            "detail": "",
+            "hide": true,
+            "command": "sleep",
+            "type": "shell",
+            "args": [
+                "0.5"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "qt-enterprise-remove-auth-conf"
+            ],
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": false,
                 "reveal": "always",
                 "focus": true,
                 "panel": "shared",

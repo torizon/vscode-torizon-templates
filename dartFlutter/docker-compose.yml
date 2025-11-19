@@ -22,9 +22,9 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-    depends_on: [
-      weston
-    ]
+    depends_on: [weston]
+    profiles:
+      - debug
 
   __container__:
     build:
@@ -48,9 +48,9 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-    depends_on: [
-      weston
-    ]
+    depends_on: [weston]
+    profiles:
+      - release
 
   weston:
     image: torizon/weston${GPU}:4
@@ -85,3 +85,6 @@ services:
       - "c 226:* rmw"
       # ... for /dev/dma_heap device
       - "c 253:* rmw"
+    profiles:
+      - release
+      - debug

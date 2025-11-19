@@ -4,7 +4,6 @@
         "sshpass"
     ],
     "installDepsScripts": [
-        ".conf/installDepsScripts/installDotnetSDK7.sh",
         ".conf/installDepsScripts/installDotnetSDK8.sh"
     ]
 }

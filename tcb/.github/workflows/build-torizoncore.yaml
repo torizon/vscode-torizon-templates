@@ -23,7 +23,7 @@ jobs:
           TASKS_DISABLE_INTERACTIVE_INPUT: "True"
           TASKS_OVERRIDE_ENV: "False"
           TORIZON_CI_SETTINGS_FILE: ".vscode/settings.json"
-          DOCKER_PSSWD: ${{ secrets.DOCKER_PSSWD }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
           PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
           PLATFORM_CLIENT_SECRET: ${{ secrets.PLATFORM_CLIENT_SECRET }}

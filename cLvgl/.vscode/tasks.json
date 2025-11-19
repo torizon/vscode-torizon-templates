@@ -223,8 +223,9 @@
                 "build-debug-arm64",
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
-                "pull-container-torizon-debug-arm64",
-                "run-container-torizon-debug-arm64"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -297,8 +298,9 @@
                 "build-debug-arm",
                 "build-container-torizon-debug-arm",
                 "push-container-torizon-debug-arm",
-                "pull-container-torizon-debug-arm",
-                "run-container-torizon-debug-arm"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "ssh-check"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -509,8 +511,8 @@
                 "build-debug-amd64",
                 "build-container-torizon-debug-amd64",
                 "push-container-torizon-debug-amd64",
-                "pull-container-torizon-debug-amd64",
-                "run-container-torizon-debug-amd64"
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",
@@ -579,7 +581,9 @@
                 "UserKnownHostsFile=/dev/null",
                 "-o",
                 "StrictHostKeyChecking=no",
-                "torizon@${config:torizon_ip}",
+                "-o",
+                "PubkeyAuthentication=no",
+                "${config:torizon_login}@${config:torizon_ip}",
                 "cat /dev/zero > /dev/fb0 ; true"
             ],
             "dependsOrder": "sequence",
@@ -615,8 +619,10 @@
                 "UserKnownHostsFile=/dev/null",
                 "-o",
                 "StrictHostKeyChecking=no",
-                "torizon@${config:torizon_ip}",
-                "LOCAL_REGISTRY=${config:host_ip} DEBUG_SSH_PORT=1 DEBUG_PORT1=2 DEBUG_PORT2=3 DEBUG_PORT3=4 docker-compose down --remove-orphans"
+                "-o",
+                "PubkeyAuthentication=no",
+                "${config:torizon_login}@${config:torizon_ip}",
+                "LOCAL_REGISTRY=localhost DEBUG_SSH_PORT=1 DEBUG_PORT1=2 DEBUG_PORT2=3 DEBUG_PORT3=4 docker-compose down --remove-orphans"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

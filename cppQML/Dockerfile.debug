@@ -35,7 +35,7 @@ ARG APP_ROOT=
 # Deploy Step
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/qt6-wayland${GPU}:${BASE_VERSION} AS debug
+    torizon/wayland-base${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU
@@ -48,25 +48,71 @@ EXPOSE ${DEBUG_SSH_PORT}
 # Make sure we don't get notifications we can't answer during building.
 ENV DEBIAN_FRONTEND="noninteractive"
 
-# for vivante GPU we need some "special" sauce
-RUN apt-get -q -y update && \
-        if [ "${GPU}" = "-vivante" ] || [ "${GPU}" = "-imx8" ]; then \
-            apt-get -q -y install \
-            imx-gpu-viv-wayland-dev \
-            libgles-dev \
-        ; else \
-            apt-get -q -y install \
-            libgl1 \
-            libgles-dev \
-        ; fi \
-    && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
+# If the hash of credentials has changed, update the next layers.
+# Doing this way instead of copying qt-feed-auth.conf directly to not have
+# the credentials stored in an image layer.
+COPY .conf/qt6-enterprise/qt-feed-auth.hash /temporary/qt-feed-auth.hash
 
-# your regular RUN statements here
-# Install required packages
-RUN apt-get -q -y update && \
-    apt-get -q -y install \
+RUN rm -f /temporary/qt-feed-auth.hash
+
+RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+    bash -c ' \
+    if [ "$GPU" = "-imx8" ] && \
+       grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && \
+       grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
+        wget -O- https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg \
+        | gpg --dearmor \
+        | tee /usr/share/keyrings/qt-company-debian-repo.gpg > /dev/null && \
+        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /usr/share/keyrings/qt-company-debian-repo.gpg\n" \
+        > /etc/apt/sources.list.d/qt-company.sources; \
+    fi'
+
+RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+    apt-get update && \
+    if [ "$GPU" = "-imx8" ] && grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
+        apt-get install -y --no-install-recommends \
+        boot2qt-launcher \
+        qt6.8.2-full \
+        libwayland-cursor0 \
+    ;else \
+        apt-get install -y --no-install-recommends \
+        libqt6gui6 \
+        libfontconfig1-dev \
+        libqt6concurrent6 \
+        libqt6dbus6 \
+        libqt6network6 \
+        libqt6printsupport6 \
+        libqt6sql6 \
+        libqt6test6 \
+        libqt6widgets6 \
+        libqt6xml6 \
+        libqt6qml6 \
+        libqt6opengl6-dev \
+        libqt6quicktest6 \
+        libqt6quickwidgets6 \
+        qt6-base-private-dev \
+        qt6-base-dev \
+        qt6-wayland \
+        qt6-wayland-dev \
+        qt6-declarative-dev \
+        qt6-declarative-private-dev \
+        qml6-module-qtqml \
+        qml6-module-qtqml-workerscript \
+        qml6-module-qtcore \
+        qml6-module-qtquick \
+        qml6-module-qtquick-window \
+        qml6-module-qtquick-controls \
+        qml6-module-qtquick-layouts \
+        qml6-module-qtquick-templates \
+    ;fi \
+    && apt-get clean \
+    && apt-get autoremove \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
     openssl \
     openssh-server \
     rsync \
@@ -74,34 +120,22 @@ RUN apt-get -q -y update && \
     curl \
     gdb \
     gdbserver \
-    qt6-base-private-dev \
-    qt6-base-dev \
-    qt6-wayland \
-    qt6-wayland-dev \
-    qt6-declarative-dev \
-    qt6-declarative-private-dev \
-    qml6-module-qtqml \
-    qml6-module-qtqml-workerscript \
-    qml6-module-qtcore \
-    qml6-module-qtquick \
-    qml6-module-qtquick-window \
-    qml6-module-qtquick-controls \
-    qml6-module-qtquick-layouts \
-    qml6-module-qtquick-templates \
-    && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
-
 # automate for torizonPackages.json
-RUN apt-get -q -y update && \
-    apt-get -q -y install \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
     # __torizon_packages_dev_start__
     # __torizon_packages_dev_end__
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
-    && \
-    apt-get clean && apt-get autoremove && \
-    rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && apt-get autoremove \
+    && rm -rf /var/lib/apt/lists/*
+
+
+ENV QT_QPA_PLATFORM="wayland"
+
+# EGLFS configuration
+ENV QT_QPA_EGLFS_INTEGRATION="eglfs_kms"
+ENV QT_QPA_EGLFS_KMS_ATOMIC="1"
+
 
 # install the pretty printer
 COPY .conf/qtpp /qtpp

@@ -8,5 +8,7 @@
     "qtForPython.qmlls.enabled": true,
     "files.associations": {
         "*.pro": "makefile"
-    }
+    },
+    "qt_license_login": "__qt_license_login__",
+    "qt_license_password": "__qt_license_password__"
 }

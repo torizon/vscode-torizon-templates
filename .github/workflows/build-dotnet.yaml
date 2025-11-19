@@ -65,6 +65,7 @@ jobs:
           xonsh ./scripts/create-from-template.xsh \
                   @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}") \
                   @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                  @(f"{os.environ['PROJECT_FOLDER']}CITest") \
                   @(f"{os.environ['PROJECT_CONTAINER']}-ci-test") \
                   @(os.environ['GITHUB_WORKSPACE']) \
                   @(os.environ['PROJECT_FOLDER']) \

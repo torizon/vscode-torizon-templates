@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.debug
+      secrets:
+        - qt-feed-auth
     image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
     ports:
       # SSH debug
@@ -26,14 +28,19 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-    depends_on: [
-      weston
-    ]
+    profiles:
+      - debug
+    depends_on:
+      weston:
+        condition: service_healthy
+
 
   __container__:
     build:
       context: .
       dockerfile: Dockerfile
+      secrets:
+        - qt-feed-auth
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     volumes:
       - type: bind
@@ -50,9 +57,12 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-    depends_on: [
-      weston
-    ]
+    profiles:
+      - release
+    depends_on:
+      weston:
+        condition: service_healthy
+
 
   weston:
     image: torizon/weston${GPU}:4
@@ -84,3 +94,16 @@ services:
       - "c 226:* rmw"
       # ... for /dev/dma_heap device
       - "c 253:* rmw"
+    profiles:
+      - release
+      - debug
+    healthcheck:
+      test: ["CMD", "test", "-S", "/tmp/1000-runtime-dir/wayland-0"]
+      interval: 5s
+      timeout: 4s
+      retries: 6
+      start_period: 10s
+
+secrets:
+  qt-feed-auth:
+    file: ./.conf/qt6-enterprise/qt-feed-auth.conf

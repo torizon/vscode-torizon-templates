@@ -27,7 +27,7 @@ COPY . ${APP_ROOT}
 WORKDIR ${APP_ROOT}
 
 # build
-RUN dotnet restore && \
+RUN dotnet restore __change__.csproj && \
     if [ "$IMAGE_ARCH" = "arm64" ] ; then \
         export ARCH=${IMAGE_ARCH} ; \
     elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
@@ -37,7 +37,7 @@ RUN dotnet restore && \
     elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
         export ARCH="x64" ; \
     fi && \
-    dotnet publish -c Release -r linux-${ARCH} --no-self-contained && \
+    dotnet publish __change__.csproj -c Release -r linux-${ARCH} --no-self-contained && \
     # this if is a edge case when the ARCH and IMAGE_ARCH are equal, like arm64
     if [ "./bin/Release/net8.0/linux-${ARCH}" != "./bin/Release/net8.0/linux-${IMAGE_ARCH}" ]; then \
         mv ./bin/Release/net8.0/linux-${ARCH} ./bin/Release/net8.0/linux-${IMAGE_ARCH}; \

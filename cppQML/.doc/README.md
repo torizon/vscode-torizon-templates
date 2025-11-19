@@ -16,6 +16,17 @@ Finally, remote debugging is performed by attaching to the GDB on the running co
 
 The source code of the template is inspired by the one created using [the examples present on Qt Creator](https://doc.qt.io/qt-6/qtexamplesandtutorials.html), customizing it to a Torizon Qt QML (sort of Hello World) application. Also taking inspiration on examples present in the Qt documentation, like in the [CMake Build QML part](https://doc.qt.io/qt-6/cmake-build-qml-application.html).
 
+## Qt Enterprise and Qt Open Source
+
+To use Qt Enterprise, fill in the `qt_license_login` and `qt_license_password` settings. (To set them properly, remove these settings from `.vscode/settings.json`, then run the task `qt-enterprise-fill-license-login-password` in the **TASK RUNNER**.) To use Qt Open Source, simply leave those settings empty ("").
+
+Also, when switching between Qt Enterprise and Qt Open Source modes, **remember to delete the `build-arm64` folder before starting a new debug session to ensure a clean build.**
+
+To learn more about the differences between these modes and how each one works, refer to the [developer website documentation about Qt on Torizon OS](https://developer.toradex.com/torizon/application-development/use-cases/gui/qt-on-torizon-os).
+
+Also, to request a free evaluation license, please got to: https://www.qt.io/qt-and-toradex
+
+
 ## Qt Creator and Qt Design Studio
 
 You can open your application on Qt Creator and Qt Design Studio using the tasks `open-in-qt-creator` and `open-in-qt-design-studio`.

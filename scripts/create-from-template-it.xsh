@@ -117,6 +117,7 @@ print("🆕 Creating project...", color=Color.YELLOW)
 xonsh ./create-from-template.xsh \
     @(f"{os.environ['HOME']}/.apollox/{_template['folder']}") \
     @(_project_name) \
+    @(_project_name) \
     @(_project_container_name) \
     @(_project_path) \
     @(_template["folder"]) \

@@ -31,4 +31,6 @@ try:
 finally:
     fcntl.flock(lock_fd, fcntl.LOCK_UN)
     lock_fd.close()
+    if os.path.exists(lock_path):
+        os.remove(lock_path)
 

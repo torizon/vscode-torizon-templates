@@ -7,8 +7,11 @@
 # each workspace's docker-compose.prod.yml, after generating each
 # through their own create-docker-compose-production task.
 
+# use the xonsh environment to update the OS environment
 $UPDATE_OS_ENVIRON = True
+# Get the full log of errors
 $XONSH_SHOW_TRACEBACK = True
+# always return if a cmd fails
 $RAISE_SUBPROC_ERROR = True
 
 import yaml
@@ -30,14 +33,18 @@ if not workspace_file:
 with open(workspace_file) as f:
     workspace_config = json.load(f)
 
-folders = [Path(folder["path"]) for folder in workspace_config.get("folders", [])]
-folders.pop(0)
+folders = [
+    (workspace_root / Path(folder["path"])).resolve()
+    for folder in workspace_config.get("folders", [])
+]
+
+folders = [f for f in folders if f != workspace_root]
 
 async def main():
     final_compose = {"services": {}}
 
     for folder in folders:
-        compose_path = workspace_root / folder / "docker-compose.prod.yml"
+        compose_path = folder / "docker-compose.prod.yml"
         if not compose_path.exists():
             Error_Out(f"Missing production compose file in {folder}", Error.ENOFOUND)
         with open(compose_path) as f:

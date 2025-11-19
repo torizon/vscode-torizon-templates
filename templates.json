@@ -8,7 +8,32 @@
             "runtime": "None",
             "language": "None",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
+            "status": "ok",
+            "customMessage": ""
+        },
+        {
+            "img": "genericTemplate.png",
+            "folder": "multiRoot",
+            "hide": true,
+            "description": "Generic Multiroot Template",
+            "runtime": "None",
+            "language": "None",
+            "multiContainer": true,
+            "mergeCommon": {
+                "tasks": ["wait-a-bit", "try-update-template", "try-update-template-accepting-all"],
+                "inputs": []
+            },
+            "codeWorkspace": true,
+            "scripts": [
+                "build-multi-root.xsh",
+                "check-single-projects-conflicts.xsh",
+                "create-multi-root-docker-compose.xsh",
+                "merge-docker-compose.xsh",
+                "multi-root-tasks.xsh"
+            ],
+            "ignoreTorizonPackages": true,
+            "support": "Torizon",
             "status": "ok",
             "customMessage": ""
         },
@@ -20,20 +45,9 @@
             "language": "C#",
             "debugSSHPort": "2222",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Local Debug"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "Program.cs",
-                "mainFileBreakpointLine": 2,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "aspnetblazor.png",
@@ -43,21 +57,9 @@
             "language": "C#",
             "debugSSHPort": "2222",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Local Debug"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "Program.cs",
-                "mainFileBreakpointLine": 35,
-                "successDebugMessage": "Now listening on:",
-                "webTemplatePort": 7001
-            }
+            "customMessage": ""
         },
         {
             "img": "avaloniagtk.png",
@@ -67,21 +69,9 @@
             "language": "C#",
             "debugSSHPort": "2223",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Local Debug"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "App.axaml.cs",
-                "mainFileBreakpointLine": 27,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "avaloniafbdrm.png",
@@ -91,20 +81,9 @@
             "language": "C#",
             "debugSSHPort": "2224",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "App.axaml.cs",
-                "mainFileBreakpointLine": 27,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "nodejsts.png",
@@ -117,19 +96,7 @@
             "multiContainer": true,
             "support": "Community",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Node Local"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": null,
-                "mainFile": "src/index.ts",
-                "mainFileBreakpointLine": 3,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "cppconsole.png",
@@ -139,20 +106,9 @@
             "language": "C/C++",
             "debugSSHPort": "2230",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.cpp",
-                "mainFileBreakpointLine": 4,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "cmakeconsole.png",
@@ -162,20 +118,9 @@
             "language": "C/C++",
             "debugSSHPort": "2230",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.cpp",
-                "mainFileBreakpointLine": 4,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "qt6qml.png",
@@ -187,9 +132,9 @@
             "debugPort2": "2233",
             "debugSSHPort": "2231",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
+            "customMessage": "To learn more about Qt Enterprise and get a free evaluation license, please go to [https://www.qt.io/qt-and-toradex](https://www.qt.io/qt-and-toradex)",
             "tests": {
                 "debuggers": {
                     "local": ["Local AMD64"],
@@ -201,7 +146,40 @@
                 "mainFileBreakpointLine": 19,
                 "successDebugMessage": "Hello Torizon!"
 
-            }
+            },
+            "customFields": [
+                {
+                    "id": "qt_license_login",
+                    "label": "Qt Enterprise license login",
+                    "placeHolder": "Leave empty for using open source Qt",
+                    "default": "",
+                    "type": "text",
+                    "validRegex": "^.*$",
+                    "errorMessage": "Invalid Qt Enterprise license login.",
+                    "description": "Qt Enterprise license username. To learn more about Qt Enterprise and get a free evaluation license, please go to https://www.qt.io/qt-and-toradex"
+                },
+                {
+                    "id": "qt_license_password",
+                    "label": "Qt Enterprise license password",
+                    "placeHolder": "Leave empty for using open source Qt",
+                    "default": "",
+                    "type": "password",
+                    "featureUsage": 0,
+                    "validRegex": "^.*$",
+                    "errorMessage": "Invalid Qt Enterprise license password.",
+                    "description": "Qt Enterprise license password. To learn more about Qt Enterprise and get a free evaluation license, please go to https://www.qt.io/qt-and-toradex"
+                },
+                {
+                    "id": "container",
+                    "label": "Container name (docker-compose service)",
+                    "placeHolder": "",
+                    "default": "",
+                    "type": "text",
+                    "validRegex": "^[a-z0-9_\\-]+$",
+                    "errorMessage": "Invalid Docker image name. Must not be empty. Accepts alphanumeric characters, -, and _",
+                    "description": "Container name (docker-compose service)"
+                }
+            ]
         },
         {
             "img": "python3console.png",
@@ -212,20 +190,9 @@
             "debugPort": "6512",
             "debugSSHPort": "6502",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Python Local"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "Python Debug Console",
-                "mainFile": "src/main.py",
-                "mainFileBreakpointLine": 4,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "gtk3.png",
@@ -237,18 +204,7 @@
             "multiContainer": true,
             "support": "Community",
             "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.cpp",
-                "mainFileBreakpointLine": 42,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "gtk4.png",
@@ -260,18 +216,7 @@
             "multiContainer": true,
             "support": "Community",
             "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.cpp",
-                "mainFileBreakpointLine": 41,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "tcb.png",
@@ -281,7 +226,7 @@
             "language": "YAML",
             "debugPort": "",
             "debugSSHPort": "",
-            "multiContainer": false,
+            "multiContainer": true,
             "mergeCommon": {
                 "tasks": [
                     "check-deps",
@@ -302,19 +247,8 @@
                     "archList"
                 ]
             },
-            "tests": {
-                "tasks": {
-                    "run-tcb-in-terminal": "Setting up TorizonCore Builder",
-                    "tcb-build": "Build command successfully executed",
-                    "tcb-deploy": "Deploying successfully finished",
-                    "tcb-isolate": "Changes in /etc successfully isolated",
-                    "tcb-platform-push-ostree": "Signed and pushed OSTree package",
-                    "tcb-dto-status": "Enabled overlays over unknown device tree",
-                    "tcb-platform-provisioning-data-local": "successfully generated",
-                    "tcb-platform-provisioning-data-online": "Online provisioning data:"
-                }
-            },
-            "support": "Toradex",
+            "ignoreTorizonPackages": true,
+            "support": "Torizon",
             "status": "ok",
             "customMessage": "",
             "customFields": [
@@ -325,7 +259,7 @@
                     "default": "",
                     "type": "text",
                     "validRegex": "^(?!.*(?:^|\\/)(\\.\\.)(?:\\/|$))([A-Za-z0-9._-]+\\/)*[A-Za-z0-9._-]+$",
-                    "errorMessage": "Invalid branch name. Must not start with /, accepts alphanumeric characters, accepts -, _, ., and /",
+                    "errorMessage": "Invalid branch name. Must not be empty, start with /. Accepts alphanumeric characters, -, _, ., and /",
                     "description": "OSTree branch name to be used to commit the changes from the TCB project."
                 }
             ]
@@ -342,19 +276,7 @@
             "multiContainer": true,
             "support": "Partner",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.cpp",
-                "mainFileBreakpointLine": 13,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "slint-rust.png",
@@ -368,19 +290,7 @@
             "multiContainer": true,
             "support": "Partner",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Debug executable "],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.rs",
-                "mainFileBreakpointLine": 12,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "zig-console.png",
@@ -392,18 +302,7 @@
             "multiContainer": true,
             "support": "Community",
             "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.zig",
-                "mainFileBreakpointLine": 9,
-                "successDebugMessage": "info(toradex): Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "lvgl.png",
@@ -415,18 +314,7 @@
             "multiContainer": true,
             "support": "Partner",
             "status": "ok",
-            "customMessage": "",
-            "tests" : {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "cppdbg",
-                "mainFile": "src/main.c",
-                "mainFileBreakpointLine": 57,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": ""
         },
         {
             "img": "flutter.png",
@@ -437,22 +325,10 @@
             "debugPort": "42271",
             "debugPort2": "42272",
             "debugSSHPort": "42271",
-            "multiContainer": false,
+            "multiContainer": true,
             "support": "Partner",
             "status": "ok",
-            "customMessage": "",
-            "tests": {
-                "debuggers": {
-                    "local": ["Local AMD64"],
-                    "amd64": ["Torizon AMD64"],
-                    "arm": ["Torizon arm32"],
-                    "arm64": ["Torizon arm64"]
-                },
-                "debuggerConsole": "dart",
-                "mainFile": "main.cpp",
-                "mainFileBreakpointLine": 4,
-                "successDebugMessage": "Hello Torizon!"
-            }
+            "customMessage": "Provided by https://www.crossware.io/flutter-on-linux"
         }
     ]
 }

@@ -43,11 +43,12 @@ def is_duplicate_task(task_a, task_b):
 def is_duplicate_input(input_a, input_b):
     return input_a.get("id") == input_b.get("id")
 
-def find_duplicates(project_tasks, common_tasks, dup_func):
+def find_duplicates(project_tasks, common_tasks, dup_func, exceptions):
     duplicates = []
     for task in project_tasks:
         if any(dup_func(task, common_task) for common_task in common_tasks):
-            duplicates.append(task)
+            if (task.get("label") not in exceptions):
+                duplicates.append(task)
     return duplicates
 
 def main():
@@ -64,6 +65,9 @@ def main():
     common_tasks = common_tasks_data.get("tasks", [])
     common_inputs = common_inputs_data.get("inputs", [])
 
+    task_exceptions = ["template-specific-initial-task", "template-specific-final-task"]
+    input_exceptions = []
+
     for folder in root_dir.iterdir():
         if folder.is_dir():
             vscode_dir = folder / ".vscode"
@@ -78,8 +82,8 @@ def main():
             project_tasks = project_data.get("tasks", [])
             project_inputs = project_data.get("inputs", [])
 
-            dup_tasks = find_duplicates(project_tasks, common_tasks, is_duplicate_task)
-            dup_inputs = find_duplicates(project_inputs, common_inputs, is_duplicate_input)
+            dup_tasks = find_duplicates(project_tasks, common_tasks, is_duplicate_task, task_exceptions)
+            dup_inputs = find_duplicates(project_inputs, common_inputs, is_duplicate_input, input_exceptions)
 
             if dup_tasks or dup_inputs:
                 print(f"\n🔁 Duplicates in project: {folder.name}")

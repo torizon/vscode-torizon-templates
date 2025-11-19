@@ -27,7 +27,9 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-
+    profiles:
+      - debug
+      
   __container__:
     build:
       context: .
@@ -53,3 +55,5 @@ services:
       - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
+    profiles:
+      - release

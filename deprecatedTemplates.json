@@ -8,7 +8,7 @@
             "language": "C#",
             "debugSSHPort": "2225",
             "multiContainer": true,
-            "support": "Toradex",
+            "support": "Torizon",
             "status": "deprecated",
             "customMessage": "Deprecated due to the EOL of .NET 6.0"
         },

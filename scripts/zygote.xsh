@@ -167,6 +167,7 @@ def _new_cli(args):
     xonsh ./create-from-template.xsh \
         @(f"{os.environ['HOME']}/.apollox/{args.template}") \
         @(args.name) \
+        @(args.name) \
         @(args.container_name) \
         @(args.path) \
         @(args.template) \
@@ -334,6 +335,7 @@ def _target_console(args):
             ssh \
             -o UserKnownHostsFile=/dev/null \
             -o StrictHostKeyChecking=no \
+            -o PubkeyAuthentication=no \
             -p @(target['SshPort']) \
             @(target['Login'])@@(target['Ip']) @(args.cmd if "cmd" in args else "")
 

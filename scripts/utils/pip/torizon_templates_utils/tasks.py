@@ -8,9 +8,16 @@ import mimetypes
 import subprocess
 from pathlib import Path
 from typing import List, Dict, Type, TypeVar, Union, Tuple, Optional, Literal
+from torizon_templates_utils.network import is_in_docker_container
 from torizon_templates_utils.colors import print, Color
 
 T = TypeVar('T')
+
+REPLACE_WHITELIST = [
+    "torizon_",
+    "docker_",
+    "inputBox-"
+]
 
 def replace_tasks_input():
     for file in Path('.').rglob('*.json'):
@@ -22,9 +29,9 @@ def replace_tasks_input():
                 with open(file, 'r') as f:
                     content = f.read()
 
-                content = content.replace("input:dockerLogin", "command:docker_login")
-                content = content.replace("input:dockerImageRegistry", "command:docker_registry")
-                content = content.replace("input:dockerPsswd", "command:docker_password")
+                content = content.replace("input:dockerLogin", "command:docker_login.__change__")
+                content = content.replace("input:dockerImageRegistry", "command:inputBox-docker_registry.__change__")
+                content = content.replace("input:dockerPsswd", "command:docker_password.__change__")
 
                 with open(file, 'w') as f:
                     f.write(content)
@@ -475,8 +482,8 @@ class TaskRunner:
             self.__can_receive_interactive_input = True
 
         # environment configs
-        if "DOCKER_PSSWD" in os.environ:
-            os.environ["config:docker_password"] = os.environ["DOCKER_PSSWD"]
+        if "DOCKER_PASSWORD" in os.environ:
+            os.environ["config:docker_password"] = os.environ["DOCKER_PASSWORD"]
 
         if "GITLAB_CI" in os.environ:
             self.__gitlab_ci = True
@@ -569,7 +576,42 @@ class TaskRunner:
 
         for value in env:
             if "${command:torizon_" in value:
+                # here is not needed to clean the torizon_<prop>.<project_name>
+                # because this will be handled on the cmd args check
                 value = value.replace("${command:torizon_", "${config:torizon_")
+
+            ret.append(value)
+
+        return ret
+
+
+    def __check_input_boxes(self, env: List[str]) -> List[str]:
+        ret: List[str] = []
+
+        for value in env:
+            value = value.replace("${command:inputBox-", "${config:")
+            ret.append(value)
+
+        return ret
+
+
+    def __check_cmd_args(self, env: List[str]) -> List[str]:
+        ret: List[str] = []
+
+        for value in env:
+            for whitelisted_start in REPLACE_WHITELIST:
+                if value.startswith("${command:" + whitelisted_start) or value.startswith("${config:" + whitelisted_start):
+
+                    if "." in value:
+                        value_p1, value_p2 = value.split(".", 1)
+                        ret_p2 = value_p2.split("}", 1)
+
+                        if len(ret_p2) > 1:
+                            value = f"{value_p1}}}{ret_p2[1]}"
+                        else:
+                            value = f"{value_p1}}}"
+                    break
+
             ret.append(value)
 
         return ret
@@ -826,7 +868,9 @@ class TaskRunner:
 
             if _env_value:
                 expvalue = [_env_value]
+                expvalue = self.__check_cmd_args(expvalue)
                 expvalue = self.__check_workspace_folder(expvalue)
+                expvalue = self.__check_input_boxes(expvalue)
                 expvalue = self.__check_torizon_inputs(expvalue)
                 expvalue = self.__check_docker_inputs(expvalue)
                 expvalue = self.__check_tcb_inputs(expvalue)
@@ -844,7 +888,7 @@ class TaskRunner:
 
 
     def __replace_docker_host(self, arg: str) -> str:
-        if "DOCKER_HOST" in arg:
+        if "DOCKER_HOST" in arg and is_in_docker_container():
             arg = arg.replace("DOCKER_HOST=", "DOCKER_HOST=tcp://docker:2375")
 
         return arg
@@ -887,7 +931,9 @@ class TaskRunner:
         _cmd = _task.command
 
         # the cmd itself can use the mechanism to replace stuff
+        _cmd = self.__check_cmd_args([_cmd])[0]
         _cmd = self.__check_workspace_folder([_cmd])[0]
+        _cmd = self.__check_input_boxes([_cmd])[0]
         _cmd = self.__check_torizon_inputs([_cmd])[0]
         _cmd = self.__check_docker_inputs([_cmd])[0]
         _cmd = self.__check_tcb_inputs([_cmd])[0]
@@ -915,7 +961,9 @@ class TaskRunner:
         # FIXME:    The scape args was in the powershell implementation
         #           but when used on Python it generates weird behavior
         # _args = self.__scape_args(_args)
+        _args = self.__check_cmd_args(_args)
         _args = self.__check_workspace_folder(_args)
+        _args = self.__check_input_boxes(_args)
         _args = self.__check_torizon_inputs(_args)
         _args = self.__check_docker_inputs(_args)
         _args = self.__check_tcb_inputs(_args)
@@ -923,9 +971,12 @@ class TaskRunner:
         _args = self.__check_vscode_env(_args)
         _args = self.__check_config(_args)
         _args = self.__check_workspace_folder(_args)
+
+        if _shell:
+            _args = self.__check_long_args(_args)
+
         # FIXME:    These was in the powershell implementation
         #           but when used on Python it generates weird behavior
-        # _args = self.__check_long_args(_args)
         # _args = self.__quoting_special_chars(_args)
 
         # if in gitlab ci env we need to replace the DOCKER_HOST

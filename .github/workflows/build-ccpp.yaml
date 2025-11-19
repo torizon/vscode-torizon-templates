@@ -41,6 +41,20 @@ jobs:
         run: |
           pipx inject -f xonsh ./scripts/utils/pip/
 
+      - name: Update the docker and docker compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install ca-certificates curl
+          sudo install -m 0755 -d /etc/apt/keyrings
+          sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+          sudo chmod a+r /etc/apt/keyrings/docker.asc
+          echo \
+            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+            $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
       - name: Build ${{ matrix.project.folder }} Dockerfile
         shell: xonsh {0}
         env:
@@ -48,6 +62,7 @@ jobs:
           PROJECT_CONTAINER: ${{ matrix.project.container }}
           VENDOR: ${{ matrix.project.vendor }}
           DOCKER_LOGIN: localhost:5002
+          DOCKER_BUILDKIT: 1
 
         run: |
           import os
@@ -61,14 +76,35 @@ jobs:
           $TORIZON_ARCH = vendor["torizon_arch"]
           $PROJECT_ARCH = vendor["arch"]
 
-          xonsh ./scripts/create-from-template.xsh \
-                  @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}") \
-                  @(f"{os.environ['PROJECT_FOLDER']}CITest") \
-                  @(f"{os.environ['PROJECT_CONTAINER']}-ci-test") \
-                  @(os.environ['GITHUB_WORKSPACE']) \
-                  @(os.environ['PROJECT_FOLDER']) \
-                  "false" \
-                  "false"
+          _custom_dict = None
+          if os.environ['PROJECT_FOLDER'] == 'cppQML':
+            _custom_dict = [
+              {"id": "qt_license_login", "value": "", "type": "text"},
+              {"id": "qt_license_password", "value": "", "type": "password"},
+              {"id": "container", "value": "cpp-qml-ci-test", "type": "text"}
+            ]
+
+            xonsh ./scripts/create-from-template.xsh \
+                    @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}") \
+                    @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                    @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                    @(f"{os.environ['PROJECT_CONTAINER']}-ci-test") \
+                    @(os.environ['GITHUB_WORKSPACE']) \
+                    @(os.environ['PROJECT_FOLDER']) \
+                    "false" \
+                    "false" \
+                    --customFields \
+                    @(json.dumps(_custom_dict))
+          else:
+            xonsh ./scripts/create-from-template.xsh \
+                    @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}") \
+                    @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                    @(f"{os.environ['PROJECT_FOLDER']}CITest") \
+                    @(f"{os.environ['PROJECT_CONTAINER']}-ci-test") \
+                    @(os.environ['GITHUB_WORKSPACE']) \
+                    @(os.environ['PROJECT_FOLDER']) \
+                    "false" \
+                    "false"
 
           cp "abs-path" @(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
           os.chdir(f"{os.environ['GITHUB_WORKSPACE']}/{os.environ['PROJECT_FOLDER']}CITest")
@@ -84,4 +120,10 @@ jobs:
           if os.environ['PROJECT_FOLDER'] == 'cLvgl':
             xonsh ./.vscode/tasks.xsh run get-lvgl-lib
 
+          if os.environ['PROJECT_FOLDER'] == 'cppQML':
+            xonsh ./.vscode/tasks.xsh run qt-enterprise-generate-auth-conf
+
           xonsh ./.vscode/tasks.xsh run @(f"build-container-torizon-release-{os.environ['PROJECT_ARCH']}")
+
+          if os.environ['PROJECT_FOLDER'] == 'cppQML':
+            xonsh ./.vscode/tasks.xsh run qt-enterprise-remove-auth-conf

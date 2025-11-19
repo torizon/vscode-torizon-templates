@@ -33,3 +33,12 @@ def get_host_ip():
 
         result = subprocess.run(command, capture_output=True, text=True)
         return result.stdout.split()[0]
+
+
+def is_in_docker_container():
+    return os.path.exists("/.dockerenv")
+
+
+def is_in_gitlab_ci_container():
+    return "GITLAB_CI" in os.environ and is_in_docker_container()
+

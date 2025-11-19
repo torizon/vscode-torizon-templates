@@ -215,12 +215,7 @@ if ($_torizonOSMajor -ne $_templatesJsonTorizonMajor) {
         # now call the xonsh updater
         & "$env:HOME/.local/bin/xonsh" `
             $projectFolder/.conf/project-updater.xsh `
-            $projectFolder `
-            $projectName `
-            $containerName `
             "false" `
-            "true" `
-            "false"
 
         if ($LASTEXITCODE -ne 0) {
             Write-Host -ForegroundColor DarkRed "❌ Error updating the project"

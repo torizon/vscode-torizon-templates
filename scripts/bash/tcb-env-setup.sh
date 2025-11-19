@@ -11,7 +11,7 @@ if [ "$DOCKER_REGISTRY" = "" ]; then
 fi
 
 # Edge case for Github Actions dind
-if [ -n "$CI" ]; then
+if [ -n "$GITHUB_ACTIONS" ]; then
     # in this case we need to mount the workspace to the environment
     working_directory=$(cat abs-path)
 else
@@ -312,7 +312,6 @@ unset -f tcb_env_setup_cleanup 2>/dev/null
 if [[ ! -z "${VSCODE_CMD}" ]]; then
     # solve any environment variable
     VSCODE_CMD=$(eval echo $VSCODE_CMD)
-    echo -e "TorizonCore Builder command executed:\n\n torizoncore-builder $VSCODE_CMD \n"
     # execute it
     torizoncore-builder $VSCODE_CMD
 fi
