@@ -30,7 +30,8 @@
                 "check-single-projects-conflicts.xsh",
                 "create-multi-root-docker-compose.xsh",
                 "merge-docker-compose.xsh",
-                "multi-root-tasks.xsh"
+                "multi-root-tasks.xsh",
+                "check-deps.xsh"
             ],
             "ignoreTorizonPackages": true,
             "support": "Torizon",

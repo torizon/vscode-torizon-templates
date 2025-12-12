@@ -49,12 +49,21 @@
 			},
 			{
 				"label": "check-deps-all",
-				"type": "process",
+				"detail": "This task will check if the dependencies needed to run\nthe project are installed in the host machine.",
 				"command": "xonsh",
+				"type": "process",
+				"options": {
+                    "cwd": "${workspaceFolder}"
+                },
 				"args": [
-					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
-					"check-deps"
+					"${workspaceFolder}/.conf/check-deps.xsh",
+					"${workspaceFolder}",
+					"true"
 				],
+				"icon": {
+					"id": "layers",
+					"color": "terminal.ansiCyan"
+				},
 				"presentation": {
 					"echo": true,
 					"reveal": "always",

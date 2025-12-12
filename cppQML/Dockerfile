@@ -39,28 +39,28 @@ ARG APP_ROOT
 ARG DEBIAN_FRONTEND=noninteractive
 
 # If the hash of credentials has changed, update the next layers.
-# Doing this way instead of copying qt-feed-auth.conf directly to not have
-# the credentials stored in an image layer.
-COPY .conf/qt6-enterprise/qt-feed-auth.hash /temporary/qt-feed-auth.hash
-
-RUN rm -f /temporary/qt-feed-auth.hash
-
-RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
-    bash -c ' \
-    if [ "$GPU" = "-imx8" ] && \
-       grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && \
-       grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
-        wget -O- https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg \
-        | gpg --dearmor \
-        | tee /usr/share/keyrings/qt-company-debian-repo.gpg > /dev/null && \
-        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /usr/share/keyrings/qt-company-debian-repo.gpg\n" \
-        > /etc/apt/sources.list.d/qt-company.sources; \
-    fi'
-
-
-RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+RUN --mount=type=secret,id=qt-login \
+    --mount=type=secret,id=qt-password \
+    --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
+    bash -c '\
+    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
+    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
+    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
+        echo "--- Qt Enterprise credentials detected, enabling enterprise repo ---"; \
+        mkdir -p /etc/apt/keyrings/tqtc; \
+        wget -qO /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg \
+            https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg; \
+        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
+            "$LOGIN" "$PASS" \
+            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
+        mkdir -p /etc/apt/sources.list.d; \
+        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg\n" \
+            > /etc/apt/sources.list.d/qt-company.sources; \
+    else \
+        echo "--- Qt Enterprise credentials not found, using community Qt ---"; \
+    fi' && \
     apt-get update && \
-    if [ "$GPU" = "-imx8" ] && grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
+    if [ -f /etc/apt/auth.conf.d/qt-enterprise.conf ] && [ "$GPU" = "-imx8" ]; then \
         apt-get install -y --no-install-recommends \
         cmake \
         qt6.8.2-full-dev \
@@ -102,7 +102,17 @@ RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth
     && rm -rf /var/lib/apt/lists/*
 
 # automate for torizonPackages.json
-RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+RUN --mount=type=secret,id=qt-login \
+    --mount=type=secret,id=qt-password \
+    --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
+    bash -c '\
+    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
+    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
+    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
+        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
+            "$LOGIN" "$PASS" \
+            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
+    fi' && \
     apt-get -q -y update && \
     apt-get -q -y install \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
@@ -120,9 +130,19 @@ WORKDIR ${APP_ROOT}
 # release version from a clean build
 RUN rm -rf ${APP_ROOT}/build-${IMAGE_ARCH}
 
-RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+RUN --mount=type=secret,id=qt-login \
+    --mount=type=secret,id=qt-password \
+    --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
+    bash -c '\
+    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
+    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
+    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
+        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
+            "$LOGIN" "$PASS" \
+            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
+    fi' && \
     if [ "$IMAGE_ARCH" = "arm64" ] ; then \
-        if [ "$GPU" = "-imx8" ] &&grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
+        if [ -f /etc/apt/auth.conf.d/qt-enterprise.conf ] && [ "$GPU" = "-imx8" ]; then \
             /opt/qt-6.8.2/aarch64-linux-gnu/bin/qt-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -Bbuild-${IMAGE_ARCH} \
         ;else \
             cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -Bbuild-${IMAGE_ARCH} \
@@ -155,28 +175,27 @@ ARG SSHUSERNAME=torizon
 # Make sure we don't get notifications we can't answer during building.
 ENV DEBIAN_FRONTEND="noninteractive"
 
-# If the hash of credentials has changed, update the next layers.
-# Doing this way instead of copying qt-feed-auth.conf directly to not have
-# the credentials stored in an image layer.
-COPY .conf/qt6-enterprise/qt-feed-auth.hash /temporary/qt-feed-auth.hash
-
-RUN rm -f /temporary/qt-feed-auth.hash
-
-RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
-    bash -c ' \
-    if [ "$GPU" = "-imx8" ] && \
-       grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && \
-       grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
-        wget -O- https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg \
-        | gpg --dearmor \
-        | tee /usr/share/keyrings/qt-company-debian-repo.gpg > /dev/null && \
-        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /usr/share/keyrings/qt-company-debian-repo.gpg\n" \
-        > /etc/apt/sources.list.d/qt-company.sources; \
-    fi'
-
-RUN --mount=type=secret,id=qt-feed-auth,target=/etc/apt/auth.conf.d/qt-feed-auth.conf \
+RUN --mount=type=secret,id=qt-login \
+    --mount=type=secret,id=qt-password \
+    --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
+    bash -c '\
+    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
+    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
+    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
+        echo "--- Qt Enterprise credentials detected, enabling enterprise repo ---"; \
+        mkdir -p /etc/apt/keyrings/tqtc && \
+        wget -qO /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg \
+            https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg; \
+        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
+            "$LOGIN" "$PASS" \
+            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
+        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg\n" \
+            > /etc/apt/sources.list.d/qt-company.sources; \
+    else \
+        echo "--- Qt Enterprise credentials not found, using community Qt ---"; \
+    fi' && \
     apt-get update && \
-    if [ "$GPU" = "-imx8" ] && grep -q "login" /etc/apt/auth.conf.d/qt-feed-auth.conf && grep -q "password" /etc/apt/auth.conf.d/qt-feed-auth.conf; then \
+    if [ -f /etc/apt/sources.list.d/qt-company.sources ] && [ "$GPU" = "-imx8" ]; then \
         apt-get install -y --no-install-recommends \
         boot2qt-launcher \
         qt6.8.2-full \
@@ -245,3 +264,4 @@ WORKDIR ${APP_ROOT}
 CMD ["./__change__"]
 
 # DEPLOY -----------------------------------------------------------------------
+

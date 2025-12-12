@@ -120,10 +120,5 @@ jobs:
           if os.environ['PROJECT_FOLDER'] == 'cLvgl':
             xonsh ./.vscode/tasks.xsh run get-lvgl-lib
 
-          if os.environ['PROJECT_FOLDER'] == 'cppQML':
-            xonsh ./.vscode/tasks.xsh run qt-enterprise-generate-auth-conf
-
           xonsh ./.vscode/tasks.xsh run @(f"build-container-torizon-release-{os.environ['PROJECT_ARCH']}")
 
-          if os.environ['PROJECT_FOLDER'] == 'cppQML':
-            xonsh ./.vscode/tasks.xsh run qt-enterprise-remove-auth-conf

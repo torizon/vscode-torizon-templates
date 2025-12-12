@@ -138,12 +138,11 @@ if telemetry:
         _query = urllib.parse.urlencode({
             "template": template,
             "dateTime": date.today().isoformat()
-        }).encode("utf-8")
+        })
 
         _conn = http.client.HTTPConnection("ec2-3-133-114-116.us-east-2.compute.amazonaws.com")
         _conn.request(
-            "GET", "/api/template/plus",
-            body=_query
+            "GET", f"/api/Template/plus?{_query}"
         )
 
         _res = _conn.getresponse()

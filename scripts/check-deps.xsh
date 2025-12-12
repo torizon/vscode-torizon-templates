@@ -25,6 +25,14 @@ from torizon_templates_utils.network import is_in_gitlab_ci_container
 from torizon_templates_utils.errors import Error,Error_Out,last_return_code
 from torizon_templates_utils.colors import Color,BgColor,print
 
+args = $ARGS
+if len(args) != 3:
+    print("Usage: xonsh check-deps.xsh <workspace_root> <is_multi_root>")
+    exit(1)
+
+workspace_root = args[1]
+is_multi_root = args[2].lower() == 'true'
+
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""
 
@@ -47,17 +55,50 @@ if _docker_compose_ret != 0:
         Error.ENOCONF
     )
 
-# get the deps at .conf/deps.json file
-_f_deps = open(".conf/deps.json", "r")
-_deps = json.load(_f_deps)
-_f_deps.close()
+workspace_paths = [workspace_root]
+if is_multi_root:
+    # loop through every immediate subfolder inside workspace_root
+    for entry in os.listdir(workspace_root):
+        folder = os.path.join(workspace_root, entry)
+        deps_file = os.path.join(folder, ".conf", "deps.json")
+
+        # check if it is a directory and has deps.json
+        if os.path.isdir(folder) and os.path.isfile(deps_file):
+            workspace_paths.append(folder)
+
+_deps_pckgs = []
+_deps_scripts = []
+
+# get workspace deps from .conf/deps.json files
+for path in workspace_paths:
+    conf_dir = os.path.join(path, ".conf")
+    deps_file = os.path.join(conf_dir, "deps.json")
+
+    if not os.path.isdir(conf_dir) or not os.path.isfile(deps_file):
+        continue
+
+    with open(deps_file) as f:
+        _deps = json.load(f)
+        if "packages" in _deps:
+            _deps_pckgs.extend(_deps["packages"])
+        if "installDepsScripts" in _deps:
+            if is_multi_root:
+                workspace_name = Path(path).name
+                _deps_scripts.extend([
+                    f"{workspace_name}/{script}"
+                    for script in _deps["installDepsScripts"]
+                ])
+            else:
+                _deps_scripts.extend(_deps["installDepsScripts"])
+
+# remove duplicates
+_deps_pckgs = list(set(_deps_pckgs))
+_deps_scripts = list(set(_deps_scripts))
 
 # ok, docker and docker compose exists so let's check the packages
 _packages_to_install = []
 
 print("Checking dependencies...\n", color=Color.YELLOW)
-_deps_pckgs = _deps["packages"]
-
 for package in _deps_pckgs:
     dpkg_check = !(dpkg -s @(package))
 
@@ -68,11 +109,6 @@ for package in _deps_pckgs:
         print(f"👍 {package} debian package dependency installed", color=Color.GREEN)
 
 _scripts_to_install: list[str] = []
-
-if "installDepsScripts" in _deps:
-    _deps_scripts = _deps["installDepsScripts"]
-else:
-    _deps_scripts = []
 
 for script in _deps_scripts:
     script_installed = False
@@ -90,8 +126,6 @@ for script in _deps_scripts:
 # this is only for aesthetics, to separate the output
 print("")
 
-_packages_installed_ok = True
-_scripts_installed_ok = True
 _installed_scripts = []
 
 # check if there are any packages to be installed or script to be executed
@@ -101,15 +135,6 @@ if len(_packages_to_install) == 0 and len(_scripts_to_install) == 0:
 
     exit(0)
 else:
-    _packages_installed_ok = True
-    _scripts_installed_ok = True
-
-    if len(_packages_to_install) > 0:
-        _packages_installed_ok = False
-
-    if len(_scripts_to_install) > 0:
-        _scripts_installed_ok = False
-
     _installConfirm = input("Try to install the missing debian packages and execute the missing installation scripts? <y/N>: ")
 
     if _installConfirm == 'y':
@@ -125,8 +150,6 @@ else:
                         Error.ENOPKG
                     )
 
-            _packages_installed_ok = True
-
         if len(_scripts_to_install) > 0:
             for script in _scripts_to_install:
                 if script.endswith('.sh'):
@@ -141,10 +164,6 @@ else:
                         Error.ENOPKG
                     )
 
-            _scripts_installed_ok = True
-
-if _packages_installed_ok == True and _scripts_installed_ok == True:
-    _f_depok = None
     if not Path(".conf/.depok").exists():
         _f_depok = open(".conf/.depok", "w")
     else:

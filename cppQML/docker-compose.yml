@@ -4,7 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile.debug
       secrets:
-        - qt-feed-auth
+        - qt-login
+        - qt-password
     image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
     ports:
       # SSH debug
@@ -40,7 +41,8 @@ services:
       context: .
       dockerfile: Dockerfile
       secrets:
-        - qt-feed-auth
+        - qt-login
+        - qt-password
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     volumes:
       - type: bind
@@ -105,5 +107,8 @@ services:
       start_period: 10s
 
 secrets:
-  qt-feed-auth:
-    file: ./.conf/qt6-enterprise/qt-feed-auth.conf
+  qt-login:
+    environment: QT_LICENSE_LOGIN
+  qt-password:
+    environment: QT_LICENSE_PASSWORD
+

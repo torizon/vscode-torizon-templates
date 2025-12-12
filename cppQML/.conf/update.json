@@ -6,9 +6,5 @@
     {
         "source": ".vscode/c_cpp_properties.json",
         "target": ".vscode/c_cpp_properties.json"
-    },
-    {
-        "source": ".conf/qt-enterprise-generate-auth-conf.xsh",
-        "target": ".conf/qt-enterprise-generate-auth-conf.xsh"
     }
 ]

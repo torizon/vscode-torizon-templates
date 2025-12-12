@@ -406,7 +406,9 @@
             "command": "xonsh",
             "type": "process",
             "args": [
-                "${workspaceFolder}/.conf/check-deps.xsh"
+                "${workspaceFolder}/.conf/check-deps.xsh",
+                "${workspaceFolder}",
+                "false"
             ],
             "dependsOrder": "sequence",
             "icon": {
