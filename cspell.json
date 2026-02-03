@@ -95,7 +95,8 @@
         "wbem",
         "depok",
         "repr",
-        "torizonextras"
+        "torizonextras",
+        "iface"
     ],
     "import": [],
     "languageSettings": [

@@ -2,6 +2,21 @@ name: Build & Deploy TorizonCore
 on:
   - push
 
+env:
+  TASKS_DISABLE_INTERACTIVE_INPUT: "True"
+  TASKS_OVERRIDE_ENV: "False"
+
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+  PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
+  PLATFORM_CLIENT_SECRET: ${{ secrets.PLATFORM_CLIENT_SECRET }}
+  PLATFORM_CREDENTIALS: ${{ secrets.PLATFORM_CREDENTIALS }}
+
+  QT_LICENSE_PASSWORD: ${{ secrets.QT_LICENSE_PASSWORD }}
+  QT_LICENSE_LOGIN: ${{ secrets.QT_LICENSE_LOGIN }}
+
+  TORIZON_CI_SETTINGS_FILE: ${{ vars.TORIZON_CI_SETTINGS_FILE || '.vscode/settings.json' }}
+
 jobs:
   build-deploy:
     runs-on: ubuntu-24.04
@@ -14,15 +29,6 @@ jobs:
 
       - name: Initial Setup
         shell: bash
-        env:
-          TASKS_DISABLE_INTERACTIVE_INPUT: "True"
-          TASKS_OVERRIDE_ENV: "False"
-          TORIZON_CI_SETTINGS_FILE: ".vscode/settings.json"
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
-          PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
-          PLATFORM_CLIENT_SECRET: ${{ secrets.PLATFORM_CLIENT_SECRET }}
-          PLATFORM_CREDENTIALS: ${{ secrets.PLATFORM_CREDENTIALS }}
         run: |
 
           echo "${{ github.workspace }}" >> abs-path
@@ -33,14 +39,6 @@ jobs:
 
       - name: Create and Publish Image
         shell: bash
-        env:
-          TASKS_DISABLE_INTERACTIVE_INPUT: "True"
-          TASKS_OVERRIDE_ENV: "False"
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
-          PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
-          PLATFORM_CLIENT_SECRET: ${{ secrets.PLATFORM_CLIENT_SECRET }}
-          PLATFORM_CREDENTIALS: ${{ secrets.PLATFORM_CREDENTIALS }}
         run: |
 
           echo $PLATFORM_CREDENTIALS | base64 -d > credentials.zip
@@ -48,11 +46,6 @@ jobs:
 
       - name: Deploy Application
         shell: bash
-        env:
-          TASKS_DISABLE_INTERACTIVE_INPUT: "True"
-          TASKS_OVERRIDE_ENV: "False"
-          PLATFORM_CLIENT_ID: ${{ secrets.PLATFORM_CLIENT_ID }}
-          PLATFORM_CLIENT_SECRET: ${{ secrets.PLATFORM_CLIENT_SECRET }}
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
 

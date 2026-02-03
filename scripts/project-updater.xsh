@@ -50,6 +50,12 @@ Usage:
 # Check if it's True or 1
 accept_all = get_optional_arg(1, "False") in ("True", "1")
 
+is_ci = (
+    os.environ.get("CI") == "true"
+    or "GITHUB_ACTIONS" in os.environ
+    or "GITLAB_CI" in os.environ
+)
+
 script_path = os.path.realpath(__file__)
 conf_folder = os.path.dirname(script_path)
 project_folder = os.path.dirname(conf_folder)
@@ -751,12 +757,13 @@ if _template_name != "tcb":
     print("✅ launch.json", color=Color.GREEN)
 
 # SETTINGS.JSON
-_open_merge_window(
-    f"{project_folder}/.conf/tmp/settings-next.json",
-    f"{project_folder}/.vscode/settings.json"
-)
-
-print("✅ settings.json", color=Color.GREEN)
+# Doesn't make sense to update settings.json in CI as it will always break the CI
+if not (is_ci):
+    _open_merge_window(
+        f"{project_folder}/.conf/tmp/settings-next.json",
+        f"{project_folder}/.vscode/settings.json"
+    )
+    print("✅ settings.json", color=Color.GREEN)
 
 # EXTENSIONS.JSON
 if os.path.exists(f"{os.environ['HOME']}/.apollox/{_template_name}/.vscode/extensions.json"):

@@ -43,12 +43,20 @@ def is_duplicate_task(task_a, task_b):
 def is_duplicate_input(input_a, input_b):
     return input_a.get("id") == input_b.get("id")
 
-def find_duplicates(project_tasks, common_tasks, dup_func, exceptions):
+def find_duplicates(project_tasks, common_tasks, dup_func, exceptions, project_name=None, project_whitelist=None):
     duplicates = []
     for task in project_tasks:
         if any(dup_func(task, common_task) for common_task in common_tasks):
-            if (task.get("label") not in exceptions):
-                duplicates.append(task)
+            label = task.get("label")
+
+            if label in exceptions:
+                continue
+
+            if project_whitelist and project_name in project_whitelist:
+                if label in project_whitelist[project_name]:
+                    continue
+
+            duplicates.append(task)
     return duplicates
 
 def main():
@@ -65,7 +73,17 @@ def main():
     common_tasks = common_tasks_data.get("tasks", [])
     common_inputs = common_inputs_data.get("inputs", [])
 
-    task_exceptions = ["template-specific-initial-task", "template-specific-final-task"]
+    # Global task exceptions (apply to all projects)
+    global_task_exceptions = [
+        "template-specific-initial-task",
+        "template-specific-final-task",
+    ]
+
+    # Per-project task whitelist
+    project_task_whitelist = {
+        "tcb": ["validate-pipeline-settings"],
+    }
+
     input_exceptions = []
 
     for folder in root_dir.iterdir():
@@ -82,8 +100,21 @@ def main():
             project_tasks = project_data.get("tasks", [])
             project_inputs = project_data.get("inputs", [])
 
-            dup_tasks = find_duplicates(project_tasks, common_tasks, is_duplicate_task, task_exceptions)
-            dup_inputs = find_duplicates(project_inputs, common_inputs, is_duplicate_input, input_exceptions)
+            dup_tasks = find_duplicates(
+                project_tasks,
+                common_tasks,
+                is_duplicate_task,
+                global_task_exceptions,
+                project_name=folder.name,
+                project_whitelist=project_task_whitelist,
+            )
+
+            dup_inputs = find_duplicates(
+                project_inputs,
+                common_inputs,
+                is_duplicate_input,
+                input_exceptions,
+            )
 
             if dup_tasks or dup_inputs:
                 print(f"\n🔁 Duplicates in project: {folder.name}")

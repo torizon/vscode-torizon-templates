@@ -19,87 +19,157 @@ $RAISE_SUBPROC_ERROR = True
 import os
 import sys
 import fcntl
+import hashlib
 from torizon_templates_utils.args import get_arg_not_empty,get_optional_arg
 from torizon_templates_utils.errors import Error,Error_Out
 
+# Locker file path for tracking workspace registrations
+LOCKER_FILE = "/tmp/.apollox-registry_locker"
 
-def _plus_locker(workspace) :
+
+def _parse_locker_entries(lines):
+    """
+    Parse locker file entries into a workspaces dictionary.
+
+    Args:
+        lines: List of lines from the locker file
+
+    Returns:
+        Tuple of (workspaces_dict, old_format_detected)
+    """
+    workspaces = {}
+    old_format_detected = False
+
+    for line in lines:
+        line = line.strip()
+        if line:
+            if ":" in line:
+                ws_name, ws_hash = line.split(":", 1)
+                workspaces[ws_name] = ws_hash
+            else:
+                # Old format detected (just workspace name)
+                old_format_detected = True
+
+    return workspaces, old_format_detected
+
+
+def _plus_locker(workspace, args_hash) :
     # read or create the .conf/.registry_locker file
-    locker_file = os.path.join(
-        "/tmp",
-        ".apollox-registry_locker"
-    )
-
     # Use exclusive lock to prevent race conditions
-    with open(locker_file, "a+") as f:
+    with open(LOCKER_FILE, "a+") as f:
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         try:
             f.seek(0)
             lines = f.readlines()
 
             # Parse existing workspace entries
-            workspaces = set()
-            for line in lines:
-                line = line.strip()
-                if line:
-                    workspaces.add(line)
+            workspaces, _ = _parse_locker_entries(lines)
 
-            # Add workspace if not already present
-            if workspace not in workspaces:
-                workspaces.add(workspace)
+            # Update or add workspace with its args hash
+            workspaces[workspace] = args_hash
 
-            # Write back all workspaces
+            # Write back all workspaces with their hashes
             f.seek(0)
             f.truncate()
-            for ws_name in workspaces:
-                f.write(f"{ws_name}\n")
+            for ws_name, ws_hash in workspaces.items():
+                f.write(f"{ws_name}:{ws_hash}\n")
             f.flush()
 
-            return len(workspaces)
+            return (len(workspaces), workspaces)
         finally:
             fcntl.flock(f.fileno(), fcntl.LOCK_UN)
 
 
 def _minus_locker(workspace) :
     # read or create the .conf/.registry_locker file
-    locker_file = os.path.join(
-        "/tmp",
-        ".apollox-registry_locker"
-    )
-
     # Use exclusive lock to prevent race conditions
-    with open(locker_file, "a+") as f:
+    with open(LOCKER_FILE, "a+") as f:
         fcntl.flock(f.fileno(), fcntl.LOCK_EX)
         try:
             f.seek(0)
             lines = f.readlines()
 
             # Parse existing workspace entries
-            workspaces = set()
-            for line in lines:
-                line = line.strip()
-                if line:
-                    workspaces.add(line)
+            workspaces, old_format_detected = _parse_locker_entries(lines)
+
+            # If old format was detected, clean up legacy container
+            if old_format_detected:
+                try:
+                    $DOCKER_HOST = ""
+                    os.environ["DOCKER_HOST"] = ""
+                    docker rm -f torizon-ide-port-tunnel
+                except Exception:
+                    pass  # Container might not exist
 
             # Remove workspace if present
             if workspace in workspaces:
-                workspaces.remove(workspace)
+                del workspaces[workspace]
 
-            # Write back remaining workspaces
+            # Write back remaining workspaces with their hashes
             f.seek(0)
             f.truncate()
-            for ws_name in workspaces:
-                f.write(f"{ws_name}\n")
+            for ws_name, ws_hash in workspaces.items():
+                f.write(f"{ws_name}:{ws_hash}\n")
             f.flush()
 
-            return len(workspaces)
+            return (len(workspaces), workspaces)
         finally:
             fcntl.flock(f.fileno(), fcntl.LOCK_UN)
 
 
+def _get_args_hash(psswd, login, ip):
+    """Generate a hash of the container arguments to detect changes."""
+    args_str = f"{login}:{ip}"
+    return hashlib.sha256(args_str.encode()).hexdigest()
+
+
+def _get_container_name(args_hash):
+    """Generate unique container name based on argument hash."""
+    # Use first 8 characters of hash for readability
+    hash_suffix = args_hash[:8]
+    return f"torizon-ide-port-tunnel-{hash_suffix}"
+
+
+def _count_workspaces_for_hash(all_workspaces, target_hash):
+    """Count how many workspaces are using a specific argument hash."""
+    return sum(1 for ws_hash in all_workspaces.values() if ws_hash == target_hash)
+
+
+def _safe_remove_container_if_unused(container_name, args_hash):
+    """
+    Safely remove a container only if no workspace is using it.
+    Re-checks the locker file with a lock to prevent race conditions.
+
+    Returns:
+        True if container was removed, False if still in use
+    """
+    # Re-check with lock to prevent race condition
+    if os.path.exists(LOCKER_FILE):
+        with open(LOCKER_FILE, "r") as f:
+            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+            try:
+                lines = f.readlines()
+                workspaces, _ = _parse_locker_entries(lines)
+
+                # Check if any workspace is still using this hash
+                count = _count_workspaces_for_hash(workspaces, args_hash)
+
+                if count > 0:
+                    # Another workspace registered while we were deciding
+                    return False
+            finally:
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+
+    # Safe to remove - no workspaces using this hash
+    $DOCKER_HOST = ""
+    os.environ["DOCKER_HOST"] = ""
+    docker rm -f @(container_name)
+    return True
+
+
 if len(sys.argv) != 6:
     Error_Out(
-        f"Error: Expected 6 argument, but got {len(sys.argv) -1}.\n" +
+        f"Error: Expected 6 arguments, but got {len(sys.argv) -1}.\n" +
         "Report on https://github.com/torizon/vscode-torizon-templates/issues",
         Error.EINVAL
     )
@@ -117,27 +187,40 @@ if action not in ["up","down"]:
         Error.EINVAL
     )
 
-if action == "up":
-    _plus_locker(workspace)
+elif action == "up":
+    # Check arguments before locking
+    args_hash = _get_args_hash(psswd, login, ip)
 
+    # Generate unique container name for this argument set
+    container_name = _get_container_name(args_hash)
+
+    # Add this workspace to the locker
+    _plus_locker(workspace, args_hash)
+
+    # Set SSH password in environment so it is not exposed on the command line
+    $SSHPASS = psswd
+    os.environ["SSHPASS"] = psswd
+
+    # Each unique argument set gets its own container
     $HOME/.local/bin/xonsh ./.conf/run-container-if-not-exists.xsh \
         --container-runtime docker \
         --run-arguments \
-        @(f"\"--rm -d --network host torizonextras/ide-port-tunnel:0.0.0 sshpass -p {psswd} ssh -vv -N -R 5002:localhost:5002 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no {login}@{ip}\"") \
+        @(f"\"--rm -d --network host -e SSHPASS torizonextras/ide-port-tunnel:0.0.0 sshpass -e ssh -vv -N -R 5002:localhost:5002 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no {login}@{ip}\"") \
         --container-name \
-        torizon-ide-port-tunnel
+        @(container_name)
 
-    sys.exit(0)
+elif action == "down":
+    # Get the args hash for this workspace before removing it
+    args_hash = _get_args_hash(psswd, login, ip)
+    container_name = _get_container_name(args_hash)
 
+    # Remove workspace from locker and get remaining workspaces atomically
+    _, remaining_workspaces = _minus_locker(workspace)
 
-if action == "down":
-    count = _minus_locker(workspace)
+    # Check if any remaining workspaces are still using this hash
+    workspaces_with_same_hash = _count_workspaces_for_hash(remaining_workspaces, args_hash)
 
-    # just remove the container if no one is using it
-    if count == 0:
-        $DOCKER_HOST = ""
-        os.environ["DOCKER_HOST"] = ""
-
-        docker rm -f torizon-ide-port-tunnel
-
-    sys.exit(0)
+    # Only attempt removal if initially no workspaces are using this hash
+    if workspaces_with_same_hash == 0:
+        # Re-check with lock right before removal to prevent race condition
+        _safe_remove_container_if_unused(container_name, args_hash)

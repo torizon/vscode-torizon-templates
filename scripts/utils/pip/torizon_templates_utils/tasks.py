@@ -868,9 +868,9 @@ class TaskRunner:
 
             if _env_value:
                 expvalue = [_env_value]
+                expvalue = self.__check_input_boxes(expvalue)
                 expvalue = self.__check_cmd_args(expvalue)
                 expvalue = self.__check_workspace_folder(expvalue)
-                expvalue = self.__check_input_boxes(expvalue)
                 expvalue = self.__check_torizon_inputs(expvalue)
                 expvalue = self.__check_docker_inputs(expvalue)
                 expvalue = self.__check_tcb_inputs(expvalue)
@@ -931,9 +931,9 @@ class TaskRunner:
         _cmd = _task.command
 
         # the cmd itself can use the mechanism to replace stuff
+        _cmd = self.__check_input_boxes([_cmd])[0]
         _cmd = self.__check_cmd_args([_cmd])[0]
         _cmd = self.__check_workspace_folder([_cmd])[0]
-        _cmd = self.__check_input_boxes([_cmd])[0]
         _cmd = self.__check_torizon_inputs([_cmd])[0]
         _cmd = self.__check_docker_inputs([_cmd])[0]
         _cmd = self.__check_tcb_inputs([_cmd])[0]
@@ -961,9 +961,9 @@ class TaskRunner:
         # FIXME:    The scape args was in the powershell implementation
         #           but when used on Python it generates weird behavior
         # _args = self.__scape_args(_args)
+        _args = self.__check_input_boxes(_args)
         _args = self.__check_cmd_args(_args)
         _args = self.__check_workspace_folder(_args)
-        _args = self.__check_input_boxes(_args)
         _args = self.__check_torizon_inputs(_args)
         _args = self.__check_docker_inputs(_args)
         _args = self.__check_tcb_inputs(_args)

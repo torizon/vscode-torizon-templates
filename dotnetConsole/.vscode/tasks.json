@@ -168,7 +168,7 @@
                 "-av",
                 "-e",
                 "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-arm/publish/",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-arm/publish/",
                 "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
             ],
             "dependsOn": [
@@ -228,6 +228,36 @@
             }
         },
         {
+            "label": "publish-debug-amd64",
+            "detail": "",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/__change__.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "-c",
+                "Debug",
+                "-r",
+                "linux-x64",
+                "--no-self-contained"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
             "label": "deploy-torizon-arm64",
             "detail": "",
             "hide": true,
@@ -238,7 +268,7 @@
                 "-av",
                 "-e",
                 "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-arm64/publish/",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-arm64/publish/",
                 "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
             ],
             "dependsOn": [
@@ -249,6 +279,46 @@
                 "publish-debug-arm64",
                 "build-container-torizon-debug-arm64",
                 "push-container-torizon-debug-arm64",
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "ssh-check"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$msCompile",
+            "icon": {
+                "id": "debug-alt",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "deploy-torizon-amd64",
+            "detail": "",
+            "hide": true,
+            "command": "rsync",
+            "type": "process",
+            "args": [
+                "-P",
+                "-av",
+                "-e",
+                "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-x64/publish/",
+                "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-amd64",
+                "copy-docker-compose",
+                "pre-cleanup",
+                "publish-debug-amd64",
+                "build-container-torizon-debug-amd64",
+                "push-container-torizon-debug-amd64",
                 "pull-container-torizon-debug",
                 "run-container-torizon-debug",
                 "ssh-check"

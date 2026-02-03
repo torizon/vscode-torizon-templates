@@ -635,7 +635,7 @@
             "type": "process",
             "args": [
                 "-c",
-                "[[ \"${config:torizon_arch}\" == \"x86_64\" ]] && true || false"
+                "[[ \"${config:torizon_arch}\" == \"amd64\" ]] && true || false"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$tsc",
@@ -1893,15 +1893,8 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry.__change__}",
-                    "DOCKER_LOGIN": "${command:docker_login.__change__}",
-                    "DOCKER_PASSWORD": "${command:docker_password.__change__}",
-                    "DOCKER_TAG": "${command:inputBox-docker_tag.__change__}",
-                    "TCB_CLIENTID": "${command:tcb.clientId}",
-                    "TCB_CLIENTSECRET": "${command:tcb.clientSecret}",
-                    "TCB_PACKAGE": "__change__",
-                    "TCB_FLEET": "${command:tcb.fleetName}",
-                    "TORIZON_CI_SETTINGS_FILE": ".vscode/settings.json"
+                    "DOCKER_REGISTRY": "${config:docker_registry}",
+                    "DOCKER_TAG": "${config:docker_tag}"
                 }
             },
             "args": [

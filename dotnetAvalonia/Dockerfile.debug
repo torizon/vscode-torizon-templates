@@ -39,12 +39,12 @@ ARG GPU=
 # Get vsdebugger
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/dotnet8-debug:${DEBUGGER_BASE_VERSION} AS debugger
+    torizon/dotnet10-debug:${DEBUGGER_BASE_VERSION} AS debugger
 ##
 # Deploy Step .NET
 ##
 FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/dotnet8-gtk3${GPU}:${BASE_VERSION} AS debug
+    torizon/dotnet10-gtk3${GPU}:${BASE_VERSION} AS debug
 
 ARG IMAGE_ARCH
 ARG GPU

@@ -6,7 +6,8 @@ __TCD_COMPOSE_FILE="$HOME/.tcd/docker-compose.yml"
 __TCD_BASH_COMPLETION_FILE="$HOME/.tcd/torizon-dev-completion.bash"
 export __TCD_APOLLOX_REPO="torizon/vscode-torizon-templates"
 export __TCD_APOLLOX_BRANCH="dev"
-export __TCD_BRANCH="dev"
+# ⚠️ THIS NEED TO BE IN SYNC WITH THE PYTHON UTILS VERSION
+export __TCD_BRANCH="1.2.0"
 export __TCD_UUID=$(id -u)
 export __TCD_DGID=$(getent group docker | cut -d: -f3)
 

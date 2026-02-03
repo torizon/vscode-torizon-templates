@@ -18,6 +18,8 @@ jobs:
           if [ "$version" == "$latest_version" ]; then
             echo "Version $version is already published on PyPI"
             echo "SKIP_PUBLISH=true" >> $GITHUB_ENV
+            # cause an error to stop the workflow
+            exit 69
           else
             echo "Version $version is not published on PyPI"
             echo "SKIP_PUBLISH=false" >> $GITHUB_ENV

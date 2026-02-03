@@ -180,6 +180,14 @@ with open(f"{template_folder}/../assets/tasks/inputs.json", "r") as f:
 with open(f"{new_project_path}/.vscode/tasks.json", "r") as f:
     _proj_tasks = json.load(f)
 
+existing_input_ids = {
+    input_.get("id") for input_ in _proj_tasks.get("inputs", []) if "id" in input_
+}
+
+existing_task_labels = {
+    task.get("label") for task in _proj_tasks.get("tasks", []) if "label" in task
+}
+
 merge_config = _template_metadata.get("mergeCommon", {})
 task_labels_to_merge = merge_config.get("tasks", "all")
 input_ids_to_merge = merge_config.get("inputs", "all")
@@ -203,10 +211,13 @@ if tasks_to_exclude:
 merged_tasks = [
     task for task in _common_tasks.get("tasks", [])
     if should_merge(task.get("label"), task_labels_to_merge)
+    and task.get("label") not in existing_task_labels
 ]
+
 merged_inputs = [
     input_ for input_ in _common_inputs.get("inputs", [])
     if should_merge(input_.get("id"), input_ids_to_merge)
+    and input_.get("id") not in existing_input_ids
 ]
 
 _proj_tasks.setdefault("tasks", []).extend(merged_tasks)
@@ -336,6 +347,11 @@ if not os.path.exists(f"{new_project_path}/.github"):
 # copy the .gitlab ci if not exists
 if not os.path.exists(f"{new_project_path}/.gitlab-ci.yml"):
     cp -r @(template_folder)/../assets/gitlab/.gitlab-ci.yml @(new_project_path)/.gitlab-ci.yml
+
+
+# copy the ci-vars.json if not exists
+if not os.path.exists(f"{new_project_path}/.conf/ci-vars.json"):
+    cp -r @(template_folder)/../assets/conf/ci-vars.json @(new_project_path)/.conf/ci-vars.json
 
 # create a metadata.json to store
 # template name

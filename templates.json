@@ -41,8 +41,8 @@
         {
             "img": "dotnetconsole.png",
             "folder": "dotnetConsole",
-            "description": ".NET 8 C# Console Application",
-            "runtime": ".net 8.0",
+            "description": ".NET 10 C# Console Application",
+            "runtime": ".net 10.0",
             "language": "C#",
             "debugSSHPort": "2222",
             "multiContainer": true,
@@ -53,8 +53,8 @@
         {
             "img": "aspnetblazor.png",
             "folder": "aspnetBlazor",
-            "description": "ASP.NET 8 Blazor Application",
-            "runtime": "asp.net 8.0",
+            "description": "ASP.NET 10 Blazor Application",
+            "runtime": "asp.net 10.0",
             "language": "C#",
             "debugSSHPort": "2222",
             "multiContainer": true,
@@ -65,8 +65,8 @@
         {
             "img": "avaloniagtk.png",
             "folder": "dotnetAvalonia",
-            "description": ".NET 8 C# Avalonia GTK MVVM",
-            "runtime": ".net 8.0",
+            "description": ".NET 10 C# Avalonia GTK MVVM",
+            "runtime": ".net 10.0",
             "language": "C#",
             "debugSSHPort": "2223",
             "multiContainer": true,
@@ -77,8 +77,8 @@
         {
             "img": "avaloniafbdrm.png",
             "folder": "dotnetAvaloniaFrameBuffer",
-            "description": ".NET 8 C# Avalonia Frame Buffer DRM",
-            "runtime": ".net 8.0",
+            "description": ".NET 10 C# Avalonia Frame Buffer DRM",
+            "runtime": ".net 10.0",
             "language": "C#",
             "debugSSHPort": "2224",
             "multiContainer": true,

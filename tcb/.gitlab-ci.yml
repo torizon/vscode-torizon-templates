@@ -12,21 +12,17 @@ variables:
   DOCKER_BUILDKIT: 1
   TASKS_DISABLE_INTERACTIVE_INPUT: "True"
   TASKS_OVERRIDE_ENV: "False"
-  TORIZON_CI_SETTINGS_FILE: ".vscode/settings.json"
-  DOCKER_PASSWORD: "$DOCKER_PASSWORD"
-  DOCKER_LOGIN: "$DOCKER_LOGIN"
-  PLATFORM_CLIENT_ID: "$PLATFORM_CLIENT_ID"
-  PLATFORM_CLIENT_SECRET: "$PLATFORM_CLIENT_SECRET"
-  PLATFORM_CREDENTIALS: "$PLATFORM_CREDENTIALS"  # added to support decoding step
+
+  TORIZON_CI_SETTINGS_FILE:
+    value: ".vscode/settings.json"
+    description: "Path to the settings file relative to the project root."
 
 stages:
   - setup
-  - build
-  - push
+  - build_and_push
   - deploy
 
 
-# Step 1: Initial Setup
 initial_setup:
   stage: setup
   image:
@@ -43,8 +39,6 @@ initial_setup:
     - cat $GITLAB_ENV > build.env
     - xonsh ./.vscode/tasks.xsh run tcb-setup
 
-  dependencies:
-    - get_workspace
   artifacts:
     paths:
       - abs-path
@@ -52,36 +46,28 @@ initial_setup:
       dotenv: build.env
 
 
-# Step 2: Build TorizonCore image
-build_image:
-  stage: build
+build_and_push:
+  stage: build_and_push
   image:
     name: torizonextras/torizon-dev:dev
     docker:
       user: root
     entrypoint: [""]
+
   script:
+    - echo "Running tcb-build"
     - xonsh ./.vscode/tasks.xsh run tcb-build
+
+    - echo "Decoding credentials"
+    - echo "$PLATFORM_CREDENTIALS" | base64 -d > credentials.zip
+
+    - echo "Pushing to platform"
+    - xonsh ./.vscode/tasks.xsh run tcb-platform-push-ostree
 
   dependencies:
     - initial_setup
 
-# Step 2: Push OS Package to Platform
-push_to_platform:
-  stage: push
-  image:
-    name: torizonextras/torizon-dev:dev
-    docker:
-      user: root
-    entrypoint: [""]
-  script:
-    - echo $PLATFORM_CREDENTIALS | base64 -d > credentials.zip
-    - xonsh ./.vscode/tasks.xsh run tcb-platform-push-ostree
 
-  dependencies:
-    - build_image
-
-# Step 4: Deploy To Fleet (Only on main branch)
 deploy_to_fleet:
   stage: deploy
   image:
@@ -95,4 +81,4 @@ deploy_to_fleet:
     - xonsh ./.vscode/tasks.xsh run platform-update-fleet
 
   dependencies:
-    - push_to_platform
+    - build_and_push

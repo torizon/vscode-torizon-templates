@@ -1,4 +1,4 @@
-# .NET 8 C# Avalonia Frame Buffer DRM Template Specific Documentation
+# .NET 10 C# Avalonia Frame Buffer DRM Template Specific Documentation
 
 
 > ⚠️ **WARNING:**  This is just the documentation part specific of this template. **For the complete and general Torizon IDE documentation, check the [developer website documentation](https://developer.toradex.com/torizon/application-development/ide-extension/)** ⚠️

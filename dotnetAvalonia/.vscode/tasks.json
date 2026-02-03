@@ -212,7 +212,7 @@
                 "-av",
                 "-e",
                 "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-arm/publish/",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-arm/publish/",
                 "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
             ],
             "dependsOn": [
@@ -283,7 +283,7 @@
                 "-av",
                 "-e",
                 "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-arm64/publish/",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-arm64/publish/",
                 "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
             ],
             "dependsOn": [
@@ -352,11 +352,11 @@
             "command": "rm",
             "args": [
                 "-rf",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-amd64",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-amd64",
                 "&&",
                 "mv",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-x64",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-amd64"
+                "${workspaceFolder}/bin/Debug/net10.0/linux-x64",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-amd64"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -386,7 +386,7 @@
                 "-av",
                 "-e",
                 "ssh -p ${config:torizon_debug_ssh_port} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null",
-                "${workspaceFolder}/bin/Debug/net8.0/linux-amd64/publish/",
+                "${workspaceFolder}/bin/Debug/net10.0/linux-amd64/publish/",
                 "${config:torizon_run_as}@${config:torizon_ip}:${config:torizon_app_root}"
             ],
             "dependsOn": [

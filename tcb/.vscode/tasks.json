@@ -442,6 +442,39 @@
                 "panel": "dedicated",
                 "group": "cloud-related"
             }
+        },
+        {
+            "label": "validate-pipeline-settings",
+            "detail": "",
+            "hide": true,
+            "command": "xonsh",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "TCB_PACKAGE": "${config:tcb.packageName}",
+                    "TCB_FLEET": "${config:tcb.fleetName}"
+                }
+            },
+            "args": [
+                ".conf/check-ci-env.xsh"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "icon": {
+                "id": "notebook",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated"
+            }
         }
     ],
     "inputs": []

@@ -1,4 +1,4 @@
-# ASP.NET 8 Blazor Template Specific Documentation
+# ASP.NET 10 Blazor Template Specific Documentation
 
 
 > ⚠️ **WARNING:**  This is just the documentation part specific of this template. **For the complete and general Torizon IDE documentation, check the [developer website documentation](https://developer.toradex.com/torizon/application-development/ide-extension/)** ⚠️
@@ -11,11 +11,11 @@ For .NET templates it is important to point out that they do not use the torizon
 
 The deployable package is then copied into the running debug container using **scp**, in the task named **deploy-torizon-\${architecture}**. This task contains the entire sequence of tasks executed by the pipeline and, therefore, is unique to each template.
 
-Finally, remote debugging is performed by attaching to the Visual Studio Debugger (vsdbg) on the running container on the device using a [VSCode feature called Pipe Transport](https://code.visualstudio.com/docs/cpp/pipe-transport). For local debugging, the method used is the one described in the [VSCode documentation for .NET Debugging](https://learn.microsoft.com/en-us/dotnet/core/tutorials/debugging-with-visual-studio-code?pivots=dotnet-8-0) is used. The tasks that perform the debugging are those present in the **launch.json** file.
+Finally, remote debugging is performed by attaching to the Visual Studio Debugger (vsdbg) on the running container on the device using a [VSCode feature called Pipe Transport](https://code.visualstudio.com/docs/cpp/pipe-transport). For local debugging, the method used is the one described in the [VSCode documentation for .NET Debugging](https://learn.microsoft.com/en-us/dotnet/core/tutorials/debugging-with-visual-studio-code?pivots=dotnet-10-0) is used. The tasks that perform the debugging are those present in the **launch.json** file.
 
 The source code of the template is inspired by the one created following the [instructions from the VSCode Blazor app creation](https://dotnet.microsoft.com/en-us/learn/aspnet/blazor-tutorial/create) (without including the **obj** folder and without passing the **--no-https** and **-f net7.0** arguments. Also, the ports numbers on the **launchSettings.json** file, inside the **Properties** directory, were modified).
 
-> ⚠️ **WARNING**: although the template is created with the `-f net7.0` argument, the target framework used in `.csproj` is `net8.0`. In .NET 8 the Blazor template is an unified web app with options to run it on the server or on the client with WebAssembly. Since the Blazor Server template will continue to be supported in .NET 8, we considered just update the template from .NET 7 and bump the target framework. For further information, please refer to the [New Blazor Web App template](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-8.0?view=aspnetcore-7.0#new-blazor-web-app-template). If you need new features from the new Blazor Web App template please reach to us with your use case and we will consider to add a new template.
+> ⚠️ **WARNING**: although the template is created with the `-f net7.0` argument, the target framework used in `.csproj` is `net10.0`. In .NET 10 the Blazor template is an unified web app with options to run it on the server or on the client with WebAssembly. Since the Blazor Server template will continue to be supported in .NET 10, we considered just update the template from .NET 7 and bump the target framework. For further information, please refer to the [New Blazor Web App template](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-10.0?view=aspnetcore-10.0#new-blazor-web-app-template). If you need new features from the new Blazor Web App template please reach to us with your use case and we will consider to add a new template.
 
 ## Running Blazor GUI in Kiosk Mode
 

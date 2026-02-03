@@ -17,33 +17,10 @@ $XONSH_SHOW_TRACEBACK = True
 $RAISE_SUBPROC_ERROR = False
 
 import os
+import json
+from pathlib import Path
 from torizon_templates_utils.errors import Error,Error_Out
 from torizon_templates_utils.colors import Color,BgColor,print
-
-_env_vars_settings = [
-    "DOCKER_REGISTRY",
-    "DOCKER_LOGIN",
-    "DOCKER_TAG",
-    "TCB_CLIENTID",
-    "TCB_CLIENTSECRET",
-    "TCB_PACKAGE",
-    "TCB_FLEET"
-]
-
-_env_vars_secrets = [
-    "DOCKER_PASSWORD",
-    "PLATFORM_CLIENT_ID",
-    "PLATFORM_CLIENT_SECRET",
-    "PLATFORM_CREDENTIALS"
-]
-
-_env_vars_file_path = [
-    "TORIZON_CI_SETTINGS_FILE"
-]
-
-_env_vars_empty_allowed = [
-    "DOCKER_REGISTRY"
-]
 
 
 def _goto_error():
@@ -52,6 +29,28 @@ def _goto_error():
         Error.ENOCONF
     )
 
+
+def _load_deps_json():
+    deps_path = Path(os.getcwd()) / ".conf" / "ci-vars.json"
+
+    if not deps_path.exists():
+        print(f"❌ ci-vars.json not found at {deps_path}", color=Color.RED)
+        _goto_error()
+
+    try:
+        with open(deps_path, "r") as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"❌ Invalid JSON in ci-vars.json: {e}", color=Color.RED)
+        _goto_error()
+
+
+deps = _load_deps_json()
+
+_env_vars_settings      = deps.get("ci-envs", [])
+_env_vars_secrets       = deps.get("ci-envs-secrets", [])
+_env_vars_file_path     = deps.get("ci-envs-settings-file", [])
+_env_vars_empty_allowed = deps.get("ci-env-empty-allowed", [])
 
 _missing_env_var_settings = False
 _missing_env_var_secrets = False
@@ -90,3 +89,4 @@ if "CI" in os.environ:
 
     if _missing_env_var_settings or _missing_env_var_secrets or _missing_env_var_file_path:
         _goto_error()
+

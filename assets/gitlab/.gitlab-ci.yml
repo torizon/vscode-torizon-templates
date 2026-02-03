@@ -12,12 +12,10 @@ variables:
   DOCKER_BUILDKIT: 1
   TASKS_DISABLE_INTERACTIVE_INPUT: "True"
   TASKS_OVERRIDE_ENV: "False"
-  TORIZON_CI_SETTINGS_FILE: ".vscode/settings.json"
-  DOCKER_PASSWORD: "$DOCKER_PASSWORD"
-  DOCKER_LOGIN: "$DOCKER_LOGIN"
-  PLATFORM_CLIENT_ID: "$PLATFORM_CLIENT_ID"
-  PLATFORM_CLIENT_SECRET: "$PLATFORM_CLIENT_SECRET"
-  PLATFORM_CREDENTIALS: "$PLATFORM_CREDENTIALS"  # added to support decoding step
+
+  TORIZON_CI_SETTINGS_FILE:
+    value: ".vscode/settings.json"
+    description: "Path to the settings file relative to the project root."
 
 stages:
   - setup
@@ -25,7 +23,6 @@ stages:
   - deploy
 
 
-# Step 1: Initial Setup
 initial_setup:
   stage: setup
   image:
@@ -48,7 +45,6 @@ initial_setup:
       dotenv: build.env
 
 
-# Step 2: Create and Publish Image
 publish_image:
   stage: publish
   image:
@@ -68,7 +64,7 @@ publish_image:
       - docker-compose.prod.lock.yml
     when: on_success
 
-# Step 3: Deploy Application (Only on main branch)
+
 deploy_application:
   stage: deploy
   image:

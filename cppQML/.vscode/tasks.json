@@ -394,7 +394,7 @@
             "type": "shell",
             "options": {
                 "env": {
-                    "QT_LICENSE_LOGIN": "${command:qt_license_login.__change__}",
+                    "QT_LICENSE_LOGIN": "${config:qt_license_login}",
                     "QT_LICENSE_PASSWORD": "${command:qt_license_password.__change__}"
                 }
             },
@@ -852,8 +852,8 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "QT_LICENSE_LOGIN": "${command:qt_license_login.__change__}",
-                    "QT_LICENSE_PASSWORD": "${command:qt_license_password.__change__}"
+                    "QT_LICENSE_LOGIN": "${command:inputBox-qt_license_login.__change__}",
+                    "QT_LICENSE_PASSWORD": "${command:inputBox-qt_license_password.__change__}"
                 }
             },
             "args": [

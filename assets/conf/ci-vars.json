@@ -1,0 +1,16 @@
+{
+    "ci-envs": [
+    ],
+    "ci-envs-secrets": [
+        "DOCKER_LOGIN",
+        "DOCKER_PASSWORD",
+        "PLATFORM_CLIENT_ID",
+        "PLATFORM_CLIENT_SECRET",
+        "PLATFORM_CREDENTIALS"
+    ],
+    "ci-envs-settings-file": [
+        "TORIZON_CI_SETTINGS_FILE"
+    ],
+    "ci-env-empty-allowed": [
+    ]
+}
