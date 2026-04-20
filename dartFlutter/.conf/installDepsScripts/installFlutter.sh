@@ -5,7 +5,7 @@ if ! command -v flutter-elinux &> /dev/null; then
     echo "flutter-elinux not found. Installing..."
 
     # Clone the repository
-    git clone https://github.com/sony/flutter-elinux.git
+    git clone https://github.com/flutter-elinux/flutter-elinux.git
 
     # Move to /opt/ with sudo
     sudo mv flutter-elinux /opt/

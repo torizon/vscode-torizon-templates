@@ -1,7 +1,7 @@
 # ARGUMENTS --------------------------------------------------------------------
 ##
 # Base Container version
-# Using Flutter v3.27.x
+# Using Flutter v3.38.x
 ##
 ARG SDK_BASE_VERSION=SDK
 ##
