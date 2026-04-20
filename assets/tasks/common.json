@@ -1268,7 +1268,7 @@
                 "ssh",
                 "'${config:torizon_psswd}'",
                 "${config:torizon_debug_ssh_port}",
-                "${config:torizon_login}",
+                "${config:torizon_run_as}",
                 "${config:torizon_ip}",
                 "echo ssh-ok"
             ],

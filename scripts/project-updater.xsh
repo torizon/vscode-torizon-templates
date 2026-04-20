@@ -642,6 +642,15 @@ cp -f @(f"{os.environ['HOME']}/.apollox/{_template_name}/.gitignore") .
 # DEPS.JSON
 cp -f @(f"{os.environ['HOME']}/.apollox/{_template_name}/.conf/deps.json") .
 
+# CI VARS JSON
+_template_ci_vars_path = f"{os.environ['HOME']}/.apollox/{_template_name}/.conf/ci-vars.json"
+_default_ci_vars_path = f"{os.environ['HOME']}/.apollox/assets/conf/ci-vars.json"
+
+if os.path.exists(_template_ci_vars_path):
+    cp -f @(_template_ci_vars_path) .
+else:
+    cp -f @(_default_ci_vars_path) .
+
 # check if there are scripts defined in the .conf/deps.json
 # if so, copy them to the project
 _deps_file = open("./deps.json", "r")
@@ -866,6 +875,15 @@ _open_merge_window(
 )
 
 print("✅ deps.json", color=Color.GREEN)
+
+# CI VARS JSON
+_open_merge_window(
+    f"{project_folder}/.conf/tmp/ci-vars.json",
+    f"{project_folder}/.conf/ci-vars.json"
+)
+
+print("✅ ci-vars.json", color=Color.GREEN)
+
 print("✅ common files OK", color=Color.GREEN)
 
 # ----------------------------------------------------------------------- COMMON
