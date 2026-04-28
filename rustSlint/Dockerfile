@@ -11,6 +11,11 @@ ARG BASE_VERSION=4
 ARG IMAGE_ARCH=
 
 ##
+# Host architecture
+##
+ARG HOST_ARCH=
+
+##
 # Directory of the application inside container
 ##
 ARG APP_ROOT=
@@ -22,7 +27,7 @@ ARG GPU=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
+FROM --platform=linux/${HOST_ARCH} torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
 
 ARG IMAGE_ARCH
 ARG GPU

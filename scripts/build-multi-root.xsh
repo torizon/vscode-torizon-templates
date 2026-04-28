@@ -26,7 +26,7 @@ project_folder = location_folder_join
 ENV_MERGE_MAP = {
     "create-image-production-all": {
         "env_name": "DOCKER_TAG",
-        "env_value": "inputBox-docker_tag"
+        "env_value": "docker_tag"
     }
 }
 
@@ -143,7 +143,7 @@ for task in code_workspace.get("tasks", {}).get("tasks", []):
         cwd = task["options"].get("cwd")
         if isinstance(cwd, str):
             task["options"]["cwd"] = cwd.replace("${workspaceFolder}", f"${{workspaceFolder:{project_name}}}")
-    
+
     label = task["label"]
     if label in ENV_MERGE_MAP:
         env_info = ENV_MERGE_MAP[label]

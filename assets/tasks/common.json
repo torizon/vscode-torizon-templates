@@ -94,7 +94,7 @@
             "type": "process",
             "options": {
                 "env": {
-                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry.__change__}",
+                    "DOCKER_REGISTRY": "${command:docker_registry.__change__}",
                     "DOCKER_LOGIN": "${command:docker_login.__change__}",
                     "DOCKER_PASSWORD": "${command:docker_password.__change__}",
                     "TORIZON_ARCH": "${input:archList}",
@@ -108,7 +108,7 @@
             "args": [
                 "${workspaceFolder}/.conf/create-docker-compose-production.xsh",
                 "${workspaceFolder}",
-                "${command:inputBox-docker_tag.__change__}",
+                "${command:docker_tag.__change__}",
                 "__container__",
                 "${config:torizon_gpu}"
             ],
@@ -133,10 +133,10 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry.__change__}",
+                    "DOCKER_REGISTRY": "${command:docker_registry.__change__}",
                     "DOCKER_LOGIN": "${command:docker_login.__change__}",
                     "DOCKER_PASSWORD": "${command:docker_password.__change__}",
-                    "DOCKER_TAG": "${command:inputBox-docker_tag.__change__}",
+                    "DOCKER_TAG": "${command:docker_tag.__change__}",
                     "TCB_CLIENTID": "${command:tcb.clientId}",
                     "TCB_CLIENTSECRET": "${command:tcb.clientSecret}",
                     "TCB_PACKAGE": "__change__",
@@ -221,7 +221,7 @@
                 "env": {
                     "DOCKER_PASSWORD": "${command:docker_password.__change__}",
                     "DOCKER_LOGIN": "${command:docker_login.__change__}",
-                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry.__change__}",
+                    "DOCKER_REGISTRY": "${command:docker_registry.__change__}",
                     "VSCODE_CMD": "--verbose platform push --credentials credentials.zip --package-name __change__ --package-version ${command:tcb.getNextPackageVersion} --login-to $DOCKER_REGISTRY $DOCKER_LOGIN $DOCKER_PASSWORD --force --canonicalize docker-compose.prod.yml"
                 }
             },
@@ -261,7 +261,7 @@
                 "env": {
                     "DOCKER_PASSWORD": "${command:docker_password.__change__}",
                     "DOCKER_LOGIN": "${command:docker_login.__change__}",
-                    "DOCKER_REGISTRY": "${command:inputBox-docker_registry.__change__}"
+                    "DOCKER_REGISTRY": "${command:docker_registry.__change__}"
                 }
             },
             "args": [
@@ -835,6 +835,8 @@
                     "LOCAL_REGISTRY": "localhost",
                     "TAG": "${config:torizon_arch}",
                     "GPU": "${config:torizon_gpu}",
+                    "IMAGE_ARCH": "arm64",
+                    "HOST_ARCH": "${config:host_arch}",
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
                     "DEBUG_PORT2": "${config:torizon_debug_port2}",
@@ -852,6 +854,8 @@
                 "APP_ROOT=${config:torizon_app_root}",
                 "--build-arg",
                 "IMAGE_ARCH=arm64",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "DEBUG_SSH_PORT=${config:torizon_debug_ssh_port}",
                 "--build-arg",
@@ -886,6 +890,8 @@
                     "LOCAL_REGISTRY": "localhost",
                     "TAG": "${config:torizon_arch}",
                     "GPU": "${config:torizon_gpu}",
+                    "IMAGE_ARCH": "arm",
+                    "HOST_ARCH": "${config:host_arch}",
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
                     "DEBUG_PORT2": "${config:torizon_debug_port2}",
@@ -903,6 +909,8 @@
                 "APP_ROOT=${config:torizon_app_root}",
                 "--build-arg",
                 "IMAGE_ARCH=arm",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "DEBUG_SSH_PORT=${config:torizon_debug_ssh_port}",
                 "--build-arg",
@@ -937,6 +945,8 @@
                     "LOCAL_REGISTRY": "localhost",
                     "TAG": "${config:torizon_arch}",
                     "GPU": "${config:torizon_gpu}",
+                    "IMAGE_ARCH": "amd64",
+                    "HOST_ARCH": "${config:host_arch}",
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
                     "DEBUG_PORT2": "${config:torizon_debug_port2}",
@@ -954,6 +964,8 @@
                 "APP_ROOT=${config:torizon_app_root}",
                 "--build-arg",
                 "IMAGE_ARCH=amd64",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "DEBUG_SSH_PORT=${config:torizon_debug_ssh_port}",
                 "--build-arg",
@@ -994,6 +1006,8 @@
                 "cross-toolchain-arm64-__container__",
                 "--build-arg",
                 "IMAGE_ARCH=arm64",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "--build-arg",
@@ -1036,6 +1050,8 @@
                 "--build-arg",
                 "IMAGE_ARCH=arm",
                 "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
+                "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "--build-arg",
                 "APP_ROOT=${config:torizon_app_root}"
@@ -1076,6 +1092,8 @@
                 "cross-toolchain-amd64-__container__",
                 "--build-arg",
                 "IMAGE_ARCH=amd64",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "--build-arg",
@@ -1248,9 +1266,9 @@
             "args": [
                 "${workspaceFolder}/.conf/service-check.xsh",
                 "ssh",
-                "${config:torizon_psswd}",
+                "'${config:torizon_psswd}'",
                 "${config:torizon_debug_ssh_port}",
-                "${config:torizon_login}",
+                "${config:torizon_run_as}",
                 "${config:torizon_ip}",
                 "echo ssh-ok"
             ],
@@ -1277,7 +1295,7 @@
             "args": [
                 "${workspaceFolder}/.conf/service-check.xsh",
                 "registry",
-                "${config:torizon_psswd}",
+                "'${config:torizon_psswd}'",
                 "${config:torizon_ssh_port}",
                 "${config:torizon_login}",
                 "${config:torizon_ip}",
@@ -1460,6 +1478,8 @@
                     "DOCKER_LOGIN": "localhost:5002",
                     "TAG": "${config:docker_tag}",
                     "GPU": "${config:torizon_gpu}",
+                    "IMAGE_ARCH": "arm64",
+                    "HOST_ARCH": "${config:host_arch}",
                     "APP_ROOT": "${config:torizon_app_root}",
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
@@ -1478,6 +1498,8 @@
                 "APP_ROOT=${config:torizon_app_root}",
                 "--build-arg",
                 "IMAGE_ARCH=arm64",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "__container__"
@@ -1510,6 +1532,8 @@
                     "DOCKER_LOGIN": "localhost:5002",
                     "TAG": "${config:docker_tag}",
                     "GPU": "${config:torizon_gpu}",
+                    "IMAGE_ARCH": "arm",
+                    "HOST_ARCH": "${config:host_arch}",
                     "APP_ROOT": "${config:torizon_app_root}",
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
@@ -1528,6 +1552,8 @@
                 "APP_ROOT=${config:torizon_app_root}",
                 "--build-arg",
                 "IMAGE_ARCH=arm",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "__container__"
@@ -1560,6 +1586,8 @@
                     "DOCKER_LOGIN": "localhost:5002",
                     "TAG": "${config:docker_tag}",
                     "GPU": "${config:torizon_gpu}",
+                    "IMAGE_ARCH": "amd64",
+                    "HOST_ARCH": "${config:host_arch}",
                     "APP_ROOT": "${config:torizon_app_root}",
                     "DEBUG_SSH_PORT": "${config:torizon_debug_ssh_port}",
                     "DEBUG_PORT1": "${config:torizon_debug_port1}",
@@ -1578,6 +1606,8 @@
                 "APP_ROOT=${config:torizon_app_root}",
                 "--build-arg",
                 "IMAGE_ARCH=amd64",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}",
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "__container__"

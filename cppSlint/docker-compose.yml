@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.debug
+      platforms:
+        - linux/${IMAGE_ARCH}
     image: ${LOCAL_REGISTRY}:5002/__container__-debug:${TAG}
     environment:
       - ACCEPT_FSL_EULA=1
@@ -31,11 +33,13 @@ services:
       - "c 226:* rmw"
     profiles:
       - debug
-      
+
   __container__:
     build:
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - linux/${IMAGE_ARCH}
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     environment:
       - ACCEPT_FSL_EULA=1

@@ -4,6 +4,8 @@ set -e
 # This is a script to install .NET on Ubuntu, based on the official Microsoft recommended method of installation:
 # https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
 
+package='dotnet-sdk-10.0'
+
 # Check if we are running on the LTS Ubuntu or Debian
 if [ -f /etc/os-release ]; then
     # unset the exit with error
@@ -31,23 +33,41 @@ else
     exit 69
 fi
 
-DOTNET_CHANNEL="10.0"
-INSTALL_DIR="/usr/share/dotnet"
+# Get the source URL of the dotnet-sdk package installed
+source=$(apt policy $package | awk '/ \*/{getline; print $2}')
 
-echo "🔵 Installing .NET $DOTNET_CHANNEL..."
 
-SCRIPT_PATH="$(mktemp /tmp/dotnet-install.XXXXXX.sh)"
+# Check if the dotnet-sdk installed package comes from the Microsoft source
+if [ "$source" != "https://packages.microsoft.com/$repo/$repo_version/prod" ]; then
 
-wget -q https://dot.net/v1/dotnet-install.sh -O "$SCRIPT_PATH"
-chmod +x "$SCRIPT_PATH"
+    # Download Microsoft signing key and repository
+    wget https://packages.microsoft.com/config/$repo/$repo_version/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 
-sudo mkdir -p "$INSTALL_DIR"
+    # Install Microsoft signing key and repository
+    sudo dpkg -i packages-microsoft-prod.deb
 
-sudo "$SCRIPT_PATH" --channel "$DOTNET_CHANNEL" --install-dir "$INSTALL_DIR"
+    # Clean up
+    rm packages-microsoft-prod.deb
 
-if [ -x "$INSTALL_DIR/dotnet" ]; then
-    sudo ln -sf "$INSTALL_DIR/dotnet" /usr/bin/dotnet
+    # Remove the dotnet-sdk installation that doesn't come from the Microsoft source
+    set +e
+    sudo apt-get remove --purge $package -y
+    sudo apt-get autoremove -y
+    set -e
+
+    # Enforce the preference for the dotnet and aspnet packages comming from the Microsoft source
+    if [ ! -f /etc/apt/preferences ] || ! grep -q "Package: dotnet\* aspnet\* netstandard\*" /etc/apt/preferences
+    then
+        echo "Package: dotnet* aspnet* netstandard*" | sudo tee -a /etc/apt/preferences
+        echo "Pin: origin packages.microsoft.com" | sudo tee -a /etc/apt/preferences
+        echo "Pin-Priority: 1001" | sudo tee -a /etc/apt/preferences
+
+    fi
+
 fi
 
-echo "✔️ .NET installation complete!"
-dotnet --list-sdks
+# Update packages
+sudo apt-get update -y
+
+# Install the dotnet-sdk that come from the Microsoft source
+sudo apt-get install $package -y

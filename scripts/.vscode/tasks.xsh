@@ -127,6 +127,10 @@ try:
 
     # parse the tasks.json file
     _settings = vscode_tasks.get_settings_json(_script_root, _tasks_settings_json)
+    # the responsibility to get the host arch is on the extension
+    # so, when user is running in CI/CD we use the runner arch
+    _settings.get_host_arch()
+
     _tasks = vscode_tasks.get_tasks_json(_script_root)
     _task_runner = vscode_tasks.TaskRunner(_tasks.tasks, _tasks.inputs, _settings)
 

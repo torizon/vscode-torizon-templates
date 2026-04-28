@@ -16,6 +16,11 @@ ARG IMAGE_ARCH=
 ARG APP_ROOT=
 
 ##
+# Host architecture
+##
+ARG HOST_ARCH=
+
+##
 # Board GPU vendor prefix
 ##
 ARG GPU=
@@ -26,7 +31,7 @@ ARG GPU=
 ARG SLINT_VERSION=1.13.1
 
 # BUILD ------------------------------------------------------------------------
-FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
+FROM --platform=linux/${HOST_ARCH} torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
 
 ARG IMAGE_ARCH
 ARG GPU

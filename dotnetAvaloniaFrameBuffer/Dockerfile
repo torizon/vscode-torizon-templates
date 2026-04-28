@@ -5,6 +5,11 @@
 ARG IMAGE_ARCH=
 
 ##
+# Host architecture
+##
+ARG HOST_ARCH=
+
+##
 # Base container version
 ##
 ARG BASE_VERSION=4
@@ -22,7 +27,7 @@ ARG GPU=
 # ARGUMENTS --------------------------------------------------------------------
 
 # BUILD ------------------------------------------------------------------------
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM --platform=linux/${HOST_ARCH} mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 ARG IMAGE_ARCH
 ARG APP_ROOT

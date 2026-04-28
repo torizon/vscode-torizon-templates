@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - linux/${IMAGE_ARCH}
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     profiles:
       - release

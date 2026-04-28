@@ -72,6 +72,7 @@ class TorizonSettings:
             torizon_ip: Optional[str] = None,
             torizon_ssh_port: Optional[str] = None,
             host_ip: Optional[str] = None,
+            host_arch: Optional[str] = None,
             torizon_workspace: Optional[str] = None,
             torizon_debug_ssh_port: Optional[str] = None,
             torizon_debug_port1: Optional[str] = None,
@@ -94,6 +95,7 @@ class TorizonSettings:
         self.torizon_ip = torizon_ip
         self.torizon_ssh_port = torizon_ssh_port
         self.host_ip = host_ip
+        self.host_arch = host_arch
         self.torizon_workspace = torizon_workspace
         self.torizon_debug_ssh_port = torizon_debug_ssh_port
         self.torizon_debug_port1 = torizon_debug_port1
@@ -109,6 +111,25 @@ class TorizonSettings:
         self.tcb_version = tcb_version
         self.torizon_gpuPrefixRC = torizon_gpuPrefixRC
         self.any = any
+
+    def get_host_arch(self) -> Optional[str]:
+        self.host_arch = os.uname().machine
+
+        # fix up the host arch
+        if self.host_arch == "aarch64":
+            self.host_arch = "arm64"
+        elif self.host_arch == "armv7":
+            self.host_arch = "arm"
+        elif self.host_arch == "armv7l":
+            self.host_arch = "arm"
+        elif self.host_arch == "armhf":
+            self.host_arch = "arm"
+        elif self.host_arch == "x86_64":
+            self.host_arch = "amd64"
+        elif self.host_arch == "riscv":
+            self.host_arch = "riscv64"
+
+        return self.host_arch
 
 
 # These are from:

@@ -23,7 +23,7 @@ function Replace-Tasks-Input () {
                     ForEach-Object {
                         $_ -replace `
                         "input:dockerImageRegistry", `
-                        "command:inputBox-docker_registry.__change__"
+                        "command:docker_registry.__change__"
                     } | Set-Content $a
 
                     ( Get-Content $a ) |

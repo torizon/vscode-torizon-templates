@@ -10,6 +10,7 @@ env:
   PLATFORM_CREDENTIALS: ${{ secrets.PLATFORM_CREDENTIALS }}
 
   TORIZON_CI_SETTINGS_FILE: ${{ vars.TORIZON_CI_SETTINGS_FILE || '.vscode/settings.json' }}
+  DEPLOY_TO_FLEET: ${{ vars.DEPLOY_TO_FLEET || 'false' }}
 
 jobs:
   build-deploy:
@@ -49,7 +50,7 @@ jobs:
 
       - name: Deploy to Fleet
         shell: bash
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: env.DEPLOY_TO_FLEET == 'true'
         run: |
 
           xonsh ./.vscode/tasks.xsh run platform-update-fleet

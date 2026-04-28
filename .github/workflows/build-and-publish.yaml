@@ -43,6 +43,19 @@ jobs:
     uses: ./.github/workflows/build-debug-dotnet.yaml
     needs: sanity-check
 
+  trigger-templates-ci-tests:
+    uses: ./.github/workflows/templates-ci-tests.yaml
+    secrets: inherit
+    needs:
+      - build-ccpp
+      - build-debug-ccpp
+      - build-debug-python
+      - build-python
+      - build-debug-rust
+      - build-rust
+      - build-dotnet
+      - build-debug-dotnet
+
   publish-torizon-utils:
     uses: ./.github/workflows/publish-torizon-utils.yaml
     secrets: inherit
@@ -55,7 +68,6 @@ jobs:
       - build-rust
       - build-dotnet
       - build-debug-dotnet
-
 
   publish-torizon-dev:
     uses: ./.github/workflows/build-publish-torizon-dev.yaml

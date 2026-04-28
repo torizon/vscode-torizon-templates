@@ -2,37 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "ssh-tunnel",
-            "type": "shell",
-            "command": "sshpass",
-            "args": [
-                "-p", "${config:torizon_psswd}",
-                "ssh",
-                "-o",
-                "PubkeyAuthentication=no",
-                "-L", "42271:127.0.0.1:42271",
-                "${config:torizon_login}@${config:torizon_ip}"
-            ],
-            "isBackground": true,
-            "options": {
-              "shell": {
-                "executable": "/bin/bash",
-                "args": ["-c"]
-              }
-            },
-            "icon": {
-                "id": "layers",
-                "color": "terminal.ansiYellow"
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "group": "build-execution"
-            }
-        },
-        {
             "label": "flutter-clean-arm64",
             "detail": "Clean the build folder for arm64 using the\ncontainer SDK toolchain.",
             "command": "DOCKER_HOST=",
@@ -132,7 +101,7 @@
             "dependsOn": [
             ],
             "icon": {
-                "id": "tools",
+                "id": "trash",
                 "color": "terminal.ansiYellow"
             },
             "presentation": {
@@ -167,8 +136,7 @@
                 "push-container-torizon-debug-arm64",
                 "pull-container-torizon-debug",
                 "run-container-torizon-debug",
-                "pos-cleanup",
-                "ssh-check"
+                "pos-cleanup"
             ],
             "dependsOrder": "sequence",
             "problemMatcher": "$msCompile",

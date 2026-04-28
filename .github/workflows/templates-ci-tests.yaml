@@ -1,0 +1,47 @@
+name: Update tests repo CI
+
+on:
+  workflow_call:
+
+jobs:
+  update-ci-repo:
+    runs-on: ubuntu-latest
+    container:
+      image: torizonextras/torizon-dev:dev
+      options: --user root
+    env:
+      HOME: ${{ github.workspace }}
+
+    strategy:
+      matrix:
+        branch: [tcb, qml]
+
+    steps:
+      - name: Checkout vscode-ci-cd-template-test (${{ matrix.branch }})
+        uses: actions/checkout@v4
+        with:
+          repository: torizon/vscode-ci-cd-template-test
+          ref: ${{ matrix.branch }}
+          path: vscode-ci-cd-template-test
+          token: ${{ secrets.CI_REPO_TOKEN }}
+
+      - name: Checkout templates into .apollox
+        uses: actions/checkout@v4
+        with:
+          path: .apollox
+
+      - name: Update branch ${{ matrix.branch }}
+        working-directory: vscode-ci-cd-template-test
+        shell: bash
+        run: |
+          printf "y\n" | xonsh ./.conf/project-updater.xsh True
+
+      - name: Commit & push back (${{ matrix.branch }})
+        working-directory: vscode-ci-cd-template-test
+        run: |
+          git config user.name "vscode-torizon-templates"
+          git config user.email "vscode-torizon-templates@toradex.com"
+
+          git add .
+          git commit -m "ci: update from vscode-torizon-templates" || echo "Committed updates"
+          git push origin ${{ matrix.branch }}

@@ -7,13 +7,18 @@ ARG CROSS_SDK_BASE_TAG=4
 ARG IMAGE_ARCH=
 
 ##
+# Host architecture
+##
+ARG HOST_ARCH=
+
+##
 # Application root directory inside the container
 ##
 ARG APP_ROOT=
 
 
 # BUILD ------------------------------------------------------------------------
-FROM torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG}
+FROM --platform=linux/${HOST_ARCH} torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG}
 
 ARG APP_ROOT
 ARG IMAGE_ARCH
