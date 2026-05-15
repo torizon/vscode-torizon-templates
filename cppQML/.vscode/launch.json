@@ -43,6 +43,10 @@
                 {
                     "name": "QT_LOGGING_RULES",
                     "value": "*.debug=true; qt.*.debug=false"
+                },
+                {
+                    "name": "QT_QPA_PLATFORM",
+                    "value": "wayland"
                 }
             ],
             "externalConsole": false,

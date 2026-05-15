@@ -588,6 +588,13 @@ if _template_name != "tcb":
     if os.path.exists(f"{os.environ['HOME']}/.apollox/{_template_name}/Dockerfile"):
         cp -f @(f"{os.environ['HOME']}/.apollox/{_template_name}/Dockerfile") .
 
+    cp -f \
+        @(f"{os.environ['HOME']}/.apollox/scripts/compose-rules.xsh") \
+        @(f"{project_folder}/.conf/compose-rules.xsh")
+
+    if os.path.exists(f"{os.environ['HOME']}/.apollox/assets/conf/compose-rules.json"):
+        cp -f @(f"{os.environ['HOME']}/.apollox/assets/conf/compose-rules.json") .
+
     if os.path.exists(f"{os.environ['HOME']}/.apollox/{_template_name}/docker-compose.yml"):
         cp -f @(f"{os.environ['HOME']}/.apollox/{_template_name}/docker-compose.yml") .
 
@@ -827,6 +834,14 @@ if _template_name != "tcb":
         )
 
         print("✅ docker-compose.yml", color=Color.GREEN)
+
+    # COMPOSE-RULES.JSON
+    _open_merge_window(
+        f"{project_folder}/.conf/tmp/compose-rules.json",
+        f"{project_folder}/.conf/compose-rules.json"
+    )
+
+    print("✅ compose-rules.json", color=Color.GREEN)
 
     # GITHUB ACTIONS
     _open_merge_window(

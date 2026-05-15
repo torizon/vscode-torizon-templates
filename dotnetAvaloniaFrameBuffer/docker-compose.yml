@@ -28,7 +28,8 @@ services:
       - "c 13:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-      - "c 199:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
       # ... for /dev/fb0
       - "c 29:* rmw"
     profiles:
@@ -63,7 +64,8 @@ services:
       - "c 13:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-      - "c 199:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
       # ... for /dev/fb0
       - "c 29:* rmw"
     profiles:

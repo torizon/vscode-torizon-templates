@@ -4,7 +4,6 @@
         {
             "label": "create-prepare-venv",
             "detail": "",
-            "hide": true,
             "command": "echo",
             "type": "process",
             "args": [

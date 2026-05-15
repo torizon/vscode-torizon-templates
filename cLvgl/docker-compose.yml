@@ -9,12 +9,17 @@ services:
     ports:
       - ${DEBUG_SSH_PORT}:${DEBUG_SSH_PORT}
     device_cgroup_rules:
-            # Add device access rights through cgroup
-      - "c 4:* rmw"       # For tty
-      - "c 13:* rmw"       # For /dev/input devices
-      - "c 226:* rmw"       # For /dev/dri devices
-      - "c 199:* rmw"
-      - "c 29:* rmw"       # For /dev/fb0
+      # Add device access rights through cgroup
+      # ... for tty
+      - "c 4:* rmw"
+      # ... for /dev/input devices
+      - "c 13:* rmw"
+      # ... for /dev/dri devices
+      - "c 226:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
+      # ... for /dev/fb0
+      - "c 29:* rmw"
     volumes:
       - type: bind
         source: /dev
@@ -30,15 +35,16 @@ services:
         - linux/${IMAGE_ARCH}
     image: ${DOCKER_LOGIN}/__container__:${TAG}
     device_cgroup_rules:
-            # Add device access rights through cgroup
-            # For tty
+      # Add device access rights through cgroup
+      # ... for tty
       - "c 4:* rmw"
-            # For /dev/input devices
+      # ... for /dev/input devices
       - "c 13:* rmw"
-            # For /dev/dri devices
+      # ... for /dev/dri devices
       - "c 226:* rmw"
-      - "c 199:* rmw"
-              # For /dev/fb0
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
+      # ... for /dev/fb0
       - "c 29:* rmw"
     volumes:
       - type: bind

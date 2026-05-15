@@ -48,6 +48,94 @@
 				}
 			},
 			{
+				"label": "generate-compose-rules-multiroot",
+				"detail": "Scan docker-compose files and generate suggested device_cgroup_rules for all workspaces.",
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"generate-compose-rules"
+				],
+				"dependsOrder": "sequence",
+				"dependsOn": [],
+				"icon": {
+					"id": "gear",
+					"color": "terminal.ansiYellow"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "show-compose-rules-diffs-multiroot",
+				"detail": "Show generated compose rules diffs in merge window for all workspaces.",
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"show-compose-rules-diffs"
+				],
+				"dependsOrder": "sequence",
+				"dependsOn": [],
+				"icon": {
+					"id": "gear",
+					"color": "terminal.ansiYellow"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "never",
+					"focus": false,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "update-compose-rules-multiroot",
+				"detail": "Show diff window for generated compose rules.",
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"update-compose-rules"
+				],
+				"icon": {
+					"id": "gear",
+					"color": "terminal.ansiYellow"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
+				"label": "update-compose-rules-accept-all-multiroot",
+				"detail": "Apply generated compose rules. Overwrites files without prompting.",
+				"type": "shell",
+				"command": "xonsh",
+				"args": [
+					"${workspaceFolder}/.conf/multi-root-tasks.xsh",
+					"update-compose-rules-accept-all"
+				],
+				"icon": {
+					"id": "gear",
+					"color": "terminal.ansiYellow"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": true,
+					"panel": "shared",
+					"group": "build-execution"
+				}
+			},
+			{
 				"label": "check-deps-all",
 				"detail": "This task will check if the dependencies needed to run\nthe project are installed in the host machine.",
 				"command": "xonsh",
@@ -331,4 +419,3 @@
 		]
 	}
 }
-

@@ -151,6 +151,8 @@ RUN --mount=type=secret,id=qt-login \
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -Bbuild-${IMAGE_ARCH} ; \
     elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -Bbuild-${IMAGE_ARCH} ; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        cmake -DCMAKE_BUILD_TYPE=Release -Bbuild-${IMAGE_ARCH} ; \
     fi
 
 RUN cmake --build build-${IMAGE_ARCH}

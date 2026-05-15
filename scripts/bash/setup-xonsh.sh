@@ -2,6 +2,18 @@
 
 echo "🐚 SETUP XONSH"
 
+function _do_injections {
+    pipx inject xonsh distro
+    pipx inject xonsh shtab
+    pipx inject xonsh pyyaml
+    pipx inject xonsh psutil
+    pipx inject xonsh ruamel.yaml
+    pipx inject xonsh torizon-templates-utils
+    pipx inject xonsh GitPython
+    pipx inject xonsh python-lsp-server
+    pipx inject xonsh pylsp-rope
+}
+
 function _check_xonsh_global {
     # we need to check if we need to run the setup as root
     # at the first time we should need to symlink the xonsh to the /usr/bin
@@ -78,6 +90,8 @@ if [ -f "$HOME/.local/bin/xonsh" ]; then
         pipx runpip xonsh install --upgrade torizon-templates-utils
     fi
 
+    _do_injections
+
     # re-check if we need to link xonsh globally
     if ! _check_xonsh_global; then
         exit 1
@@ -92,14 +106,8 @@ set -e
 
 pipx install xonsh
 pipx ensurepath
-pipx inject xonsh distro
-pipx inject xonsh shtab
-pipx inject xonsh pyyaml
-pipx inject xonsh psutil
-pipx inject xonsh torizon-templates-utils
-pipx inject xonsh GitPython
-pipx inject xonsh python-lsp-server
-pipx inject xonsh pylsp-rope
+
+_do_injections
 
 # add xonsh to the path if not already present
 if ! grep -q "export PATH=\$PATH:\$HOME/.local/bin" ~/.bashrc; then

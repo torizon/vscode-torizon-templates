@@ -28,9 +28,10 @@ services:
       - "c 4:* rmw"
       # ... for /dev/input devices
       - "c 13:* rmw"
-      - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
     profiles:
       - debug
     depends_on:
@@ -60,9 +61,10 @@ services:
       - "c 4:* rmw"
       # ... for /dev/input devices
       - "c 13:* rmw"
-      - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
     profiles:
       - release
     depends_on:
@@ -94,12 +96,10 @@ services:
       - "c 4:* rmw"
       # ... for /dev/input devices
       - "c 13:* rmw"
-      # ... for /dev/galcore
-      - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-      # ... for /dev/dma_heap device
-      - "c 253:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
     profiles:
       - release
       - debug
