@@ -12,7 +12,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of error
 $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
-$RAISE_SUBPROC_ERROR = True
+$XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 import os
 import psutil
@@ -169,7 +169,7 @@ def _open_merge_window(to_update, current):
 # no need to update itself again
 if not second_run:
     # make sure to tell user if the project is not a git repo
-    $RAISE_SUBPROC_ERROR = False
+    $XONSH_SUBPROC_CMD_RAISE_ERROR = False
     _git_status: CommandPipeline = {}
     _git_status = !(git -C @(project_folder) status)
 
@@ -194,7 +194,7 @@ if not second_run:
                 Error.EABORT
             )
 
-    $RAISE_SUBPROC_ERROR = True
+    $XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 
 if accept_all and not second_run:
@@ -228,7 +228,7 @@ if not _check_if_file_content_is_equal(
         @(f"{project_folder}/.conf/project-updater.xsh") \
         @(accept_all)
 
-    sys.exit(__xonsh__.last.returncode)
+    sys.exit(__xonsh__.lastcmd.returncode)
 
 
 # get the metadata from templates.json
@@ -460,6 +460,11 @@ cp -f \
 cp -f \
     @(f"{os.environ['HOME']}/.apollox/scripts/service-check.xsh") \
     @(f"{project_folder}/.conf/service-check.xsh")
+
+# SPIN UP TUNNEL PORT
+cp -f \
+    @(f"{os.environ['HOME']}/.apollox/scripts/spin-up-down-registry.xsh") \
+    @(f"{project_folder}/.conf/spin-up-down-registry.xsh")
 
 # REMOVE DANGLING IMAGES:
 cp -f \

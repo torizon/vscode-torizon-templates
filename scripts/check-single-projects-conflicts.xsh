@@ -12,7 +12,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of error
 $XONSH_SHOW_TRACEBACK = True
 # this script should handle the subprocess errors
-$RAISE_SUBPROC_ERROR = False
+$XONSH_SUBPROC_CMD_RAISE_ERROR = False
 
 import os
 import yaml
@@ -111,7 +111,7 @@ def suggest_fixes_for_all_ports(all_ports):
             service = p.get("service", "")
             folder = p.get("folder", "")
             setting_name = p.get("settingName", "")
-            
+
             if service:
                 # Docker-compose service: group by base service name
                 base = base_service_name(service)
@@ -119,7 +119,7 @@ def suggest_fixes_for_all_ports(all_ports):
             else:
                 # Settings.json: each setting is separate
                 identifier = f"{folder}:{setting_name}"
-            
+
             base_service_groups[port][identifier].append(p)
 
     # Find real conflicts (same port, different identifiers)
@@ -202,7 +202,7 @@ def apply_suggestions(suggestions, root_path):
             for p, old_val, new_val in info["changes"]:
                 service_name = p.get("service")
                 setting_name = p.get("settingName", "")
-                
+
                 if not service_name or service_name not in services:
                     continue
 
@@ -216,7 +216,7 @@ def apply_suggestions(suggestions, root_path):
                     svc_ports = services[service_name].get("ports", [])
                     if 0 <= idx < len(svc_ports):
                         port_mapping = svc_ports[idx]
-                        
+
                         if isinstance(port_mapping, str):
                             # Handle "host:container" format
                             parts = port_mapping.split(":", 1)

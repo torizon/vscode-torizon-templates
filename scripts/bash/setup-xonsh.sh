@@ -2,6 +2,19 @@
 
 echo "🐚 SETUP XONSH"
 
+_XONSH_TARGET="0.23.7"
+
+function _check_xonsh_update {
+    # make sure we are also updating to the target version of xonsh
+    _XONSH_CURRENT=$(pipx list --short 2>/dev/null | grep "^xonsh " | awk '{print $2}')
+
+    if [ "$_XONSH_CURRENT" = "$_XONSH_TARGET" ]; then
+        echo "xonsh $_XONSH_TARGET already installed, skipping"
+    else
+        pipx install --force xonsh==$_XONSH_TARGET
+    fi
+}
+
 function _do_injections {
     pipx inject xonsh distro
     pipx inject xonsh shtab
@@ -55,7 +68,8 @@ function _check_xonsh_global {
 
 # check if xonsh is on $HOME/.local/bin
 if [ -f "$HOME/.local/bin/xonsh" ]; then
-    echo "xonsh is already installed, updating torizon-templates-utils ..."
+    _check_xonsh_update
+    echo "updating torizon-templates-utils ..."
 
     VARS_FILE="./.conf/repo-vars.json"
 
@@ -104,7 +118,7 @@ fi
 # fail as soon as a command fails, and return the exit status
 set -e
 
-pipx install xonsh
+pipx install xonsh==$_XONSH_TARGET
 pipx ensurepath
 
 _do_injections

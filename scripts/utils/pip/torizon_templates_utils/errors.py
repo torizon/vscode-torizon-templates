@@ -55,4 +55,4 @@ def Error_Out(msg: str, error: Error) -> None:
 def last_return_code() -> int:
     # we are ignoring the type here because this will get the current
     # xonsh shell instance
-    return __xonsh__.last.returncode # type: ignore
+    return __xonsh__.lastcmd.returncode # type: ignore

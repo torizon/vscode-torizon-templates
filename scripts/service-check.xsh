@@ -12,7 +12,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of error
 $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
-$RAISE_SUBPROC_ERROR = True
+$XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 
 import os
@@ -47,7 +47,7 @@ SLEEP_INTERVAL = 1
 
 for i in range(1, MAX_ATTEMPTS + 1):
     try:
-        with ${...}.swap(RAISE_SUBPROC_ERROR=False):
+        with ${...}.swap(XONSH_SUBPROC_CMD_RAISE_ERROR=False):
             result = !( \
                 sshpass \
                     -p @(torizon_psswd) \

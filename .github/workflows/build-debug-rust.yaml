@@ -50,7 +50,7 @@ jobs:
           import os
           import json
 
-          $RAISE_SUBPROC_ERROR = True
+          $XONSH_SUBPROC_CMD_RAISE_ERROR = True
           $XONSH_SHOW_TRACEBACK = True
           $UPDATE_OS_ENVIRON = True
 

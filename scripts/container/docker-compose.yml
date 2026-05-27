@@ -5,7 +5,10 @@ services:
     build:
       context: ../
       dockerfile: container/Containerfile.ssh
-    image: torizonextras/ide-port-tunnel:0.0.0
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    image: torizonextras/ide-port-tunnel:0.0.1
 
 
   xonsh:
