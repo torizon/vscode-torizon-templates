@@ -2,13 +2,41 @@
 
 echo "🐚 SETUP XONSH"
 
+_XONSH_TARGET="0.23.7"
+
+function _check_xonsh_update {
+    # make sure we are also updating to the target version of xonsh
+    _XONSH_CURRENT=$(pipx list --short 2>/dev/null | grep "^xonsh " | awk '{print $2}')
+
+    if [ "$_XONSH_CURRENT" = "$_XONSH_TARGET" ]; then
+        echo "xonsh $_XONSH_TARGET already installed, skipping"
+    else
+        pipx install --force xonsh==$_XONSH_TARGET
+    fi
+}
+
+function _do_injections {
+    pipx inject xonsh distro
+    pipx inject xonsh shtab
+    pipx inject xonsh pyyaml
+    pipx inject xonsh psutil
+    pipx inject xonsh ruamel.yaml
+    pipx inject xonsh torizon-templates-utils
+    pipx inject xonsh GitPython
+    pipx inject xonsh python-lsp-server
+    pipx inject xonsh pylsp-rope
+}
+
 function _check_xonsh_global {
     # we need to check if we need to run the setup as root
     # at the first time we should need to symlink the xonsh to the /usr/bin
     # read the /usr/bin/xonsh and check if it is linked to the
-    # $HOME/.local/bin/xonsh, if not we need to run with sudo
-    local local_xonsh="$HOME/.local/bin/xonsh"
+    # $HOME/.local/pipx/venvs/xonsh/bin/xonsh, if not we need to run with sudo
+    local local_xonsh="$HOME/.local/pipx/venvs/xonsh/bin/xonsh"
     local global_xonsh="/usr/bin/xonsh"
+
+    # get the local xonsh by the real path from $HOME/.local/bin/xonsh
+    local_xonsh="$(readlink -f "$HOME/.local/bin/xonsh")"
 
     if [ ! -f "$local_xonsh" ]; then
         echo "Expected local xonsh at $local_xonsh but it was not found."
@@ -40,7 +68,8 @@ function _check_xonsh_global {
 
 # check if xonsh is on $HOME/.local/bin
 if [ -f "$HOME/.local/bin/xonsh" ]; then
-    echo "xonsh is already installed, updating torizon-templates-utils ..."
+    _check_xonsh_update
+    echo "updating torizon-templates-utils ..."
 
     VARS_FILE="./.conf/repo-vars.json"
 
@@ -68,13 +97,14 @@ if [ -f "$HOME/.local/bin/xonsh" ]; then
                 "git+${repo}@${ref}#subdirectory=scripts/utils/pip"
 
             echo "Installed from custom repo ✅"
-            exit 0
         fi
+    else
+        # Fallback to package if no repo or branch/tag set
+        echo "Using published package..."
+        pipx runpip xonsh install --upgrade torizon-templates-utils
     fi
 
-    # Fallback to package if no repo or branch/tag set
-    echo "Using published package..."
-    pipx runpip xonsh install --upgrade torizon-templates-utils
+    _do_injections
 
     # re-check if we need to link xonsh globally
     if ! _check_xonsh_global; then
@@ -88,16 +118,10 @@ fi
 # fail as soon as a command fails, and return the exit status
 set -e
 
-pipx install xonsh
+pipx install xonsh==$_XONSH_TARGET
 pipx ensurepath
-pipx inject xonsh distro
-pipx inject xonsh shtab
-pipx inject xonsh pyyaml
-pipx inject xonsh psutil
-pipx inject xonsh torizon-templates-utils
-pipx inject xonsh GitPython
-pipx inject xonsh python-lsp-server
-pipx inject xonsh pylsp-rope
+
+_do_injections
 
 # add xonsh to the path if not already present
 if ! grep -q "export PATH=\$PATH:\$HOME/.local/bin" ~/.bashrc; then

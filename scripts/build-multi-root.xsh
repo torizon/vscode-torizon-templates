@@ -7,7 +7,7 @@
 
 $UPDATE_OS_ENVIRON = True
 $XONSH_SHOW_TRACEBACK = True
-$RAISE_SUBPROC_ERROR = True
+$XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 import os
 import shutil

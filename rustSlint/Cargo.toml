@@ -7,11 +7,11 @@ build = "build.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-slint = { version = "1.13.*", features = [ "backend-linuxkms-noseat", "renderer-skia" ] }
+slint = { version = "1.16.*", features = [ "backend-linuxkms-noseat", "renderer-skia" ] }
 
 [profile.dev.package."*"]
 opt-level = 3
 debug = 0
 
 [build-dependencies]
-slint-build = { version = "1.13.*" }
+slint-build = { version = "1.16.*" }

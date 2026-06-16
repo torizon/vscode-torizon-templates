@@ -9,7 +9,7 @@ jobs:
       image: node:23
     name: Spell Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: cspell CLI Lint
 
@@ -27,7 +27,7 @@ jobs:
       options: --user root
     name: Check EOF New Line
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check EOF New Line
 
@@ -43,7 +43,7 @@ jobs:
       options: --user root
     name: Check JSON
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check JSON
 
@@ -51,7 +51,7 @@ jobs:
 
         run: |
           xonsh ./scripts/validate-json.xsh
-  
+
   check-task-duplicates:
     runs-on: ubuntu-24.04
     container:
@@ -59,7 +59,7 @@ jobs:
       options: --user root
     name: Check Task Duplicates
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check Task Duplicates
 

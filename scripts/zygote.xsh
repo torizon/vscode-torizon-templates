@@ -12,7 +12,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of error
 $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
-$RAISE_SUBPROC_ERROR = True
+$XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 import os
 import sys
@@ -328,7 +328,7 @@ def _target_console(args):
         print(f"🖥️ :: CONNECTING TO {target['Hostname']} :: 🖥️")
         print("")
 
-        $RAISE_SUBPROC_ERROR = False
+        $XONSH_SUBPROC_CMD_RAISE_ERROR = False
 
         sshpass \
             -p @(target['__pass__']) \
@@ -339,7 +339,7 @@ def _target_console(args):
             -p @(target['SshPort']) \
             @(target['Login'])@@(target['Ip']) @(args.cmd if "cmd" in args else "")
 
-        $RAISE_SUBPROC_ERROR = True
+        $XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
         # aesthetic
         print("")

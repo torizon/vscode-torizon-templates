@@ -98,9 +98,6 @@ RUN apt-get -q -y update && \
     rm -rf /var/lib/apt/lists/*
 # __deps__
 
-# Don't require font-config when the compiler runs
-ENV RUST_FONTCONFIG_DLOPEN=on
-
 COPY . ${APP_ROOT}
 WORKDIR ${APP_ROOT}
 

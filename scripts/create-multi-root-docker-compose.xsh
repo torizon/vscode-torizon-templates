@@ -12,7 +12,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of errors
 $XONSH_SHOW_TRACEBACK = True
 # always return if a cmd fails
-$RAISE_SUBPROC_ERROR = True
+$XONSH_SUBPROC_CMD_RAISE_ERROR = True
 
 import yaml
 import asyncio

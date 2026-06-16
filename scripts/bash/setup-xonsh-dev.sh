@@ -15,7 +15,7 @@ sudo apt install -y \
     twine
 
 # install the pylsp using pipx
-pipx install xonsh
+pipx install --force-reinstall xonsh==0.23.7
 pipx inject xonsh distro
 pipx inject xonsh shtab
 pipx inject xonsh pyyaml

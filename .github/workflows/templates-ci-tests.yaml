@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout vscode-ci-cd-template-test (${{ matrix.branch }})
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: torizon/vscode-ci-cd-template-test
           ref: ${{ matrix.branch }}
@@ -26,7 +26,7 @@ jobs:
           token: ${{ secrets.CI_REPO_TOKEN }}
 
       - name: Checkout templates into .apollox
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: .apollox
 

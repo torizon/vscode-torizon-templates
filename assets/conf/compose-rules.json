@@ -1,0 +1,22 @@
+{
+    "imx8": [
+        {
+            "comment": "for /dev/dma_heap device",
+            "rule": "c 253:* rmw"
+        },
+        {
+            "comment": "for /dev/galcore (Vivante GPU device)",
+            "rule": "c 199:* rmw"
+        }
+    ],
+    "imx95": [
+        {
+            "comment": "for /dev/dma_heap device",
+            "rule": "c 253:* rmw"
+        },
+        {
+            "comment": "for /dev/mali0 (GPU device)",
+            "rule": "c 10:* rmw"
+        }
+    ]
+}

@@ -13,7 +13,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of error
 $XONSH_SHOW_TRACEBACK = True
 # this script should handle the subprocess errors
-$RAISE_SUBPROC_ERROR = False
+$XONSH_SUBPROC_CMD_RAISE_ERROR = False
 
 # clean the workspace set device default to use the local docker engine
 $DOCKER_HOST = ""

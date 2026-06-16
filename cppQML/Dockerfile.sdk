@@ -138,6 +138,8 @@ RUN --mount=type=secret,id=qt-login \
             echo 'exec /usr/bin/cmake "$@"' >> /usr/local/bin/qt-cmake; \
         fi; \
         chmod +x /usr/local/bin/qt-cmake; \
+    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
+        ln -sf /usr/bin/cmake /usr/local/bin/qt-cmake; \
     fi
 
 WORKDIR ${APP_ROOT}

@@ -35,7 +35,6 @@
         {
             "label": "tcb-setup",
             "detail": "",
-            "hide": true,
             "command": "DOCKER_HOST=",
             "type": "shell",
             "runOptions": {
@@ -479,4 +478,3 @@
     ],
     "inputs": []
 }
-

@@ -21,13 +21,12 @@ services:
     device_cgroup_rules:
       # ... for tty
       - "c 4:* rmw"
-      # to allow the use of DMA heap
-      - "c 253:* rmw"
       # ... for /dev/input devices
       - "c 13:* rmw"
-      - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
     depends_on: [weston]
     profiles:
       - debug
@@ -49,13 +48,12 @@ services:
     device_cgroup_rules:
       # ... for tty
       - "c 4:* rmw"
-      # to allow the use of DMA heap
-      - "c 253:* rmw"
       # ... for /dev/input devices
       - "c 13:* rmw"
-      - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
     depends_on: [weston]
     profiles:
       - release
@@ -84,12 +82,10 @@ services:
       - "c 4:* rmw"
       # ... for /dev/input devices
       - "c 13:* rmw"
-      # ... for /dev/galcore
-      - "c 199:* rmw"
       # ... for /dev/dri devices
       - "c 226:* rmw"
-      # ... for /dev/dma_heap device
-      - "c 253:* rmw"
+      # ... for /dev/uinput
+      - "c 10:223 rmw"
     profiles:
       - release
       - debug

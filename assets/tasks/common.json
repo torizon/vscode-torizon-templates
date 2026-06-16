@@ -1713,6 +1713,8 @@
                 "compose",
                 "-p",
                 "torizon",
+                "--profile",
+                "release",
                 "up",
                 "__container__"
             ],
@@ -2003,6 +2005,126 @@
                 "reveal": "silent",
                 "focus": true,
                 "panel": "dedicated"
+            }
+        },
+        {
+            "label": "generate-compose-rules",
+            "hide": true,
+            "detail": "Scan docker-compose files and generate suggested device_cgroup_rules.",
+            "command": "xonsh",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "args": [
+                ".conf/compose-rules.xsh",
+                "generate",
+                "${config:torizon_gpu}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "icon": {
+                "id": "gear",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "show-compose-rules-diffs",
+            "hide": true,
+            "detail": "Show generated compose rules diffs in merge window.",
+            "command": "xonsh",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "args": [
+                ".conf/compose-rules.xsh",
+                "apply"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [],
+            "icon": {
+                "id": "gear",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "update-compose-rules",
+            "detail": "Show diff window for generated compose rules.",
+            "command": "xonsh",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "args": [
+                ".conf/compose-rules.xsh",
+                "generate",
+                "apply",
+                "${config:torizon_gpu}"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "icon": {
+                "id": "gear",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "update-compose-rules-accept-all",
+            "detail": "Apply generated compose rules. Overwrites files without prompting.",
+            "command": "xonsh",
+            "type": "process",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "args": [
+                ".conf/compose-rules.xsh",
+                "generate",
+                "apply",
+                "${config:torizon_gpu}",
+                "--accept-all"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "icon": {
+                "id": "gear",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
             }
         }
     ]

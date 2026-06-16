@@ -25,7 +25,7 @@ RUN useradd -l -m -u 1010 torizon && \
 COPY ./bash/setup-xonsh.sh /root/setup-xonsh.sh
 RUN chmod +x /root/setup-xonsh.sh && \
     touch /home/torizon/.xonshrc && \
-    /root/setup-xonsh.sh && \
+    PSSWD=noempty /root/setup-xonsh.sh && \
     ln -s /root/.local/bin/xonsh /usr/local/bin/xonsh && \
     mkdir -p /home/torizon/.local/bin && \
     ln -s /root/.local/bin/xonsh /home/torizon/.local/bin/xonsh

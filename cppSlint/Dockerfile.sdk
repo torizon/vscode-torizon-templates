@@ -27,7 +27,7 @@ ARG APP_ROOT=
 ##
 # Slint Version
 ##
-ARG SLINT_VERSION=1.13.1
+ARG SLINT_VERSION=1.16.1
 
 # BUILD ------------------------------------------------------------------------
 FROM --platform=linux/${HOST_ARCH} torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
@@ -88,6 +88,7 @@ RUN \
     apt-get update && \
     apt-get install --assume-yes \
     pkg-config \
+    libfontconfig1 \
     libfontconfig1-dev:$CROSS_TOOLCHAIN_ARCH \
     libxcb1-dev:$CROSS_TOOLCHAIN_ARCH \
     libxcb-render0-dev:$CROSS_TOOLCHAIN_ARCH \

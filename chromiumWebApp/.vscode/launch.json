@@ -1,0 +1,60 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Torizon arm64",
+            "type": "chrome",
+            "request": "attach",
+            "address": "${config:torizon_ip}",
+            "port": "${config:torizon_debug_port2}",
+            "webRoot": "${workspaceFolder}/src",
+            "pathMapping": {
+                "file://${config:torizon_app_root}/src": "${workspaceFolder}/src"
+            },
+            "sourceMapPathOverrides": {
+                "file://${config:torizon_app_root}/src/*": "${workspaceFolder}/src/*"
+            },
+            "sourceMaps": true,
+            "preLaunchTask": "deploy-torizon-arm64"
+        },
+        {
+            "name": "Torizon arm32",
+            "type": "chrome",
+            "request": "attach",
+            "address": "${config:torizon_ip}",
+            "port": "${config:torizon_debug_port2}",
+            "webRoot": "${workspaceFolder}/src",
+            "pathMapping": {
+                "file://${config:torizon_app_root}/src": "${workspaceFolder}/src"
+            },
+            "sourceMapPathOverrides": {
+                "file://${config:torizon_app_root}/src/*": "${workspaceFolder}/src/*"
+            },
+            "sourceMaps": true,
+            "preLaunchTask": "deploy-torizon-arm"
+        },
+        {
+            "name": "Torizon amd64",
+            "type": "chrome",
+            "request": "attach",
+            "address": "${config:torizon_ip}",
+            "port": "${config:torizon_debug_port2}",
+            "webRoot": "${workspaceFolder}/src",
+            "pathMapping": {
+                "file://${config:torizon_app_root}/src": "${workspaceFolder}/src"
+            },
+            "sourceMapPathOverrides": {
+                "file://${config:torizon_app_root}/src/*": "${workspaceFolder}/src/*"
+            },
+            "sourceMaps": true,
+            "preLaunchTask": "deploy-torizon-amd64"
+        },
+        {
+            "type": "editor-browser",
+            "request": "launch",
+            "name": "Local Debug",
+            "url": "file://${workspaceFolder}/src/index.html",
+            "webRoot": "${workspaceFolder}/src"
+        }
+    ]
+}

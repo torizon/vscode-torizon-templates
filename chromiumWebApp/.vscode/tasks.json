@@ -1,0 +1,237 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "pre-cleanup",
+            "detail": "Clean the service of the application on the target (default device)(does not down the dependencies)",
+            "hide": true,
+            "command": "docker",
+            "type": "shell",
+            "args": [
+                "compose",
+                "-p",
+                "torizon",
+                "stop",
+                "__container__",
+                "__container__-debug",
+                "__container__-debug-proxy",
+                "&&",
+                "docker",
+                "compose",
+                "-p",
+                "torizon",
+                "rm",
+                "-f",
+                "__container__",
+                "__container__-debug",
+                "__container__-debug-proxy",
+                "&&",
+                "sleep",
+                "${config:wait_sync}"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "remove-dangling-images"
+            ],
+            "problemMatcher": "$tsc",
+            "icon": {
+                "id": "trash",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "run-container-torizon-debug",
+            "detail": "",
+            "hide": true,
+            "command": "DOCKER_HOST=${config:torizon_ip}:2375",
+            "type": "shell",
+            "args": [
+                "LOCAL_REGISTRY=localhost",
+                "TAG=${config:torizon_arch}",
+                "GPU=${config:torizon_gpu}",
+                "DEBUG_SSH_PORT=${config:torizon_debug_ssh_port}",
+                "DEBUG_PORT1=${config:torizon_debug_port1}",
+                "DEBUG_PORT2=${config:torizon_debug_port2}",
+                "DEBUG_PORT3=${config:torizon_debug_port3}",
+                "docker",
+                "compose",
+                "-p",
+                "torizon",
+                "up",
+                "-d",
+                "--wait",
+                "__container__-debug",
+                "__container__-debug-proxy"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+            ],
+            "problemMatcher": "$tsc",
+            "icon": {
+                "id": "debug-alt",
+                "color": "terminal.ansiYellow"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "cdp-ready",
+            "detail": "Wait for Chromium CDP, navigate to app, signal VSCode to attach",
+            "hide": true,
+            "command": "bash",
+            "type": "shell",
+            "args": [
+                "-lc",
+                "echo CDP ready; sleep ${config:wait_sync}; curl -sf -X PUT \"http://${config:torizon_ip}:${config:torizon_debug_port2}/json/new?file://${config:torizon_app_root}/src/index.html\""
+            ],
+            "dependsOrder": "sequence",
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                        "regexp": ".",
+                        "file": 1,
+                        "location": 2,
+                        "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": "CDP ready"
+                    }
+                }
+            ],
+            "icon": {
+                "id": "debug-start",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "deploy-torizon-arm64",
+            "detail": "Deploy and debug on arm64",
+            "hide": true,
+            "command": "bash",
+            "type": "shell",
+            "args": [
+                "-lc",
+                ":"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-arm64",
+                "copy-docker-compose",
+                "pre-cleanup",
+                "build-container-torizon-debug-arm64",
+                "push-container-torizon-debug-arm64",
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "cdp-ready"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$tsc",
+            "icon": {
+                "id": "debug-start",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "deploy-torizon-arm",
+            "detail": "Deploy and debug on arm",
+            "hide": true,
+            "command": "bash",
+            "type": "shell",
+            "args": [
+                "-lc",
+                ":"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-arm",
+                "copy-docker-compose",
+                "pre-cleanup",
+                "build-container-torizon-debug-arm",
+                "push-container-torizon-debug-arm",
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "cdp-ready"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$tsc",
+            "icon": {
+                "id": "debug-start",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        },
+        {
+            "label": "deploy-torizon-amd64",
+            "detail": "Deploy and debug on amd64",
+            "hide": true,
+            "command": "bash",
+            "type": "shell",
+            "args": [
+                "-lc",
+                ":"
+            ],
+            "dependsOn": [
+                "validate-settings",
+                "validate-arch-amd64",
+                "copy-docker-compose",
+                "pre-cleanup",
+                "build-container-torizon-debug-amd64",
+                "push-container-torizon-debug-amd64",
+                "pull-container-torizon-debug",
+                "run-container-torizon-debug",
+                "cdp-ready"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": "$tsc",
+            "icon": {
+                "id": "debug-start",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "group": "build-execution"
+            }
+        }
+    ],
+"inputs": []
+}

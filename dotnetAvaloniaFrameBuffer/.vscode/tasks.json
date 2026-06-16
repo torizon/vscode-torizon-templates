@@ -3,7 +3,6 @@
     "tasks": [
         {
             "label": "create-preview-assets",
-            "hide": true,
             "command": "${command:avalonia.createPreviewerAssets}",
             "type": "process",
             "isBuildCommand": true,

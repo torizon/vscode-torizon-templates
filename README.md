@@ -10,6 +10,7 @@ This repository maintains the templates used in conjunction with the [VS Code To
 
 | TEMPLATE | DESCRIPTION | RUNTIME | LANGUAGE | HW ARCH | FOLDER |
 | -------- | ----------- | ------- | -------- | ------- | ------ |
+| ![](https://github.com/torizon/vscode-torizon-templates/blob/dev/assets/img/chromium.png?raw=true) | Chromium Web App | v8 | JavaScript | <img src="assets/img/arm32.png" width=70 /> &nbsp; <img src="assets/img/arm64.png" width=70 /> &nbsp; <img src="assets/img/x8664.png" width=70 />  | [chromiumWebApp](./chromiumWebApp) |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/cppconsole.png?raw=true) | C++ Makefile Console Application | libc | C++ | <img src="assets/img/arm32.png" width=70 /> <img src="assets/img/arm64.png" width=70 />  | [cppConsole](./cppConsole) |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/cmakeconsole.png?raw=true) | C++ CMake Console Application | libc | C++ | <img src="assets/img/arm32.png" width=70 /> <img src="assets/img/arm64.png" width=70 /> | [cmakeConsole](./cmakeConsole) |
 | ![](https://raw.githubusercontent.com/toradex/vscode-torizon-templates-documentation/refs/heads/main/thumbnails/qt6qml.png?raw=true) | C++ Qt 6 QML Application | Qt 6 | C++ / QML | <img src="assets/img/arm32.png" width=70 /> <img src="assets/img/arm64.png" width=70 />   | [cppQML](./cppQML) |

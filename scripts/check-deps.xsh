@@ -14,7 +14,7 @@ $UPDATE_OS_ENVIRON = True
 # Get the full log of error
 $XONSH_SHOW_TRACEBACK = True
 # this script expect to have the error handling
-$RAISE_SUBPROC_ERROR = False
+$XONSH_SUBPROC_CMD_RAISE_ERROR = False
 
 import os
 import sys

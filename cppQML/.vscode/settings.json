@@ -3,12 +3,18 @@
     "torizon_debug_port1": "2232",
     "torizon_debug_port2": "2233",
     "torizon_debug_port3": "",
-    "qtForPython.rcc.liveExecution.enabled": false,
-    "qtForPython.qmlls.path": "/usr/lib/qt6/bin/qmlls",
-    "qtForPython.qmlls.enabled": true,
+    "qt_license_login": "__qt_license_login__",
+    "qt_license_password": "__qt_license_password__",
+    "qt-core.qtInstallationRoot": "/usr/lib/qt6/bin/",
+    "qt-core.openOnlineDocumentationInExternalBrowser": true,
+    "qt-qml.qmlls.enabled": true,
+    "qt-qml.qmlls.verboseOutput": true,
+    "qt-qml.qmlls.additionalImportPaths": [
+        "/usr/lib/x86_64-linux-gnu/qt6/qml",
+        "/usr/lib/aarch64-linux-gnu/qt6/qml",
+        "./QML"
+    ],
     "files.associations": {
         "*.pro": "makefile"
-    },
-    "qt_license_login": "__qt_license_login__",
-    "qt_license_password": "__qt_license_password__"
+    }
 }

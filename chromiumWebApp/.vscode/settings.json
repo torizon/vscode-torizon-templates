@@ -1,0 +1,7 @@
+{
+    "torizon_debug_ssh_port": "",
+    "torizon_debug_port1": "9222",
+    "torizon_debug_port2": "9223",
+    "torizon_debug_port3": "",
+    "wait_sync": "2"
+}

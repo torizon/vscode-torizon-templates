@@ -23,7 +23,7 @@ jobs:
             vendor: '{ "arch": "arm64", "torizon_arch": "aarch64" }'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Get Host Absolute Workspace Path
         run: |
@@ -73,7 +73,7 @@ jobs:
           import os
           import json
 
-          $RAISE_SUBPROC_ERROR = True
+          $XONSH_SUBPROC_CMD_RAISE_ERROR = True
           $XONSH_SHOW_TRACEBACK = True
           $UPDATE_OS_ENVIRON = True
 
