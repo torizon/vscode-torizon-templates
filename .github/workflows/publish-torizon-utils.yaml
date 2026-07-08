@@ -43,6 +43,15 @@ jobs:
           cd ./scripts/utils/pip
           python3 -m build
 
+      - name: TruffleHog Scan Package Artifacts
+        if: env.SKIP_PUBLISH != 'true'
+        run: |
+          docker run --rm -v "$PWD/scripts/utils/pip/dist:/dist" \
+            trufflesecurity/trufflehog:latest filesystem \
+              /dist \
+              --fail \
+              --no-update
+
       - name: Create .pypirc
         if: env.SKIP_PUBLISH != 'true'
         env:
