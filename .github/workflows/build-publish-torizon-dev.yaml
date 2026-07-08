@@ -19,8 +19,17 @@ jobs:
           sudo apt-get install -y python3 python3-pip pipx
           PSSWD=noempty bash ./scripts/bash/setup-xonsh.sh
 
+      - name: Set up QEMU
+        # registers binfmt/QEMU handlers so the multi-arch (arm64) image builds
+        # can run under emulation on the amd64 runner
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          # host network so the buildx container can push to the local staging
+          # registry (localhost:5000) used for the pre-publish trufflehog scan
+          driver-opts: network=host
 
       - name: Build
         run: |
