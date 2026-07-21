@@ -15,7 +15,7 @@ jobs:
             vendor:  '{ "arch": "arm64", "torizon_arch": "aarch64" }'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Get Host Absolute Workspace Path
         run: |

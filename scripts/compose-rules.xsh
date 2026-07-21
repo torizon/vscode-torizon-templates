@@ -120,6 +120,8 @@ def generate_for_file(compose_path, device_name):
 
     services = doc["services"]
 
+    processed_seqs = set()
+
     for service_name in services:
         service = services[service_name]
 
@@ -128,6 +130,10 @@ def generate_for_file(compose_path, device_name):
         if not isinstance(seq, CommentedSeq):
             seq = CommentedSeq()
             service["device_cgroup_rules"] = seq
+
+        if id(seq) in processed_seqs:
+            continue
+        processed_seqs.add(id(seq))
 
         indent_col = get_indent_from_seq(seq, service)
 

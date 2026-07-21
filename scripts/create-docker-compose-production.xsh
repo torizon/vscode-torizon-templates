@@ -30,6 +30,10 @@ from torizon_templates_utils.colors import Color,BgColor,print
 # debug.vscode_prepare()
 # debug.breakpoint()
 
+class NoAliasDumper(yaml.SafeDumper):
+    def ignore_aliases(self, data):
+        return True
+
 $DOCKER_HOST = ""
 
 if is_in_gitlab_ci_container():
@@ -248,12 +252,20 @@ for service in _prod_keys:
 
 print("✅ Variables replaced", color=Color.GREEN)
 
+print("Removing base services ...")
+
+for key in [k for k in _compose_obj if k.startswith("x-")]:
+    _compose_obj.pop(key)
+
+print("✅ Base services removed", color=Color.GREEN)
+
 # write the object back to a file
 _f_ref = open(f"{_compo_file_path}/docker-compose.prod.yml", "w")
 yaml.dump(
     _compose_obj,
     _f_ref,
-    indent=2
+    indent=2,
+    Dumper=NoAliasDumper
 )
 _f_ref.close()
 

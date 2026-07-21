@@ -5,3 +5,6 @@ node_modules/
 **/dist
 **/*.egg-info
 **/.pypirc
+
+# trufflehog throwaway image tarballs (CI scan)
+.trufflehog-scan/

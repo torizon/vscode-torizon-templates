@@ -11,6 +11,9 @@ jobs:
   sanity-check:
     uses: ./.github/workflows/ci-tests.yaml
 
+  secret-scan:
+    uses: ./.github/workflows/secret-scan.yaml
+
   build-ccpp:
     uses: ./.github/workflows/build-ccpp.yaml
     needs: sanity-check
@@ -47,6 +50,7 @@ jobs:
     uses: ./.github/workflows/templates-ci-tests.yaml
     secrets: inherit
     needs:
+      - secret-scan
       - build-ccpp
       - build-debug-ccpp
       - build-debug-python
@@ -60,6 +64,7 @@ jobs:
     uses: ./.github/workflows/publish-torizon-utils.yaml
     secrets: inherit
     needs:
+      - secret-scan
       - build-ccpp
       - build-debug-ccpp
       - build-debug-python
@@ -73,6 +78,7 @@ jobs:
     uses: ./.github/workflows/build-publish-torizon-dev.yaml
     secrets: inherit
     needs:
+      - secret-scan
       - publish-torizon-utils
       - build-ccpp
       - build-debug-ccpp

@@ -1,0 +1,11 @@
+/python
+/var/lib/dpkg/
+/\.cache/
+/usr/lib/x86_64-linux-gnu/
+/\.qt/
+/usr/share/perl
+/\.npm/
+node_modules/
+/usr/share/nmap/
+/usr/local/bin/dockerd
+/usr/bin/node

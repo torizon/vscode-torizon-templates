@@ -82,6 +82,7 @@ def main():
     # Per-project task whitelist
     project_task_whitelist = {
         "tcb": ["validate-pipeline-settings"],
+        "chromiumWebApp": ["pre-cleanup", "run-container-torizon-debug"],
     }
 
     input_exceptions = []

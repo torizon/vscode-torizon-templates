@@ -6,7 +6,7 @@ jobs:
   publish:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Sanity version
         run: |
@@ -42,6 +42,15 @@ jobs:
         run: |
           cd ./scripts/utils/pip
           python3 -m build
+
+      - name: TruffleHog Scan Package Artifacts
+        if: env.SKIP_PUBLISH != 'true'
+        run: |
+          docker run --rm -v "$PWD/scripts/utils/pip/dist:/dist" \
+            trufflesecurity/trufflehog:latest filesystem \
+              /dist \
+              --fail \
+              --no-update
 
       - name: Create .pypirc
         if: env.SKIP_PUBLISH != 'true'

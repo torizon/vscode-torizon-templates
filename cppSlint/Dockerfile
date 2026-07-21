@@ -28,7 +28,7 @@ ARG GPU=
 ##
 # Slint Version
 ##
-ARG SLINT_VERSION=1.16.1
+ARG SLINT_VERSION=1.17.1
 
 # BUILD ------------------------------------------------------------------------
 FROM --platform=linux/${HOST_ARCH} torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
