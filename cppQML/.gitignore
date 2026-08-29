@@ -9,17 +9,12 @@ amd64
 
 credentials.zip
 *.lock.yml
-.conf/qt6-enterprise/qt-feed-auth.conf
+.conf/qt6-enterprise/
 
 #Build directories
 build-*
 #But the build yaml file from ci/cd need to be included
 !.github/workflows/build-*
-
-# After committing it once, to stop having modifications every time you do
-# anything on Qt Creator (like dragging the window, literally almost anything),
-# uncomment the line below
-# .qt
 
 .conf/.depok
 .conf/.docok

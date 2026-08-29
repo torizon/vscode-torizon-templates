@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "apollox": "file:apollox-0.2.6.tgz"
+    "apollox": "file:apollox-0.3.6.tgz"
   }
 }

@@ -1,8 +1,8 @@
 # ARGUMENTS --------------------------------------------------------------------
 ##
-# SDK container version
+# Cross-toolchain container version
 ##
-ARG SDK_BASE_VERSION=4
+ARG CROSS_SDK_BASE_TAG=4
 ##
 # Base container version
 ##
@@ -12,6 +12,11 @@ ARG BASE_VERSION=4
 # Board architecture
 ##
 ARG IMAGE_ARCH=
+
+##
+# Host architecture
+##
+ARG HOST_ARCH=amd64
 
 ##
 # Board GPU vendor prefix
@@ -24,78 +29,106 @@ ARG GPU=
 ARG APP_ROOT=
 
 # BUILD ------------------------------------------------------------------------
-# TODO: cross compile x86 to arm
-# We will use emulation here
+# Build the app for host architecture and emit binaries for IMAGE_ARCH. The
+# cross toolchain image provides target compilers (aarch64/arm) executed on
+# HOST_ARCH, so this stage runs natively instead of under emulation.
 ##
 # Build Step
 ##
-FROM --platform=linux/${IMAGE_ARCH} \
-    torizon/wayland-base-dev${GPU}:${BASE_VERSION} AS build
+FROM --platform=linux/${HOST_ARCH} \
+    torizon/cross-toolchain-${IMAGE_ARCH}:${CROSS_SDK_BASE_TAG} AS build
 
 ARG IMAGE_ARCH
+ARG HOST_ARCH
 ARG GPU
 ARG APP_ROOT
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# If the hash of credentials has changed, update the next layers.
+COPY .qt/qt-enterprise-setup.sh /usr/local/sbin/qt-enterprise-setup.sh
+RUN chmod +x /usr/local/sbin/qt-enterprise-setup.sh
+
+# NOTE: secret mount contents are excluded from BuildKit's cache key, so
+# changing qt-login/qt-password alone won't invalidate this layer. The
+# qt-cache-buster file (a random, non-secret nonce rotated by the
+# "qt-enterprise-fill-license-login-password" task whenever credentials are
+# set/changed) is part of this layer's cache key, invalidating only this
+# project's cached builds (other projects keep their cache). The credential
+# digest used to detect changes stays in the ignored .conf/qt6-enterprise/
+# state file and never enters the image.
+COPY .qt/qt-cache-buster /tmp/qt-cache-buster
 RUN --mount=type=secret,id=qt-login \
     --mount=type=secret,id=qt-password \
     --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
-    bash -c '\
-    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
-    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
-    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
-        echo "--- Qt Enterprise credentials detected, enabling enterprise repo ---"; \
-        mkdir -p /etc/apt/keyrings/tqtc; \
-        wget -qO /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg \
-            https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg; \
-        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
-            "$LOGIN" "$PASS" \
-            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
-        mkdir -p /etc/apt/sources.list.d; \
-        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg\n" \
-            > /etc/apt/sources.list.d/qt-company.sources; \
-    else \
-        echo "--- Qt Enterprise credentials not found, using community Qt ---"; \
-    fi' && \
+    eval "$(/usr/local/sbin/qt-enterprise-setup.sh full)" && \
     apt-get update && \
     if [ -f /etc/apt/auth.conf.d/qt-enterprise.conf ] && [ "$GPU" = "-imx8" ]; then \
         apt-get install -y --no-install-recommends \
         cmake \
-        qt6.8.2-full-dev \
-        qt6.8.2-declarative-dev \
+        libegl-dev${TARGET_SUFFIX} \
+        libgles-dev${TARGET_SUFFIX} \
+        qt6.8.2-base-dev-tools \
+        qt6.8.2-declarative-dev-tools \
+        qt6.8.2-base-dev${TARGET_SUFFIX} \
+        qt6.8.2-base-private-dev${TARGET_SUFFIX} \
+        qt6.8.2-wayland-dev${TARGET_SUFFIX} \
+        qt6.8.2-declarative-dev${TARGET_SUFFIX} \
+        qt6.8.2-declarative-private-dev${TARGET_SUFFIX} \
+        qt6.8.2-gtk-platformtheme${TARGET_SUFFIX} \
+        qt6.8.2-xdgdesktopportal-platformtheme${TARGET_SUFFIX} \
+        qt6.8.2-wayland${TARGET_SUFFIX} \
+        qt6.8.2-image-formats-plugins${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-animation${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-folderlistmodel${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-platform${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-qmlmodels${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-settings${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-sharedimage${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-labs-wavefrontmesh${TARGET_SUFFIX} \
+        qml6.8.2-module-qtqml${TARGET_SUFFIX} \
+        qml6.8.2-module-qtqml-workerscript${TARGET_SUFFIX} \
+        qml6.8.2-module-qtqml-models${TARGET_SUFFIX} \
+        qml6.8.2-module-qtqml-xmllistmodel${TARGET_SUFFIX} \
+        qml6.8.2-module-qmlnetwork${TARGET_SUFFIX} \
+        qml6.8.2-module-qtcore${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-window${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-controls${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-layouts${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-templates${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-localstorage${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-dialogs${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-nativestyle${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-particles${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-shapes${TARGET_SUFFIX} \
+        qml6.8.2-module-qtquick-tooling${TARGET_SUFFIX} \
+        qml6.8.2-module-qt-test-controls${TARGET_SUFFIX} \
+        qml6.8.2-module-qttest${TARGET_SUFFIX} \
+        qml6.8.2-module-qtwayland-compositor${TARGET_SUFFIX} \
+        qml6.8.2-module-qtwayland-client-texturesharing${TARGET_SUFFIX} \
     ;else \
+        # Host packages are only build tools/check headers; Qt dev/runtime
+        # comes from target architecture packages when cross-compiling.
         apt-get install -y --no-install-recommends \
         cmake \
-        libqt6gui6 \
-        libfontconfig1-dev \
-        libqt6concurrent6 \
-        libqt6dbus6 \
-        libqt6network6 \
-        libqt6printsupport6 \
-        libqt6sql6 \
-        libqt6test6 \
-        libqt6widgets6 \
-        libqt6xml6 \
-        libqt6qml6 \
-        libqt6opengl6-dev \
-        libqt6quicktest6 \
-        libqt6quickwidgets6 \
-        qt6-base-private-dev \
-        qt6-base-dev \
-        qt6-wayland \
-        qt6-wayland-dev \
-        qt6-declarative-dev \
-        qt6-declarative-private-dev \
-        qml6-module-qtqml \
-        qml6-module-qtqml-workerscript \
-        qml6-module-qtcore \
-        qml6-module-qtquick \
-        qml6-module-qtquick-window \
-        qml6-module-qtquick-controls \
-        qml6-module-qtquick-layouts \
-        qml6-module-qtquick-templates \
+        libegl-dev${TARGET_SUFFIX} \
+        libgles-dev${TARGET_SUFFIX} \
+        qt6-base-dev-tools \
+        qt6-declarative-dev-tools \
+        qt6-base-dev${TARGET_SUFFIX} \
+        qt6-base-private-dev${TARGET_SUFFIX} \
+        qt6-wayland-dev${TARGET_SUFFIX} \
+        qt6-declarative-dev${TARGET_SUFFIX} \
+        qt6-declarative-private-dev${TARGET_SUFFIX} \
+        libqt6opengl6-dev${TARGET_SUFFIX} \
+        qml6-module-qtqml${TARGET_SUFFIX} \
+        qml6-module-qtqml-workerscript${TARGET_SUFFIX} \
+        qml6-module-qtcore${TARGET_SUFFIX} \
+        qml6-module-qtquick${TARGET_SUFFIX} \
+        qml6-module-qtquick-window${TARGET_SUFFIX} \
+        qml6-module-qtquick-controls${TARGET_SUFFIX} \
+        qml6-module-qtquick-layouts${TARGET_SUFFIX} \
+        qml6-module-qtquick-templates${TARGET_SUFFIX} \
     ;fi \
     && apt-get clean \
     && apt-get autoremove \
@@ -105,14 +138,7 @@ RUN --mount=type=secret,id=qt-login \
 RUN --mount=type=secret,id=qt-login \
     --mount=type=secret,id=qt-password \
     --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
-    bash -c '\
-    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
-    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
-    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
-        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
-            "$LOGIN" "$PASS" \
-            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
-    fi' && \
+    /usr/local/sbin/qt-enterprise-setup.sh auth-only && \
     apt-get -q -y update && \
     apt-get -q -y install \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
@@ -122,6 +148,9 @@ RUN --mount=type=secret,id=qt-login \
     && \
     apt-get clean && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
+
+COPY .qt/qt-cmake.sh /usr/local/bin/qt-cmake
+RUN chmod +x /usr/local/bin/qt-cmake
 
 COPY . ${APP_ROOT}
 WORKDIR ${APP_ROOT}
@@ -133,27 +162,8 @@ RUN rm -rf ${APP_ROOT}/build-${IMAGE_ARCH}
 RUN --mount=type=secret,id=qt-login \
     --mount=type=secret,id=qt-password \
     --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
-    bash -c '\
-    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
-    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
-    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
-        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
-            "$LOGIN" "$PASS" \
-            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
-    fi' && \
-    if [ "$IMAGE_ARCH" = "arm64" ] ; then \
-        if [ -f /etc/apt/auth.conf.d/qt-enterprise.conf ] && [ "$GPU" = "-imx8" ]; then \
-            /opt/qt-6.8.2/aarch64-linux-gnu/bin/qt-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -Bbuild-${IMAGE_ARCH} \
-        ;else \
-            cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -Bbuild-${IMAGE_ARCH} \
-        ;fi \
-    ;elif [ "$IMAGE_ARCH" = "arm" ] ; then \
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -Bbuild-${IMAGE_ARCH} ; \
-    elif [ "$IMAGE_ARCH" = "armhf" ] ; then \
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -Bbuild-${IMAGE_ARCH} ; \
-    elif [ "$IMAGE_ARCH" = "amd64" ] ; then \
-        cmake -DCMAKE_BUILD_TYPE=Release -Bbuild-${IMAGE_ARCH} ; \
-    fi
+    /usr/local/sbin/qt-enterprise-setup.sh auth-only && \
+    qt-cmake -DCMAKE_BUILD_TYPE=Release -Bbuild-${IMAGE_ARCH}
 
 RUN cmake --build build-${IMAGE_ARCH}
 
@@ -177,25 +187,13 @@ ARG SSHUSERNAME=torizon
 # Make sure we don't get notifications we can't answer during building.
 ENV DEBIAN_FRONTEND="noninteractive"
 
+COPY .qt/qt-enterprise-setup.sh /usr/local/sbin/qt-enterprise-setup.sh
+RUN chmod +x /usr/local/sbin/qt-enterprise-setup.sh
+
 RUN --mount=type=secret,id=qt-login \
     --mount=type=secret,id=qt-password \
     --mount=type=tmpfs,target=/etc/apt/auth.conf.d \
-    bash -c '\
-    LOGIN="$(cat /run/secrets/qt-login 2>/dev/null || true)" && \
-    PASS="$(cat /run/secrets/qt-password 2>/dev/null || true)" && \
-    if [ -n "$LOGIN" ] && [ -n "$PASS" ] && [ "$GPU" = "-imx8" ]; then \
-        echo "--- Qt Enterprise credentials detected, enabling enterprise repo ---"; \
-        mkdir -p /etc/apt/keyrings/tqtc && \
-        wget -qO /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg \
-            https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg; \
-        printf "machine https://debian-packages.qt.io\nlogin %s\npassword %s\n" \
-            "$LOGIN" "$PASS" \
-            > /etc/apt/auth.conf.d/qt-enterprise.conf; \
-        printf "Types: deb\nURIs: https://debian-packages.qt.io/debian/enterprise/qt-6.8.2-arm64-test-gles\nSuites: tqtc-bookworm\nComponents: main\nSigned-By: /etc/apt/keyrings/tqtc/qt-company-debian-repo.gpg\n" \
-            > /etc/apt/sources.list.d/qt-company.sources; \
-    else \
-        echo "--- Qt Enterprise credentials not found, using community Qt ---"; \
-    fi' && \
+    /usr/local/sbin/qt-enterprise-setup.sh full && \
     apt-get update && \
     if [ -f /etc/apt/sources.list.d/qt-company.sources ] && [ "$GPU" = "-imx8" ]; then \
         apt-get install -y --no-install-recommends \
@@ -243,7 +241,8 @@ RUN --mount=type=secret,id=qt-login \
 # DO NOT REMOVE THIS LABEL: this is used for VS Code automation
     && apt-get clean \
     && apt-get autoremove \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /usr/local/sbin/qt-enterprise-setup.sh
 
 ENV QT_QPA_PLATFORM="wayland"
 

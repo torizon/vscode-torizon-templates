@@ -121,6 +121,13 @@ jobs:
             json.dump(settings_json, file, indent=4)
 
           chmod a+rw -R .
+
+          # cppQML: keep the Qt credential digest in the ignored state file
+          # and write a random, non-secret nonce to the Docker cache-buster
+          # before any image build
+          if os.environ['PROJECT_FOLDER'] == 'cppQML':
+            xonsh ./.vscode/tasks.xsh run qt-enterprise-fill-license-login-password
+
           xonsh ./.vscode/tasks.xsh run run-torizon-binfmt
 
           if os.environ['PROJECT_FOLDER'] == 'cLvgl':
