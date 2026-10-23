@@ -4,6 +4,7 @@
     "torizon_debug_port2": "",
     "torizon_debug_port3": "",
     "dotnet.preferCSharpExtension": false,
+    "csharp.debug.requireExactSource": false,
     "omnisharp.useModernNet": true,
     "dotnet.server.useOmnisharp": false,
     "explorer.fileNesting.enabled": true,
