@@ -803,7 +803,7 @@ print("Diff common files ...", color=Color.YELLOW)
 
 if _template_name != "tcb":
     # DOCKERFILE.DEBUG
-    if os.path.exists(f"{project_folder}/.con/tmp/Dockerfile.debug"):
+    if os.path.exists(f"{project_folder}/.conf/tmp/Dockerfile.debug"):
         _open_merge_window(
             f"{project_folder}/.conf/tmp/Dockerfile.debug",
             f"{project_folder}/Dockerfile.debug"

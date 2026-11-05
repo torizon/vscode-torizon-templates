@@ -397,13 +397,11 @@
         {
             "label": "clean-local",
             "detail": "Clean the local application build directory.",
-            "command": "cmake",
+            "command": "rm",
             "type": "shell",
             "args": [
-                "--build",
-                "build-local",
-                "--target",
-                "clean"
+                "-rf",
+                "build-local"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -450,7 +448,9 @@
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "--build-arg",
-                "APP_ROOT=${config:torizon_app_root}"
+                "APP_ROOT=${config:torizon_app_root}",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -480,6 +480,10 @@
                 "docker",
                 "run",
                 "--rm",
+                "-e",
+                "IMAGE_ARCH=arm64",
+                "-e",
+                "GPU=${config:torizon_gpu}",
                 "-v",
                 "${workspaceFolder}:${config:torizon_app_root}",
                 "cross-toolchain-arm64-__container__",
@@ -555,11 +559,9 @@
                 "-v",
                 "${workspaceFolder}:${config:torizon_app_root}",
                 "cross-toolchain-arm64-__container__",
-                "cmake",
-                "--build",
-                "build-arm64",
-                "--target",
-                "clean"
+                "rm",
+                "-rf",
+                "build-arm64"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -704,11 +706,9 @@
                 "-v",
                 "${workspaceFolder}:${config:torizon_app_root}",
                 "cross-toolchain-arm-__container__",
-                "cmake",
-                "--build",
-                "build-arm",
-                "--target",
-                "clean"
+                "rm",
+                "-rf",
+                "build-arm"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -799,7 +799,9 @@
                 "--build-arg",
                 "GPU=${config:torizon_gpu}",
                 "--build-arg",
-                "APP_ROOT=${config:torizon_app_root}"
+                "APP_ROOT=${config:torizon_app_root}",
+                "--build-arg",
+                "HOST_ARCH=${config:host_arch}"
             ],
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -829,6 +831,10 @@
                 "docker",
                 "run",
                 "--rm",
+                "-e",
+                "IMAGE_ARCH=amd64",
+                "-e",
+                "GPU=${config:torizon_gpu}",
                 "-v",
                 "${workspaceFolder}:${config:torizon_app_root}",
                 "cross-toolchain-amd64-__container__",
@@ -902,11 +908,9 @@
                 "-v",
                 "${workspaceFolder}:${config:torizon_app_root}",
                 "cross-toolchain-amd64-__container__",
-                "cmake",
-                "--build",
-                "build-amd64",
-                "--target",
-                "clean"
+                "rm",
+                "-rf",
+                "build-amd64"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -1079,17 +1083,19 @@
         {
             "label": "qt-enterprise-fill-license-login-password",
             "detail": "Generate qt-feed-auth.conf from login and password stored in settings",
-            "command": "echo",
+            "command": "bash",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
                     "QT_LICENSE_LOGIN": "${command:qt_license_login.__change__}",
-                    "QT_LICENSE_PASSWORD": "${command:qt_license_password.__change__}"
+                    "QT_LICENSE_PASSWORD": "${command:qt_license_password.__change__}",
+                    "QT_CACHE_BUSTER_FILE": "${workspaceFolder}/.qt/qt-cache-buster",
+                    "QT_ENTERPRISE_STATE_FILE": "${workspaceFolder}/.conf/qt6-enterprise/qt-credentials.state"
                 }
             },
             "args": [
-                "'qt_license_login and qt_license_password set'"
+                "${workspaceFolder}/.qt/qt-cache-buster-update.sh"
             ],
             "problemMatcher": [
                 "$gcc"

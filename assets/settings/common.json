@@ -12,7 +12,7 @@
     "torizon_app_root": "/home/torizon/app",
     "docker_tag": "v0.0.0",
     "tcb.packageName": "__change__",
-    "tcb.version": "3.14.0",
+    "tcb.version": "3.16.0",
     "torizon.gpuPrefixRC": true,
     "torizon.restartDocker": false,
     "terminal.integrated.defaultProfile.linux": "bash"

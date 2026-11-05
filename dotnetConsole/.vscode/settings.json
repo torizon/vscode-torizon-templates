@@ -2,5 +2,6 @@
     "torizon_debug_ssh_port": "2222",
     "torizon_debug_port1": "",
     "torizon_debug_port2": "",
-    "torizon_debug_port3": ""
+    "torizon_debug_port3": "",
+    "csharp.debug.requireExactSource": false
 }

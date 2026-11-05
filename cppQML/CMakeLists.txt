@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 project(__change__ LANGUAGES CXX C)
 
+if(NOT CMAKE_SYSTEM_NAME)
+    if(CMAKE_CXX_COMPILER MATCHES "aarch64" OR CMAKE_C_COMPILER MATCHES "aarch64")
+        set(CMAKE_SYSTEM_NAME Linux)
+        set(CMAKE_SYSTEM_PROCESSOR arm64)
+    elseif(CMAKE_CXX_COMPILER MATCHES "arm-linux" OR CMAKE_C_COMPILER MATCHES "arm-linux")
+        set(CMAKE_SYSTEM_NAME Linux)
+        set(CMAKE_SYSTEM_PROCESSOR arm)
+    endif()
+endif()
+
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick)
