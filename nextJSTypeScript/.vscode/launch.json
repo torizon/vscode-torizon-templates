@@ -1,0 +1,122 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Next.js Proxy Server",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port}",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "autoAttachChildProcesses": true,
+            "attachExistingChildren": true,
+            "preLaunchTask": "run-nextjs-local",
+            "postDebugTask": "kill-nextjs-local"
+        },
+        {
+            "name": "Next.js Routing Server",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port2}",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "autoAttachChildProcesses": true,
+            "attachExistingChildren": true,
+            "preLaunchTask": "wait-for-run-local"
+        },
+        {
+            "name": "Next.js Pages Server",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port3}",
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true,
+            "autoAttachChildProcesses": true,
+            "attachExistingChildren": true,
+            "preLaunchTask": "wait-for-run-local"
+        },
+        {
+            "name": "Torizon AMD64",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port}",
+            "address": "${config:torizon_ip}",
+            "restart": false,
+            "sourceMaps": true,
+            "continueOnAttach": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "${config:torizon_app_root}/app/",
+            "preLaunchTask": "start-torizon-debug-amd64"
+        },
+        {
+            "name": "Torizon ARMv7",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port}",
+            "address": "${config:torizon_ip}",
+            "restart": false,
+            "sourceMaps": true,
+            "continueOnAttach": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "${config:torizon_app_root}/app/",
+            "preLaunchTask": "start-torizon-debug-arm"
+        },
+        {
+            "name": "Torizon ARMv8 Proxy Server",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port}",
+            "address": "${config:torizon_ip}",
+            "sourceMaps": true,
+            "autoAttachChildProcesses": true,
+            "attachExistingChildren": true,
+            "remoteRoot": "${config:torizon_app_root}/app/out/",
+            "localRoot": "${workspaceFolder}/",
+            "preLaunchTask": "wait-for-run"
+        },
+        {
+            "name": "Torizon ARMv8 Routing Server",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port2}",
+            "address": "${config:torizon_ip}",
+            "sourceMaps": true,
+            "autoAttachChildProcesses": true,
+            "attachExistingChildren": true,
+            "remoteRoot": "${config:torizon_app_root}/app/out/",
+            "localRoot": "${workspaceFolder}/",
+            "preLaunchTask": "wait-for-run"
+        },
+        {
+            "name": "Torizon ARMv8 Server Pages",
+            "type": "node",
+            "request": "attach",
+            "port": "${config:torizon_debug_port3}",
+            "address": "${config:torizon_ip}",
+            "sourceMaps": true,
+            "autoAttachChildProcesses": true,
+            "attachExistingChildren": true,
+            "remoteRoot": "${config:torizon_app_root}/app/out/",
+            "localRoot": "${workspaceFolder}/",
+            "preLaunchTask": "start-torizon-debug-arm64"
+        },
+    ],
+    "compounds": [
+        {
+            "name": "Next.js Local",
+            "configurations": [
+                "Next.js Proxy Server",
+                "Next.js Routing Server",
+                "Next.js Pages Server"
+            ]
+        },
+        {
+            "name": "Torizon ARMv8",
+            "configurations": [
+                "Torizon ARMv8 Server Pages",
+                "Torizon ARMv8 Proxy Server",
+                "Torizon ARMv8 Routing Server",
+            ]
+        }
+    ]
+}
